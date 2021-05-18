@@ -1,0 +1,94 @@
+#############
+GET http://127.0.0.1:8000/api/classroom
+Authorization: Token 358ee3e2210d77c358c53a9184280fe6339e9602cf2916a1d364188a0a5b48b7
+
+#############
+POST http://127.0.0.1:8000/api/auth/login
+content-type: application/json
+
+
+{
+    "email":"kailash@gmail.com",
+    "password":"kailash@123"
+}
+
+############
+POST http://127.0.0.1:8000/api/auth/login
+content-type: application/json
+
+{
+    "email":"micky@gmail.com",
+    "password":"kailash@123"
+}
+
+
+##################
+PUT http://127.0.0.1:8000/api/classroom
+Authorization: Token 718bcf657382d73e70074d246a08aa3069d48876ed77cd83e0f625e54cc7a501
+content-type: application/json
+
+
+{
+    "type":"add_student",
+    "student_id":10
+}
+
+###################
+GET http://127.0.0.1:8000/api/studentslist
+Authorization: Token 718bcf657382d73e70074d246a08aa3069d48876ed77cd83e0f625e54cc7a501
+
+
+################
+
+GET http://127.0.0.1:8000/api/classroom/semester/
+Authorization: Token 718bcf657382d73e70074d246a08aa3069d48876ed77cd83e0f625e54cc7a501
+content-type: application/json
+
+
+{
+    "name":"SEMESTER-30",
+    "student_id":1
+}
+
+###############
+GET  http://127.0.0.1:8000/api/classroom/semester/
+Authorization: Token 836e2a9307db4fd535900746a71dd954b4ebdf8ab471cbc5cb9bbf903fd7afa8
+content-type: application/json
+
+
+{
+    "name":"Kailash semester -445"
+}
+
+##############
+GET  http://127.0.0.1:8000/api/classroom/assignments
+Authorization: Token b6163162953d91b2f23baf01a9cf8548879f0c4a371c3b9b6692da7e92e81b80
+content-type: application/json
+
+##############
+GET  http://127.0.0.1:8000/api/classroom/secondary_classrooms/
+Authorization: Token e35c9c82140da33ae6ae4904500ca2df77b5ac6a4f44448fe8740752eff990b0
+content-type: application/json
+
+
+
+###############
+GET  http://127.0.0.1:8000/api/teacherslist
+Authorization: Token 836e2a9307db4fd535900746a71dd954b4ebdf8ab471cbc5cb9bbf903fd7afa8
+content-type: application/json
+
+
+{
+    "name":"Kailash semester -445"
+}
+
+
+####################
+GET   http://127.0.0.1:8000/api/classroom/notes/
+Authorization: Token 2a214de6a2662304ea6fca0c8f9898b7875f4cc6f1b008969f19a261d0bd05f9
+content-type: application/json
+ 
+{
+    "name":"New NOTE",
+    "description":"Its a description"
+}
