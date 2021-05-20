@@ -1,47 +1,61 @@
 import axios from "axios";
-import {getTokenConfig} from "./classroom";
-import {ADD_SEMESTER, ADD_SUBJECT} from "./types";
+import { getTokenConfig } from "./classroom";
+import { ADD_SEMESTER, ADD_SUBJECT, API_URL,ADD_NOTES } from "./types";
 import store from "../../store";
 
-const dispatch=store.dispatch;
+const dispatch = store.dispatch;
 
+export const createSemester = async (data) => {
+  const config = getTokenConfig();
+  console.log(data);
 
-export const createSemester = async (data)=>{
+  const response = await axios.post(
+    `${API_URL}/api/classroom/semester/`,
+    data,
+    config
+  );
 
-    const config=getTokenConfig();
-    console.log(data);
+  if (response.status == 200) {
+    dispatch({
+      type: ADD_SEMESTER,
+      payload: response.data,
+    });
+  }
+};
 
-    const response=await axios.post("http://127.0.0.1:8000/api/classroom/semester/",data,config)
+export const createSubject = (data) => {
+  const config = getTokenConfig();
+  console.log(data);
 
-    if (response.status==200){
-        dispatch(
-            {
-                type:ADD_SEMESTER,
-                payload:response.data
-            }
-        );
-    }
+  axios
+    .post(`${API_URL}/api/classroom/subject/`, data, config)
+    .then((resp) => {
+      console.log(resp);
+      dispatch({
+        type: ADD_SUBJECT,
+        payload: resp.data,
+      });
 
-}
+      console.log("Dispatched Add Subject");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
+export const createNotes = (data) => {
+  const config = getTokenConfig();
 
-export const createSubject = (data)=>{
-
-    const config=getTokenConfig();
-    console.log(data);
-
-    axios.post("http://127.0.0.1:8000/api/classroom/subject/",data,config).then((resp)=>{
-        console.log(resp);
+  axios.post(`${API_URL}/api/classroom/notes/`,data,config).then((resp) => {
+    if (resp.status == 201) {
         dispatch({
-            type:ADD_SUBJECT,
+            type:ADD_NOTES,
             payload:resp.data
         })
 
-        console.log("Dispatched Add Subject")
-    }).catch((error)=>{
-        console.log(error);
-    })
+        console.log("Created \n", resp.data)
+    }
+  });
+};
 
-
-}
 

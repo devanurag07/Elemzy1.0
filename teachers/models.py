@@ -131,23 +131,35 @@ class Notes(models.Model):
         return f"pk: {self.pk} title: {self.name}"
 
 
+# class Quiz(models.Model):
 
-# class TeacherMembership(models.Model):
-#     # The teacher who got the invitation
-#     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE,related_name='memberships')
-#     # The classroom the teacher is invited to
-#     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE,related_name="teacher_memberships")
+#     topic=models.CharField(max_length=250)
 
-#     subject=models.OneToOneField(Subject,on_delete=models.CASCADE,related_name="teacher_membership")
-#     # The subject why the teacher is inviteed
-#     date_joined = models.DateField(auto_now_add=True)
-
-#     accepted=models.BooleanField(default=False)
+# class Question(models.Model):
+#     question_name=models.CharField(max_length=500)
     
-#     created_at=models.DateTimeField(auto_now_add=True)
+# class Choice(models.Model):
+
+
+
+
+class TeacherMembership(models.Model):
+    # The teacher who got the invitation
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE,related_name='memberships')
+    # The classroom the teacher is invited to
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE,related_name="teacher_memberships")
+
+    subject=models.OneToOneField(Subject,on_delete=models.CASCADE,related_name="teacher_membership")
+    # The subject why the teacher is inviteed
+    date_joined = models.DateField(auto_now_add=True)
+
+    accepted=models.BooleanField(default=False)
+    
+    created_at=models.DateTimeField(auto_now_add=True)
+
+
 
 # class NotesFile(models.Model):
-
 
 #     # file=models.FileField(upload_to="/usr/notes/files")
 #     notes=models.ForeignKey(Notes,on_delete=models.CASCADE)

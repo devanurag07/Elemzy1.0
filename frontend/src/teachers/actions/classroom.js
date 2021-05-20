@@ -5,13 +5,20 @@ import {
   ADD_STUDENT,
   REMOVE_STUDENT,
   LOAD_SEMESTERS,
+  API_URL,
+
+  SET_SUBJECT,
+  SET_SELECTED_CLASSROOM,
+  LOAD_OTHERCLASSROOMS_DATA,
+  LOAD_CURRENT_SUBJECT_NOTES
+
 } from "./types";
 
 import axios from "axios";
 import store from "../../store";
 
-const CLASSROOM_URL = "http://127.0.0.1:8000/api/classroom";
-const STUDENTLIST_URL = "http://127.0.0.1:8000/api/studentslist";
+const CLASSROOM_URL = `${API_URL}/api/classroom`;
+const STUDENTLIST_URL = `${API_URL}/api/studentslist`;
 
 const dispatch = store.dispatch;
 
@@ -34,7 +41,7 @@ export const loadDashboardData = () => {
 
   // Loading semesters
   axios
-    .get("http://127.0.0.1:8000/api/classroom/semester/", config)
+    .get(`${API_URL}/api/classroom/semester`, config)
     .then((resp) => {
       if (resp.status === 200) {
         dispatch({
@@ -49,7 +56,7 @@ export const loadDashboardData = () => {
 
   // Loading teachers
   axios
-    .get("http://127.0.0.1:8000/api/teacherslist", config)
+    .get(`${API_URL}/api/teacherslist`, config)
     .then((resp) => {
       if (resp.status === 200) {
         dispatch({
@@ -76,6 +83,10 @@ export const loadDashboardData = () => {
     .catch((error) => {
       //Handling errors
     });
+
+
+  // Getting the other classrooms data
+  getOtherClassroomsData();
 };
 
 export const getTokenConfig = () => {
@@ -127,7 +138,7 @@ export const addRemoveStudent = async (std_obj) => {
 
 export const setCurrentSubject = async (id) => {
   dispatch({
-    type: "SET_SUBJECT",
+    type: SET_SUBJECT,
     payload: id,
   });
 
@@ -143,4 +154,23 @@ export const setCurrentSubject = async (id) => {
         });
       }
     });
+};
+
+
+// Loading otherClassrooms data the teacher is handling being the Subject Teacher
+export const getOtherClassroomsData = () => {
+  const config = getTokenConfig();
+
+  axios.get(`${API_URL}/api/otherClassrooms`, config).then((resp) => {
+
+    if(resp.status==200){
+      dispatch(
+        {
+          type:LOAD_OTHERCLASSROOMS_DATA,
+          payload:resp.data
+        }
+      )
+    }
+
+  });
 };

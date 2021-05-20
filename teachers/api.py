@@ -480,6 +480,55 @@ class ClassroomPageView(viewsets.ModelViewSet):
 
 
 
+# Information about other classrooms teacher is selected to
 
+class SecondaryClassroom(APIView):
 
+    permission_classes=[permissions.IsAuthenticated,IsTeacher]
+
+    def get(self,request):
+
+        currentTeacher=request.user.teacher
+
+        subjects=currentTeacher.subjects.all()
         
+        otherClassrooms=[]
+
+        for subject in subjects:
+            if(subject.semester.classroom.class_teacher==currentTeacher):
+                continue
+
+            otherClassrooms.append(subject.semester.classroom)
+
+        otherClassrooms=list(set(otherClassrooms))
+
+        data=[]
+
+        for otherClassroom in otherClassrooms:
+
+            otherClassroomData={
+                "classroomInfo":ClassRoomSerializer(otherClassroom).data
+            }        
+            
+            otherClassroomSemesters=[]
+
+            for semester in otherClassroom.semesters.all():
+                
+                semesterData={"pk":semester.pk,"name":semester.name}
+
+                # Getting only subjects which are assigned to currentTeacher
+                subjects=semester.subjects.filter(subject_teacher=currentTeacher)
+                
+                semesterData["subjects"]=SubjectSerializer(subjects,many=True).data
+
+                otherClassroomSemesters.append(semesterData)
+            
+            otherClassroomData['semesters']=otherClassroomSemesters
+
+            data.append(otherClassroomData)
+
+
+        return Response(data)        
+
+
+

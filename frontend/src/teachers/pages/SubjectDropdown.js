@@ -71,13 +71,15 @@ function ListItemCollapse({ semesterName, subjects,  }) {
         <ListItemText primary={semesterName} />
 
         {open ? <ExpandLess /> : <ExpandMore />}
+      
       </ListItem>
 
       <Collapse in={open} timeout="auto" unmountOnExit>
+        
         <List component="div" disablePadding>
           
           {subjects.map((subject) => {
-          
+
             return (
               <ListItem button className={classes.nested} id={subject.pk}
                   onClick={(e) => setSubject(e.currentTarget.id)}>
@@ -99,10 +101,8 @@ function ListItemCollapse({ semesterName, subjects,  }) {
 
 export default function SubjectDropdown() {
   const classes = useStyles();
-
-  const classroomState = useSelector((state) => state.classroom);
-
-
+  const selectedClassroom = useSelector((state) => state.classroom.currentClsrm);
+  
   return (
     <List
       component="nav"
@@ -114,7 +114,7 @@ export default function SubjectDropdown() {
       }
       className={classes.root}
     >
-      {classroomState.semesters.map((semester) => {
+      {selectedClassroom.semesters.map((semester) => {
         return (
           <ListItemCollapse
             subjects={semester.subjects}
