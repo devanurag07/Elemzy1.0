@@ -11,9 +11,30 @@ const theme = createMuiTheme({
       "Ubuntu"
     ].join(','),
   },
+
 });
 
-  
+
+theme.typography.subtitle1 = {
+  fontSize: '1em',
+  '@media (min-width:600px)': {
+    fontSize: '1.2rem',
+  },
+  [theme.breakpoints.up('md')]: {
+    fontSize: '1.3rem',
+  },
+};
+
+
+theme.typography.subtitle2 = {
+  fontSize: '0.8rem',
+  '@media (min-width:600px)': {
+    fontSize: '1em',
+  },
+  [theme.breakpoints.up('md')]: {
+    fontSize: '1.2em',
+  },
+};
 function Teacher() {
 
     // Getting the auth state

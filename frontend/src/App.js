@@ -18,6 +18,7 @@ import { setMobile, setFullWidth } from "./actions/style";
 import RegisterStudent from "./pages/RegisterStudent";
 import RegisterTeacher from "./pages/RegisterTeacher";
 import RegisterManager from "./pages/RegisterManager";
+import { SnackbarProvider } from "notistack";
 
 // import "./teachers/css/style.scss";
 
@@ -55,27 +56,30 @@ class App extends Component {
     }
 
     return (
-      <Provider store={store}>
-        <AlertProvider template={AlertTemplate} {...alertOptions}>
-          <Fragment>
-            <Alerts />
-            <Router history={history}>
-              <main>
-                <Route exact path="/" component={Home} />
-                <Route path="/login" component={Login} />
-                <Route path="/registerStudent" component={RegisterStudent} />
-                <Route path="/registerTeacher" component={RegisterTeacher} />
-                <Route path="/registerManager" component={RegisterManager} />
-                <Route path="/forgotpassword" component={Forgot} />
-                <Route path="/logout" component={Logout} />
-                <Route path="/student" component={Student} />
-                <Route path="/teacher" component={Teacher} />
-                <Route path="/manager" component={Manager} />
-              </main>
-            </Router>
-          </Fragment>
-        </AlertProvider>
-      </Provider>
+      <SnackbarProvider maxSnack={3}>
+        <Provider store={store}>
+          <AlertProvider template={AlertTemplate} {...alertOptions}>
+            <Fragment>
+              <Alerts />
+
+              <Router history={history}>
+                <main>
+                  <Route exact path="/" component={Home} />
+                  <Route path="/login" component={Login} />
+                  <Route path="/registerStudent" component={RegisterStudent} />
+                  <Route path="/registerTeacher" component={RegisterTeacher} />
+                  <Route path="/registerManager" component={RegisterManager} />
+                  <Route path="/forgotpassword" component={Forgot} />
+                  <Route path="/logout" component={Logout} />
+                  <Route path="/student" component={Student} />
+                  <Route path="/teacher" component={Teacher} />
+                  <Route path="/manager" component={Manager} />
+                </main>
+              </Router>
+            </Fragment>
+          </AlertProvider>
+        </Provider>
+      </SnackbarProvider>
     );
   }
 }

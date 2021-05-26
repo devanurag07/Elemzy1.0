@@ -21,12 +21,29 @@ const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: "6vh",
     backgroundColor: "white",
-    paddingLeft:"16px"
+    paddingLeft:"16px",
+    color:"black",
+    paddingTop:"10px",
+
+    "& .classteacherLabel":{
+      display:"flex",
+      flexDirection:"row",
+      alignItems:"center",
+      justifyContent:"center",
+
+      "& .teacherName":{
+        marginLeft:"3px",
+        fontSize:"1.2em"
+      }
+    }
   },
 }));
 
 export default function ClassroomHeader() {
   const classes = useStyles();
+
+  const currentClassroom=useSelector(state=>state.classroom.currentClsrm);
+
 
   return (
     <div className={classes.root}>
@@ -35,16 +52,30 @@ export default function ClassroomHeader() {
           <Grid container>
             <Grid item>
               <ClassroomSelect />
+              
             </Grid>
 
-            <Grid item></Grid>
-            <Grid item></Grid>
+            <Grid item sm>
+
+
+
+            </Grid>
+            <Grid item className="classteacherLabel">
+
+              <div>ClassTeacher - </div>
+              {currentClassroom.classroom.class_teacher ?
+               <div class="teacherName">  {currentClassroom.classroom.class_teacher.user.firstname}
+               </div> :<div>Not Selected</div>}
+
+            </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
     </div>
   );
 }
+
+
 
 
 const useStyles2=makeStyles((theme)=>({
@@ -66,13 +97,14 @@ const useStyles2=makeStyles((theme)=>({
 
 
 const ClassroomSelect = () => {
-  const [classroomId, setClassroomId] = useState(0);
 
   const otherClassrooms = useSelector(
     (state) => state.classroom.secondaryClassrooms
   );
 
   const mainClassroom=useSelector((state)=>state.classroom.classroom)
+
+  const [classroomId, setClassroomId] = useState();
 
   const handleChange = (e) => {
     setClassroomId(e.target.value);
@@ -85,17 +117,26 @@ const ClassroomSelect = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+
     dispatch({
       type: "SET_SELECTED_CLASSROOM",
       payload: classroomId,
     });
+
     
   }, [classroomId]);
+
+  useEffect(()=>{
+    
+    setClassroomId(mainClassroom.id);
+
+  },[mainClassroom.id])
 
 
   return (
     <>
       <FormControl>
+
         <Grid contianer className={classes.rootGridContainer}>
           <Grid item>
             <div className="label">Classrooom</div>
@@ -106,6 +147,10 @@ const ClassroomSelect = () => {
               value={classroomId}
               onChange={handleChange}
             >
+             <MenuItem value={mainClassroom.id}>
+                {mainClassroom.standard}
+             </MenuItem>
+             
               {otherClassrooms.map((classroom) => {
                 return (
                   <MenuItem value={classroom.classroomInfo.id}>

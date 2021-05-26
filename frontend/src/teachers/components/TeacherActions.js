@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import {Typography,Grid,Paper,Button,ButtonGroup,TextField,InputLabel,Select,MenuItem} from "@material-ui/core";
-import {useStyles} from "./styles/TeacherActionStyles";
+import {useStyles} from "./HomeC/styles/TeacherActionStyles";
 import {SemesterForm,SubjectForm} from "./Form";
 
 import {FormControl} from "@material-ui/core"

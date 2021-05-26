@@ -22,6 +22,8 @@ from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 
 from main.api import RegisterAPI, LoginAPI, UserAPI
+from django.conf import settings
+from django.conf.urls.static import static
 from knox import views as knox_views
 
 # Main app views
@@ -57,6 +59,4 @@ urlpatterns = [
     #     name="password_reset_verify_token",
     # ),
 
-]
-
-
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

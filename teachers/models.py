@@ -31,14 +31,21 @@ class ClassRoom(models.Model):
 
 # Student Profile
 class Student(models.Model):
-    
+
     name=models.CharField(max_length=100)
+    firstname=models.CharField(max_length=100)
+    lastname=models.CharField(max_length=100)
+
+    roll_no=models.PositiveIntegerField(blank=True,null=True)
+    fathers_name=models.CharField(max_length=100)
+
+    student_id=models.PositiveBigIntegerField(blank=True,null=True)
     #Students
     classroom=models.ForeignKey(ClassRoom,related_name="students",blank=True,null=True,on_delete=models.CASCADE)
-
     user=models.OneToOneField(UserProfile, on_delete=models.CASCADE,related_name="student")
 
     created_at=models.DateTimeField(auto_now_add=True)
+    
     def __str__(self):
         return self.name   
 
@@ -131,16 +138,6 @@ class Notes(models.Model):
         return f"pk: {self.pk} title: {self.name}"
 
 
-# class Quiz(models.Model):
-
-#     topic=models.CharField(max_length=250)
-
-# class Question(models.Model):
-#     question_name=models.CharField(max_length=500)
-    
-# class Choice(models.Model):
-
-
 
 
 class TeacherMembership(models.Model):
@@ -159,7 +156,44 @@ class TeacherMembership(models.Model):
 
 
 
-# class NotesFile(models.Model):
 
-#     # file=models.FileField(upload_to="/usr/notes/files")
-#     notes=models.ForeignKey(Notes,on_delete=models.CASCADE)
+class Assignment(models.Model):
+
+    title=models.CharField(max_length=300)
+
+    subject=models.ForeignKey(Subject,on_delete=models.CASCADE,related_name="subjectAssignments")
+    teacher=models.ForeignKey(Teacher,on_delete=models.CASCADE,related_name="teacherAssignments")
+
+    def __str__(self):
+        return self.title
+
+class Choice(models.Model):
+
+    title=models.CharField(max_length=400)
+
+    def __str__(self):
+        return self.title
+
+class Question(models.Model):
+
+    question=models.CharField(max_length=400)
+    
+    choices=models.ManyToManyField(Choice,related_name="choiceQuestions")
+
+    answer=models.ForeignKey(Choice,related_name="answerQuestions",on_delete=models.CASCADE)
+    assignment=models.ForeignKey(Assignment,on_delete=models.CASCADE,related_name="assignmentQuestions")
+
+    order=models.SmallIntegerField()
+
+    def __str__(self):
+        return self.question
+
+
+
+class Document(models.Model):
+    title=models.CharField(max_length=100)
+    description=models.TextField(max_length=300)
+    document_file=models.FileField(upload_to="documents/")
+
+    subject=models.ForeignKey(Subject,on_delete=models.CASCADE)
+    created_by=models.ForeignKey(Teacher,on_delete=models.CASCADE)

@@ -148,3 +148,7 @@ EMAIL_HOST_USER = "nkulkpune@gmail.com"  # iq1974a@gmail.com"  # gmail account
 EMAIL_HOST_PASSWORD = "!ntuiti0n"  # P@ssw0rd@753"  # gmail password
 
 STATIC_ROOT = os.path.join(BASE_DIR, "frontend/build/apache/static")
+
+
+MEDIA_URL='/media/'
+MEDIA_ROOT=os.path.join(BASE_DIR,"media")

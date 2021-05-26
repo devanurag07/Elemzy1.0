@@ -4,30 +4,25 @@ import Nav from "../components/Nav";
 import { loadDashboardData } from "../actions/classroom";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 
 import Sidebar from "../components/Sidebar";
-import TeacherActions from "../components/TeacherActions";
-
-import { Grid, withWidth, Typography, Paper } from "@material-ui/core";
-
 import { makeStyles } from "@material-ui/core/styles";
 import "../css/style.scss";
-
-import Home from "./Home";
 import Classroom from "./Classroom";
+import Notifications from "../components/Notifications";
+import Home from "./Home";
+
+import { Route } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   // Handling Sidebar and Nav Width
   mainDiv: {
-    marginLeft: "130px",
+    marginLeft: "100px",
     marginTop: "50px",
-  }
+  },
 }));
 
-
 export const TeacherDashboard = () => {
-
   const classRoomState = useSelector((state) => state.classroom);
 
   useEffect(() => {
@@ -38,19 +33,23 @@ export const TeacherDashboard = () => {
 
   return (
     <Fragment>
-
+      <Notifications />
       <Nav />
 
       <Sidebar />
 
       <div className={classes.mainDiv}>
+        <Route path="/teacher/home">
+          {/* Home component */}
+          <Home />
+        </Route>
 
-        {/* Home component */}
+        <Route path="/teacher/classroom">
+          <Classroom />
+        </Route>
 
-         <Classroom/>
-         
+        
       </div>
-
     </Fragment>
   );
 };

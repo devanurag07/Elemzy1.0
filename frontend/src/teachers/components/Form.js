@@ -16,7 +16,12 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 
-import { createSemester, createSubject,createNotes } from "../actions/teacherActions";
+import {
+  createSemester,
+  createSubject,
+  createNotes,
+} from "../actions/teacherActions";
+import produce from "immer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,13 +35,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DialogForm = (props) => {
+export const DialogForm = (props) => {
   const classes = useStyles();
-  const { open, setOpen, onCreateBtnHandler, title } = props;
+  const { open, setOpen, onCreateBtnHandler, title,className } = props;
 
   return (
     // Open close if open true dialog will pop up
-    <Dialog open={open} onClose={() => setOpen(false)} className={classes.root}>
+    <Dialog open={open} onClose={() => setOpen(false)} className={`${classes.root} ${className}`}>
       <DialogContent>
         <Typography variant="h6" color="textSecondary">
           {title}
@@ -55,6 +60,8 @@ const DialogForm = (props) => {
         >
           Create
         </Button>
+
+
 
         {/* Dialog Close Btn */}
         <Button variant="text" onClick={() => setOpen(false)} size="small">
@@ -184,47 +191,48 @@ export const SubjectForm = ({ open, setOpen }) => {
   );
 };
 
-export const NotesForm = ({ open, setOpen, title }) => {
+export const CreateNotesForm = ({ open, setOpen, title }) => {
   const initialData = {
     name: "",
     description: "",
   };
 
   const [data, setData] = useState(initialData);
-  const currentSubject=useSelector(state=>state.classroom.currentSubject);
+  const currentSubject = useSelector((state) => state.classroom.currentSubject);
 
   // Input change handling
   const onChangeHandler = (e) => {
-
-    setData({ ...data, [e.currentTarget.name]: e.currentTarget.value ,"subject":currentSubject.pk});
-
+    setData({
+      ...data,
+      [e.currentTarget.name]: e.currentTarget.value,
+      subject: currentSubject.pk,
+    });
   };
 
+  const onCreateBtnHandler = () => {
+    if (currentSubject !== null) {
+      const notesSubject = currentSubject.pk;
 
-  const onCreateBtnHandler = ()=>{
+      setData({ ...data, subject: notesSubject });
+      // data.subject=notesSubject;
 
-    if(currentSubject!==null){
-        const notesSubject=currentSubject.pk;
-        
-        setData({...data,subject:notesSubject});
-        // data.subject=notesSubject;
+      createNotes(data);
 
-        createNotes(data);
-
-        setOpen(false);
-
-    
-    }else{
-        alert("The subject is not selected");
+      setOpen(false);
+    } else {
+      alert("The subject is not selected");
     }
-  }
-
+  };
 
   return (
-
-    <DialogForm open={open} setOpen={setOpen} title={title} onCreateBtnHandler={onCreateBtnHandler}>
+    <DialogForm
+      open={open}
+      setOpen={setOpen}
+      title={title}
+      onCreateBtnHandler={onCreateBtnHandler}
+          
+    >
       <FormControl>
-
         <TextField
           id="note_name"
           label="Title"
@@ -243,7 +251,7 @@ export const NotesForm = ({ open, setOpen, title }) => {
           onChange={onChangeHandler}
         />
       </FormControl>
-
     </DialogForm>
   );
 };
+

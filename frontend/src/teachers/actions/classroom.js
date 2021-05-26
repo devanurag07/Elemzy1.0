@@ -6,12 +6,10 @@ import {
   REMOVE_STUDENT,
   LOAD_SEMESTERS,
   API_URL,
-
   SET_SUBJECT,
   SET_SELECTED_CLASSROOM,
   LOAD_OTHERCLASSROOMS_DATA,
-  LOAD_CURRENT_SUBJECT_NOTES
-
+  LOAD_CURRENT_SUBJECT_NOTES,
 } from "./types";
 
 import axios from "axios";
@@ -84,7 +82,6 @@ export const loadDashboardData = () => {
       //Handling errors
     });
 
-
   // Getting the other classrooms data
   getOtherClassroomsData();
 };
@@ -136,41 +133,58 @@ export const addRemoveStudent = async (std_obj) => {
   }
 };
 
-export const setCurrentSubject = async (id) => {
+export const setCurrentSubject = async (subjectId) => {
   dispatch({
     type: SET_SUBJECT,
-    payload: id,
+    payload: subjectId,
   });
+};
 
+export const loadSubjectNotes = (subjectId) => {
   const config = getTokenConfig();
 
   axios
-    .get(`http://127.0.0.1:8000/api/classroom/notes?subject_pk=${id}`, config)
+    .get(
+      `http://127.0.0.1:8000/api/classroom/notes?subject_pk=${subjectId}`,
+      config
+    )
+
     .then((resp) => {
       if (resp.status == 200) {
         dispatch({
           type: "LOAD_CURRENT_SUBJECT_NOTES",
-          payload: resp.data,
+          payload: { subjectId: subjectId, data: resp.data },
         });
       }
+    })
+    .catch((err) => {
+      createNotification("Can't load the notes Try again...", {
+        variant: "error",
+      });
     });
 };
-
 
 // Loading otherClassrooms data the teacher is handling being the Subject Teacher
 export const getOtherClassroomsData = () => {
   const config = getTokenConfig();
 
   axios.get(`${API_URL}/api/otherClassrooms`, config).then((resp) => {
-
-    if(resp.status==200){
-      dispatch(
-        {
-          type:LOAD_OTHERCLASSROOMS_DATA,
-          payload:resp.data
-        }
-      )
+    if (resp.status == 200) {
+      dispatch({
+        type: LOAD_OTHERCLASSROOMS_DATA,
+        payload: resp.data,
+      });
     }
+  });
+};
 
+// For creating notifications
+export const createNotification = (msg, options) => {
+  dispatch({
+    type: "ADD_NOTIFICATION",
+    payload: {
+      message: msg,
+      options: options,
+    },
   });
 };

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useSelector,useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -14,7 +14,7 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import StarBorder from "@material-ui/icons/StarBorder";
 import axios from "axios";
 
-import {setCurrentSubject} from "../actions/classroom";
+import { setCurrentSubject } from "../actions/classroom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,68 +31,83 @@ const useStyles = makeStyles((theme) => ({
       minHeight: "100vh",
     },
 
-
-    "& .MuiListItemText-primary":{
+    "& .MuiListItemText-primary": {
       fontSize: "1em",
       fontWeight: "454",
-      fontFamily: 'Ubuntu'
-    }
+      fontFamily: "Ubuntu",
+    },
 
+    "& .semesterSelected": {
+      backgroundColor: "blue",
+      color: "white",
+    },
+
+    "& .subjectSelected": {
+      // backgroundColor:"red",
+      color: "red",
+    },
   },
-  
-  semesterName:{
-    fontSize:"0.8em"
-  }
-  
+
+  semesterName: {
+    fontSize: "0.8em",
+  },
 }));
 
 
 
-function ListItemCollapse({ semesterName, subjects,  }) {
+function SubjectsCollapse({ subjects, semester }) {
+
+  // Used for opening of collapse
   const [open, setOpen] = useState(false);
   const classes = useStyles();
-  const dispatch = useDispatch();
+
+  // Getting current Subject
+  const currentSubject = useSelector((state) => state.classroom.currentSubject);
 
   const handleClick = () => {
     setOpen(!open);
   };
 
-
-  const setSubject = (id) =>{
-
+  const setSubject = (id) => {
+    // Set subject is called whenevver someone clicks on the subject id: SubjectID
     setCurrentSubject(id);
+    
+  };
 
-  }
-  
+  const crntSbjctSmstrId = Number(currentSubject.semester);
 
   return (
     <>
-      <ListItem button onClick={handleClick} className={classes.semesterName}>
-        <ListItemText primary={semesterName} />
+      <ListItem
+        button
+        onClick={handleClick}
+        className={`${classes.semesterName} ${
+          crntSbjctSmstrId === Number(semester.pk) ? "semesterSelected" : ""
+        }`}
+      >
+        <ListItemText primary={semester.name} className={semester.pk} />
 
         {open ? <ExpandLess /> : <ExpandMore />}
-      
       </ListItem>
 
       <Collapse in={open} timeout="auto" unmountOnExit>
-        
         <List component="div" disablePadding>
-          
           {subjects.map((subject) => {
-
             return (
-              <ListItem button className={classes.nested} id={subject.pk}
-                  onClick={(e) => setSubject(e.currentTarget.id)}>
-                
-                <ListItemText
-                  primary={subject.name}
-                  
-                />
+              <ListItem
+                button
+                className={`${classes.nested} ${
+                  Number(currentSubject.pk) === Number(subject.pk)
+                    ? "subjectSelected"
+                    : ""
+                }`}
+                id={subject.pk}
+                onClick={(e) => setSubject(e.currentTarget.id)}
+              >
+                <ListItemText primary={subject.name} />
               </ListItem>
-          
             );
           })}
-        
         </List>
       </Collapse>
     </>
@@ -101,8 +116,10 @@ function ListItemCollapse({ semesterName, subjects,  }) {
 
 export default function SubjectDropdown() {
   const classes = useStyles();
-  const selectedClassroom = useSelector((state) => state.classroom.currentClsrm);
-  
+  const selectedClassroom = useSelector(
+    (state) => state.classroom.currentClsrm
+  );
+
   return (
     <List
       component="nav"
@@ -116,14 +133,14 @@ export default function SubjectDropdown() {
     >
       {selectedClassroom.semesters.map((semester) => {
         return (
-          <ListItemCollapse
+          <SubjectsCollapse
             subjects={semester.subjects}
-            semesterName={semester.name}
+            semester={semester}
+            semesterPk={semester.id}
             setSemester={(item) => console.log("je")}
           />
         );
       })}
-
     </List>
   );
 }

@@ -34,7 +34,7 @@ import GlobalStudentListDialog from "./GlobalStudentListDialog";
 import { useDispatch } from "react-redux";
 
 // Actions import
-import { addRemoveStudent } from "../actions/classroom";
+import { addRemoveStudent } from "../../actions/classroom";
 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
@@ -85,8 +85,8 @@ function StudentsList() {
         <div className="stdlist-head">
           {/* Container head */}
           <Grid container>
-            <Grid item>
-              <Typography variant="h5" component="div" style={ubuntuBold}>
+            <Grid item sm={3}>
+              <Typography variant="subtitle1" component="div" style={ubuntuBold}>
                 My Class
               </Typography>
             </Grid>

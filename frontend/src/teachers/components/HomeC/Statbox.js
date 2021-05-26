@@ -5,10 +5,11 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    background:
-      "linear-gradient(281.33deg, rgba(0, 102, 255, 0.42) 0%, #08A8ED 98.42%), #C4C4C4",
+    // background:
+      // "linear-gradient(281.33deg, rgba(0, 102, 255, 0.42) 0%, #08A8ED 98.42%), #C4C4C4",
     padding: "10px 15px",
     color: "white",
+    background:"blue"
   },
   studentsInfoContainer: {
     display: "flex",
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop:"0"
   },
   myClassrom:{
-    background: "linear-gradient(281.33deg, rgba(255, 15, 101, 0.9) 0%, #F21616 98.42%), #C4C4C4",
+    // background: "linear-gradient(281.33deg, rgba(255, 15, 101, 0.9) 0%, #F21616 98.42%), #C4C4C4",
     padding: "10px 15px",
     color: "white",
   
