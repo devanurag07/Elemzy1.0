@@ -194,9 +194,11 @@ class AssignmentSerializer(ModelSerializer):
 
 
 class DocumentSerializer(ModelSerializer):
-    
+
+    teacher_detail=TeacherSerializer(source="created_by",read_only=True,many=False)
 
     class Meta:
         model=Document
         fields="__all__"
-
+        
+        include='teacher_detail'

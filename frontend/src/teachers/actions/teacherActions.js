@@ -162,7 +162,13 @@ export const createStudentObj = (studentFormData, setFormErrors, success) => {
     });
 };
 
-export const createDocument = (documentFormData) => {
+export const createDocument = (
+  documentFormData,
+  setFormErrors,
+  onCreateSucess
+) => {
+  const config = getTokenConfig();
+
   const formData = new FormData();
   const documentTitle = documentFormData.title;
   const documentDescription = documentFormData.description;
@@ -172,6 +178,38 @@ export const createDocument = (documentFormData) => {
   formData.append("subject", documentSubject);
   formData.append("description", documentDescription);
   formData.append("document_file", documentFormData.document_file);
+
+  axios
+    .post(`${API_URL}/api/classroom/documents/`, formData, config)
+    .then((resp) => {
+      if (resp.status == 201) {
+        const createdDocument = resp.data;
+        dispatch({
+          type: "ADD_DOCUMENT",
+          payload: createdDocument,
+        });
+
+        onCreateSucess();
+      }
+    })
+    .catch((err) => {
+      if (err.response) {
+        if (err.response.data.errors) {
+          if (err.response.status == 400) {
+            const formErrors = err.response.data.errors;
+            setFormErrors(formErrors);
+
+          }
+        }
+
+        if(err.response.status==401){
+          createNotification(err.response.data,{
+            variant:"error"
+          })
+        }
+      }
+
+    });
 };
 
 export const loadDocuments = (subject_pk) => {
@@ -181,7 +219,12 @@ export const loadDocuments = (subject_pk) => {
     .get(`${API_URL}/api/classroom/documents?subject_pk=${subject_pk}`, config)
     .then((resp) => {
       if (resp.status == 200) {
-        console.log(resp.data);
+        const documentsLst = resp.data;
+        console.log(documentsLst);
+        dispatch({
+          type: "LOAD_DOCUMENTS",
+          payload: documentsLst,
+        });
       }
     });
 };

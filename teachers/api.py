@@ -606,7 +606,6 @@ class DocumentAPI(viewsets.ModelViewSet):
     def get_queryset(self):
 
         subject_pk = self.request.query_params.get("subject_pk", None)
-        pdb.set_trace()
         teacher=self.request.user.teacher
 
         if(subject_pk==None):
@@ -616,11 +615,36 @@ class DocumentAPI(viewsets.ModelViewSet):
             return documents
         
         # # Documents by subject
-        print(subject_pk)
-        # documents=Document.objects.filter(subject__pk=subject_pk)
+        documents=Document.objects.filter(subject__pk=subject_pk)
 
-        # return documents
+        return documents
 
+
+    def create(self,request):
         
+        teacher=request.user.teacher
+
+        formData=request.data.copy()
+        formData['created_by']=teacher.pk
+
+        documentForm=DocumentSerializer(data=formData)
+
+        if(documentForm.is_valid()):
+
+            validated_data=documentForm.validated_data
+            subject_teacher=validated_data["subject"].subject_teacher
+
+            if(subject_teacher==teacher):
+                createdDocument=documentForm.save()
+                createdDocumentJson=DocumentSerializer(createdDocument).data
+
+                return Response(createdDocumentJson,status=status.HTTP_201_CREATED)
+
+            else:
+                return Response("You do not have permission to create document for this subject",status=status.HTTP_401_UNAUTHORIZED)
+
+        else:
+
+            return Response({"errors":documentForm.errors},status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -27,7 +27,9 @@ const initialState = {
 
   currentSubject: {
     assignments: [],
+    documents: [],
   },
+
   currentClsrm: {
     semesters: [],
     classroom: [],
@@ -223,6 +225,27 @@ const addAssignment = (state, action) => {
   return newState;
 };
 
+const loadDocuments = (state, action) => {
+  const newState = produce(state, (draft) => {
+    const documentsList = action.payload;
+    draft.currentSubject.documents = documentsList;
+  });
+
+  return newState;
+};
+
+const addDocument = (state, action) => {
+  const newState = produce(state, (draft) => {
+    const createdDocument = action.payload;
+
+    if (draft.currentSubject.pk == createdDocument.subject) {
+      draft.currentSubject.documents.push(createdDocument);
+    }
+  });
+
+  return newState;
+};
+
 export const classRoomReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_CLASSROOM:
@@ -318,6 +341,15 @@ export const classRoomReducer = (state = initialState, action) => {
     case "CLEAR_NOTIFICATIONS": {
       return { ...state, notificaions: [] };
     }
+
+    case "LOAD_DOCUMENTS": {
+      return loadDocuments(state, action);
+    }
+
+    case "ADD_DOCUMENT": {
+      return addDocument(state, action);
+    }
+
     default:
       return state;
   }
@@ -336,7 +368,6 @@ const addStudent = (globalStudents, classroomStudents, studentObj) => {
       student.id === studentObj.id &&
       student.user_detail.id === studentObj.user_detail.id
     ) {
-
       isStudentExist = true;
       break;
     }
@@ -348,7 +379,9 @@ const addStudent = (globalStudents, classroomStudents, studentObj) => {
   }
 
   // filtering or Removing student from global students list
-  const newGlobalStudents = globalStudents.filter((student) =>student.id!==studentObj.user_detail.id);
+  const newGlobalStudents = globalStudents.filter(
+    (student) => student.id !== studentObj.user_detail.id
+  );
 
   return {
     globalStudents: [...newGlobalStudents],

@@ -1,9 +1,9 @@
 import React from "react";
 import { Paper, Typography, Grid, makeStyles, Button } from "@material-ui/core";
-import {loadDocuments} from "../../actions/teacherActions";
+import { loadDocuments } from "../../actions/teacherActions";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-
+import path from "path";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,8 +42,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Document = ({ title, description, filename }) => {
+const Document = ({ title, description, filepath,created_by }) => {
   const classes = useStyles();
+
+  const filepathChunks=filepath.split("/");
+  // Getting filename by indexing last part of the url
+  const filename=filepathChunks[filepathChunks.length-1];
+
   return (
     <Paper className={classes.root}>
       <div className="document-title">
@@ -55,7 +60,7 @@ const Document = ({ title, description, filename }) => {
           <Typography variant="p">{description}</Typography>
         </div>
 
-        <div className="document-filename">{filename}</div>
+        <div className="document-filename"><a href={filepath} download>{filename}</a></div>
       </div>
 
       <Grid container>
@@ -69,13 +74,15 @@ const Document = ({ title, description, filename }) => {
         <Grid item sm></Grid>
         <Grid item>
           <div className="created-by">
-            <Typography variant="p">-- Kailash Shakya</Typography>
+            <Typography variant="p">-- {created_by.user.firstname} {created_by.user.lastname}</Typography>
           </div>
         </Grid>
       </Grid>
     </Paper>
   );
 };
+
+
 
 const useStyles2 = makeStyles((theme) => ({
   root: {
@@ -84,19 +91,18 @@ const useStyles2 = makeStyles((theme) => ({
 }));
 
 function DocumentsList() {
-
   const classes = useStyles2();
-  const currentSubject=useSelector(state=>state.classroom.currentSubject);
+  const currentSubject = useSelector((state) => state.classroom.currentSubject);
 
+  const subjectDocumentsLst = currentSubject.documents;
 
-  useEffect(()=>{
+  useEffect(() => {
+    const subject_pk = currentSubject.pk;
 
-    const subject_pk=currentSubject.pk;
-    if(subject_pk!==undefined){
-        loadDocuments(subject_pk);
+    if (subject_pk !== undefined) {
+      loadDocuments(subject_pk);
     }
-
-  },[currentSubject.pk])
+  }, [currentSubject.pk]);
 
   return (
     <div>
@@ -107,23 +113,21 @@ function DocumentsList() {
         justify="space-around"
         alignItems="center"
       >
-        <Grid item sm={5}>
-          <Document
-            title="PDF FILE OF SYLLABUS - 1"
-            description="This is the description of the file you are going to downloada
-i am not sure about what you thing wtf.But download this su fucking file"
-            filename="syllabus-1.pdf"
-          />
-        </Grid>
+        {subjectDocumentsLst.map((assignment) => {
 
-        <Grid item sm={5}>
-          <Document
-            title="PDF FILE OF SYLLABUS - 1"
-            description="This is the description of the file you are going to downloada
-i am not sure about what you thing wtf.But download this su fucking file"
-            filename="syllabus-1.pdf"
-          />
-        </Grid>
+          return (
+            <>
+              <Grid item sm={5}>
+                <Document
+                  title={assignment.title}
+                  description={assignment.description}
+                  filepath={assignment.document_file}
+                  created_by={assignment.teacher_detail}
+                />
+              </Grid>
+            </>
+          );
+        })}
       </Grid>
     </div>
   );
