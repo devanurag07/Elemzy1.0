@@ -25,21 +25,26 @@ function Notes() {
     if (currentSubject.pk !== undefined) {
       loadSubjectNotes(currentSubject.pk);
     }
-  }, [currentSubject.pk]);
+  }, [currentSubject.pk,currentSubject.workdate]);
 
   //   Getting notes
   const notes = currentSubject.notes;
   //   Rendering notes
-
+  // Work date rendering notes only created at work date
+  const workdate=currentSubject.workdate;
   if (notes !== undefined) {
     return (
       <Grid container className={classes.root}>
-        {notes.map((note) => {
-          return (
-            <Grid item sm={3}>
-              <Note title={note.name} description={note.description} />
-            </Grid>
-          );
+        {notes.map((note) => { 
+          const noteWorkdate=note.created_at.split("T")[0]
+
+          if(workdate==noteWorkdate){
+            return (
+              <Grid item sm={3}>
+                <Note title={note.name} description={note.description} />
+              </Grid>
+            );
+          }
         })}
         {/* <Grid></Grid> */}
       </Grid>

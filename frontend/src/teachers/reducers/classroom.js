@@ -13,6 +13,7 @@ import {
   LOAD_OTHERCLASSROOMS_DATA,
   LOAD_CURRENT_SUBJECT_NOTES,
   LOAD_ASSIGNMENTS,
+  SET_WORKDATE,
 } from "../actions/types";
 import { produce } from "immer";
 // import { loadAssignments } from "../actions/teacherActions";
@@ -46,6 +47,7 @@ const loadClassroom = (state, action) => {
     return {
       ...state,
       classroom: { ...loadedClassroom },
+
       currentClsrm: {
         classroom: { ...loadedClassroom },
         ...state.currentClsrm,
@@ -63,6 +65,7 @@ const addSemester = (state, action) => {
     subjects: [],
   };
 
+  // If semester already exists don't do anything
   for (let semester of state.semesters) {
     if (semester.pk === newSemester.pk) {
       return state;
@@ -246,6 +249,19 @@ const addDocument = (state, action) => {
   return newState;
 };
 
+const setWorkDate = (state, action) => {
+  const workdate = action.payload;
+
+  return {
+    ...state,
+
+    currentSubject: {
+      ...state.currentSubject,
+      workdate: workdate,
+    },
+  };
+};
+
 export const classRoomReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_CLASSROOM:
@@ -346,6 +362,9 @@ export const classRoomReducer = (state = initialState, action) => {
       return loadDocuments(state, action);
     }
 
+    case SET_WORKDATE:{
+      return setWorkDate(state,action);
+    }
     case "ADD_DOCUMENT": {
       return addDocument(state, action);
     }

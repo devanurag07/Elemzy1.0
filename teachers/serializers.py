@@ -22,7 +22,7 @@ class NotesSerializer(ModelSerializer):
 
     class Meta:
         model = Notes
-        fields = ["pk", "name", "description", "subject"]
+        fields = ["pk", "name", "description", "subject","created_at"]
 
 
 class TeacherSerializer(ModelSerializer):
@@ -89,7 +89,7 @@ class QuestionSerializer(ModelSerializer):
 class AssignmentSerializer(ModelSerializer):
 
     class Meta:
-        fields = ['title', "subject"]
+        fields = ['title', "subject","created_at"]
         model = Assignment
 
     def create(self, validated_data):

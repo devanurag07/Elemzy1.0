@@ -22,3 +22,7 @@ export const SET_SELECTED_CLASSROOM="SET_SELECTED_CLASSROOM";
 
 
 export const LOAD_ASSIGNMENTS="LOAD_ASSIGNMENTS";
+
+
+// Work Date organizing notes,assignments,other etc by date
+export const SET_WORKDATE="SET_WORKDATE";

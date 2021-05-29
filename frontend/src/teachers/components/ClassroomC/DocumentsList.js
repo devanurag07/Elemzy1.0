@@ -42,12 +42,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Document = ({ title, description, filepath,created_by }) => {
+const Document = ({ title, description, filepath, created_by }) => {
   const classes = useStyles();
 
-  const filepathChunks=filepath.split("/");
+  const filepathChunks = filepath.split("/");
   // Getting filename by indexing last part of the url
-  const filename=filepathChunks[filepathChunks.length-1];
+  const filename = filepathChunks[filepathChunks.length - 1];
 
   return (
     <Paper className={classes.root}>
@@ -60,7 +60,11 @@ const Document = ({ title, description, filepath,created_by }) => {
           <Typography variant="p">{description}</Typography>
         </div>
 
-        <div className="document-filename"><a href={filepath} download>{filename}</a></div>
+        <div className="document-filename">
+          <a href={filepath} download>
+            {filename}
+          </a>
+        </div>
       </div>
 
       <Grid container>
@@ -74,15 +78,15 @@ const Document = ({ title, description, filepath,created_by }) => {
         <Grid item sm></Grid>
         <Grid item>
           <div className="created-by">
-            <Typography variant="p">-- {created_by.user.firstname} {created_by.user.lastname}</Typography>
+            <Typography variant="p">
+              -- {created_by.user.firstname} {created_by.user.lastname}
+            </Typography>
           </div>
         </Grid>
       </Grid>
     </Paper>
   );
 };
-
-
 
 const useStyles2 = makeStyles((theme) => ({
   root: {
@@ -102,7 +106,10 @@ function DocumentsList() {
     if (subject_pk !== undefined) {
       loadDocuments(subject_pk);
     }
-  }, [currentSubject.pk]);
+  }, [currentSubject.pk , currentSubject.workdate]);
+
+  // Work date
+  const workdate = currentSubject.workdate;
 
   return (
     <div>
@@ -113,20 +120,23 @@ function DocumentsList() {
         justify="space-around"
         alignItems="center"
       >
-        {subjectDocumentsLst.map((assignment) => {
+        {subjectDocumentsLst.map((document) => {
+          const documentCreatedAt = document.created_at.split("T")[0];
 
-          return (
-            <>
-              <Grid item sm={5}>
-                <Document
-                  title={assignment.title}
-                  description={assignment.description}
-                  filepath={assignment.document_file}
-                  created_by={assignment.teacher_detail}
-                />
-              </Grid>
-            </>
-          );
+          if (workdate == documentCreatedAt) {
+            return (
+              <>
+                <Grid item sm={3}>
+                  <Document
+                    title={document.title}
+                    description={document.description}
+                    filepath={document.document_file}
+                    created_by={document.teacher_detail}
+                  />
+                </Grid>
+              </>
+            );
+          }
         })}
       </Grid>
     </div>

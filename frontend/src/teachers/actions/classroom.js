@@ -15,6 +15,8 @@ import {
 import axios from "axios";
 import store from "../../store";
 
+import {getWorkDate} from "./teacherActions";
+
 const CLASSROOM_URL = `${API_URL}/api/classroom`;
 const STUDENTLIST_URL = `${API_URL}/api/studentslist`;
 
@@ -142,10 +144,13 @@ export const setCurrentSubject = async (subjectId) => {
 
 export const loadSubjectNotes = (subjectId) => {
   const config = getTokenConfig();
+  
+  const workDateStr=getWorkDate();
+
 
   axios
     .get(
-      `http://127.0.0.1:8000/api/classroom/notes?subject_pk=${subjectId}`,
+      `http://127.0.0.1:8000/api/classroom/notes?subject_pk=${subjectId}&workdate=${workDateStr}`,
       config
     )
 

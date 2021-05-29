@@ -49,8 +49,8 @@ function Classroom() {
 
         <Grid item sm={8} style={{ padding: "10px" }}>
           <SubjectHeader />
-          
-          {/* <Switch>
+
+          <Switch>
             <Route path="/teacher/classroom/asssignmentList">
               <AssignmentList />
 
@@ -67,13 +67,13 @@ function Classroom() {
               />
             </Route>
 
+            <Route path="/teacher/classroom/documents">
+              <DocumentsList />
+              <DocumentForm open={formOpen} setOpen={setFormOpen} />
+            </Route>
 
-          </Switch> */}
 
-          
-          <DocumentsList/>
-          <DocumentForm open={formOpen} setOpen={setFormOpen}/>
-
+          </Switch>
         </Grid>
 
         <Grid item sm={2}>

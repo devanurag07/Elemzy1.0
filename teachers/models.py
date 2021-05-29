@@ -105,7 +105,7 @@ class Subject(models.Model):
     def __str__(self):
         return f"pk: {self.pk} name: {self.name}"
 
-# Classroom Page or Assignment connected to Subject
+# # Classroom Page or Assignment connected to Subject
 class ClassroomPage(models.Model):
     title=models.CharField(max_length=400)
     content=models.TextField()
@@ -133,6 +133,8 @@ class Notes(models.Model):
 
     created_by=models.ForeignKey(Teacher,on_delete=models.CASCADE,related_name="notes")
     subject=models.ForeignKey(Subject,on_delete=models.CASCADE,related_name="notes") 
+
+    created_at=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"pk: {self.pk} title: {self.name}"
@@ -163,6 +165,8 @@ class Assignment(models.Model):
 
     subject=models.ForeignKey(Subject,on_delete=models.CASCADE,related_name="subjectAssignments")
     teacher=models.ForeignKey(Teacher,on_delete=models.CASCADE,related_name="teacherAssignments")
+
+    created_at=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
@@ -197,3 +201,6 @@ class Document(models.Model):
 
     subject=models.ForeignKey(Subject,on_delete=models.CASCADE)
     created_by=models.ForeignKey(Teacher,on_delete=models.CASCADE)
+
+
+    created_at=models.DateTimeField(auto_now_add=True)

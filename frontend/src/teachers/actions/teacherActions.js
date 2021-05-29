@@ -7,6 +7,7 @@ import {
   ADD_NOTES,
   LOAD_ASSIGNMENTS,
   ADD_STUDENT,
+  SET_WORKDATE,
 } from "./types";
 import { returnErrors, createMessage } from "../../actions/messages";
 import store from "../../store";
@@ -74,9 +75,11 @@ export const createNotes = (data) => {
 
 export const loadAssignments = (subjectId) => {
   const config = getTokenConfig();
+  const workDateStr=getWorkDate();
+
 
   axios
-    .get(`${API_URL}/api/classroom/assignments?subject_pk=${subjectId}`, config)
+    .get(`${API_URL}/api/classroom/assignments?subject_pk=${subjectId}&workdate=${workDateStr}`, config)
     .then((resp) => {
       if (resp.status == 200) {
         dispatch({
@@ -198,25 +201,24 @@ export const createDocument = (
           if (err.response.status == 400) {
             const formErrors = err.response.data.errors;
             setFormErrors(formErrors);
-
           }
         }
 
-        if(err.response.status==401){
-          createNotification(err.response.data,{
-            variant:"error"
-          })
+        if (err.response.status == 401) {
+          createNotification(err.response.data, {
+            variant: "error",
+          });
         }
       }
-
     });
 };
 
 export const loadDocuments = (subject_pk) => {
   const config = getTokenConfig();
+  const workDateStr=getWorkDate();
 
   axios
-    .get(`${API_URL}/api/classroom/documents?subject_pk=${subject_pk}`, config)
+    .get(`${API_URL}/api/classroom/documents?subject_pk=${subject_pk}&workdate=${workDateStr}`, config)
     .then((resp) => {
       if (resp.status == 200) {
         const documentsLst = resp.data;
@@ -228,3 +230,24 @@ export const loadDocuments = (subject_pk) => {
       }
     });
 };
+
+// Setting work date
+
+export const setWorkDate = (workdate) => {
+  dispatch({
+    type: SET_WORKDATE,
+    payload: workdate,
+  });
+};
+
+
+export const getWorkDate = ()=>{
+  const workDateStr = store.getState().classroom.currentSubject.workdate;
+
+  if(workDateStr!=undefined){
+
+    return workDateStr;
+  }else{
+    return ''
+  }
+}

@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.views import APIView
-
+import datetime
 
 
 # Exceptions
@@ -16,10 +16,10 @@ from rest_framework import permissions
 
 # Models
 from .models import ClassRoom, Student, Teacher, Notes, Assignment
-from .models import Semester, ClassroomPage, Subject, StudentResponse,Document
+from .models import Semester, ClassroomPage, Subject, StudentResponse, Document
 # Serializers
 from .serializers import ClassRoomSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
-from .serializers import NotesSerializer, ClassroomPageSerializer, AssignmentSerializer, QuestionSerializer,DocumentSerializer
+from .serializers import NotesSerializer, ClassroomPageSerializer, AssignmentSerializer, QuestionSerializer, DocumentSerializer
 
 
 from main.serializers import UserProfileSerializer
@@ -39,6 +39,22 @@ def get_classroom(request):
     except Exception as e:
 
         raise NotFound("Classroom not found")
+
+
+def getDateFromStr(workDateStr):
+
+    todayDate = datetime.datetime.today().date()
+    if(workDateStr == None):
+        return todayDate
+
+    try:
+
+        dateObj = datetime.datetime.strptime(workDateStr, "%Y-%m-%d").date()
+
+        return dateObj
+
+    except Exception as e:
+        return todayDate
 
 
 class TeacherClassroom(generics.GenericAPIView):
@@ -348,19 +364,7 @@ class NotesAPI(viewsets.ModelViewSet):
             return Response(notes_form.errors)
 
     def list(self, request):
-
-        subject_pk = request.query_params.get("subject_pk", None)
-
-        if(subject_pk):
-
-            subject = get_object_or_404(Subject, pk=subject_pk)
-            queryset = self.get_queryset().filter(subject=subject)
-
-        else:
-
-            queryset = self.get_queryset().filter(
-                subject__semester__classroom=get_classroom(request))
-
+        queryset=self.get_queryset()
         notes_data = NotesSerializer(queryset, many=True)
 
         return Response(notes_data.data)
@@ -368,16 +372,30 @@ class NotesAPI(viewsets.ModelViewSet):
     def get_queryset(self):
 
         classroom = get_classroom(self.request)
+        currentTeacher = self.request.user.teacher
 
-        # All Classroom notes
-        classroom_notes = Notes.objects.all().filter(
-            subject__semester__classroom=classroom)
+        subject_pk = self.request.query_params.get("subject_pk", None)
 
-        # Created by the current teacher maybe on other classrooms
-        teacher_notes = Notes.objects.filter(
-            created_by=self.request.user.teacher)
+        workDateStr = self.request.query_params.get("workdate", "")
+        workDateObj = getDateFromStr(workDateStr)
 
-        return classroom_notes | teacher_notes
+        # All subject notes
+        if(subject_pk):
+
+            subject = get_object_or_404(Subject, pk=subject_pk)
+
+            hasPermissionToGetNotes = ((subject.semester.classroom == classroom) or (
+                subject.subject_teacher == currentTeacher))
+
+            if(hasPermissionToGetNotes):
+                subject_notes = Notes.objects.filter(subject=subject,created_at__date=workDateObj)
+                return subject_notes
+
+        else:
+
+            # All Techer notes
+            teacher_notes = Notes.objects.filter(created_by=currentTeacher,created_at__date=workDateObj)
+            return teacher_notes
 
 
 class ClassroomPageView(viewsets.ModelViewSet):
@@ -481,28 +499,30 @@ class AssignmentAPI(viewsets.ModelViewSet):
     def get_queryset(self):
 
         subject_pk = self.request.query_params.get("subject_pk", None)
+        workDateStr = self.request.query_params.get("workdate", "")
+        workDateObj = getDateFromStr(workDateStr)
 
         currentTeacher = self.request.user.teacher
 
+        # BY teacher
         if(subject_pk == None):
-            return Assignment.objects.filter(teacher=currentTeacher)
+            return Assignment.objects.filter(teacher=currentTeacher,created_at__date=workDateObj)
 
         subject = get_object_or_404(Subject, pk=subject_pk)
-
         currentClassroom = get_classroom(self.request)
-
         hasPermissionToGetAssignments = subject.subject_teacher == currentTeacher or subject.semester.classroom == currentClassroom
 
         if(hasPermissionToGetAssignments):
-            queryset = Assignment.objects.filter(subject=subject)
+            queryset = Assignment.objects.filter(subject=subject,created_at__date=workDateObj)
             return queryset
+
 
     def list(self, request):
         queryset = self.get_queryset()
 
         assignmentListData = AssignmentSerializer(queryset, many=True).data
 
-        if(queryset):
+        if(queryset!=None):
             return Response(assignmentListData)
         else:
 
@@ -595,56 +615,59 @@ class ClassroomStudentsAPI(viewsets.ModelViewSet):
             return Response({"errors": studentForm.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 class DocumentAPI(viewsets.ModelViewSet):
-    
-    serializer_class=DocumentSerializer
-    permission_classes=[permissions.IsAuthenticated,IsTeacher]
 
+    serializer_class = DocumentSerializer
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
 
     def get_queryset(self):
 
         subject_pk = self.request.query_params.get("subject_pk", None)
-        teacher=self.request.user.teacher
 
-        if(subject_pk==None):
+        workDateStr = self.request.query_params.get("workdate", "")
+        workDateObj = getDateFromStr(workDateStr)
+
+        currentTeacher = self.request.user.teacher
+
+        if(subject_pk == None):
             # documents shared by teacher
-            documents=Document.objects.filter(created_by=teacher)
-
+            documents = Document.objects.filter(created_by=currentTeacher)
             return documents
-        
+
         # # Documents by subject
-        documents=Document.objects.filter(subject__pk=subject_pk)
 
-        return documents
+        subject = get_object_or_404(Subject, pk=subject_pk)
+        currentClassroom = get_classroom(self.request)
+        hasPermissionToGetDocuments = subject.subject_teacher == currentTeacher or subject.semester.classroom == currentClassroom
 
+        if(hasPermissionToGetDocuments):
+            documents = Document.objects.filter(
+                subject__pk=subject_pk, created_at__date=workDateObj)
+            return documents
 
-    def create(self,request):
-        
-        teacher=request.user.teacher
+    def create(self, request):
 
-        formData=request.data.copy()
-        formData['created_by']=teacher.pk
+        teacher = request.user.teacher
 
-        documentForm=DocumentSerializer(data=formData)
+        formData = request.data.copy()
+        formData['created_by'] = teacher.pk
+
+        documentForm = DocumentSerializer(data=formData)
 
         if(documentForm.is_valid()):
 
-            validated_data=documentForm.validated_data
-            subject_teacher=validated_data["subject"].subject_teacher
+            validated_data = documentForm.validated_data
+            subject_teacher = validated_data["subject"].subject_teacher
 
-            if(subject_teacher==teacher):
-                createdDocument=documentForm.save()
-                createdDocumentJson=DocumentSerializer(createdDocument).data
+            if(subject_teacher == teacher):
+                createdDocument = documentForm.save()
+                createdDocumentJson = DocumentSerializer(createdDocument).data
 
-                return Response(createdDocumentJson,status=status.HTTP_201_CREATED)
+                return Response(createdDocumentJson, status=status.HTTP_201_CREATED)
 
             else:
-                return Response("You do not have permission to create document for this subject",status=status.HTTP_401_UNAUTHORIZED)
+                return Response("You do not have permission to create document for this subject", status=status.HTTP_401_UNAUTHORIZED)
 
         else:
 
-            return Response({"errors":documentForm.errors},status=status.HTTP_400_BAD_REQUEST)
-
-
+            return Response({"errors": documentForm.errors}, status=status.HTTP_400_BAD_REQUEST)

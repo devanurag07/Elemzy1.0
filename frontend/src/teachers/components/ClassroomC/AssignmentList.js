@@ -35,7 +35,9 @@ function AssignmentList() {
       loadAssignments(currentSubject.pk);
       console.log("hey");
     }
-  }, [currentSubject.pk]);
+  }, [currentSubject.pk, currentSubject.workdate]);
+
+  const workdate = currentSubject.workdate;
 
   return (
     <>
@@ -48,14 +50,18 @@ function AssignmentList() {
         </Typography>
         <List>
           {assignments.map((assignment) => {
-            return (
-              <>
-                <ListItem>
-                  <ListItemText>{assignment.title}</ListItemText>
-                </ListItem>
-                <Divider />
-              </>
-            );
+            const assignmentCreatedAtDate = assignment.created_at.split("T")[0];
+
+            if (workdate == assignmentCreatedAtDate) {
+              return (
+                <>
+                  <ListItem>
+                    <ListItemText>{assignment.title}</ListItemText>
+                  </ListItem>
+                  <Divider />
+                </>
+              );
+            }
           })}
         </List>
       </Paper>
