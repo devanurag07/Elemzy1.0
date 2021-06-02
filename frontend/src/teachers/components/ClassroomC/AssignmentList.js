@@ -7,6 +7,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import { useSelector } from "react-redux";
 import { loadAssignments } from "../../actions/teacherActions";
+import AssignmentDetail from "./AssignmentDetail";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,22 +49,19 @@ function AssignmentList() {
         >
           Assignments List
         </Typography>
-        <List>
+        <Grid container justify="space-around">
           {assignments.map((assignment) => {
             const assignmentCreatedAtDate = assignment.created_at.split("T")[0];
 
             if (workdate == assignmentCreatedAtDate) {
               return (
-                <>
-                  <ListItem>
-                    <ListItemText>{assignment.title}</ListItemText>
-                  </ListItem>
-                  <Divider />
-                </>
+                <Grid item sm={10} md={10} lg={5}>
+                  <AssignmentDetail assignment={assignment} />
+                </Grid>
               );
             }
           })}
-        </List>
+        </Grid>
       </Paper>
     </>
   );

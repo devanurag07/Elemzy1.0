@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
       // backgroundColor: "white",
       height: "100%",
       minHeight: "None",
-      border: "2px solid rgb(63 81 181 / 50%)",
+      
     },
   },
 }));
@@ -25,22 +25,22 @@ function Notes() {
     if (currentSubject.pk !== undefined) {
       loadSubjectNotes(currentSubject.pk);
     }
-  }, [currentSubject.pk,currentSubject.workdate]);
+  }, [currentSubject.pk, currentSubject.workdate]);
 
   //   Getting notes
   const notes = currentSubject.notes;
   //   Rendering notes
   // Work date rendering notes only created at work date
-  const workdate=currentSubject.workdate;
+  const workdate = currentSubject.workdate;
   if (notes !== undefined) {
     return (
-      <Grid container className={classes.root}>
-        {notes.map((note) => { 
-          const noteWorkdate=note.created_at.split("T")[0]
+      <Grid container className={classes.root} justify="space-around">
+        {notes.map((note) => {
+          const noteWorkdate = note.created_at.split("T")[0];
 
-          if(workdate==noteWorkdate){
+          if (workdate == noteWorkdate) {
             return (
-              <Grid item sm={3}>
+              <Grid item sm={6} md={5} style={{margin:"0.5em 0.5em"}}>
                 <Note title={note.name} description={note.description} />
               </Grid>
             );

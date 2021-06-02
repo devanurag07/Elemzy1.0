@@ -18,248 +18,58 @@ import {
 import { produce } from "immer";
 // import { loadAssignments } from "../actions/teacherActions";
 
+import {
+  loadClassroom,
+  setSelectedClassroom,
+  loadOtherClassroomsData,
+  addStudent,
+  removeStudent,
+  loadTeachers
+} from "./utils/classroom";
+
+import {
+  loadCrntSbjctNotes,
+  addNotes,
+  loadAssignments,
+  addAssignment,
+  loadDocuments,
+  addDocument,
+  setWorkDate,
+} from "./utils/others";
+
+import { loadSemesters, addSemester } from "./utils/semester";
+
+import { addSubject, setSelectedSubject } from "./utils/subject";
+
 const initialState = {
+  // Main classroom data of teacher
   classroom: {
     students: [],
   },
+
+  // School students list - main classroom students = gloabl students list (Select Component)
   globalStudents: [],
+  // Main classroom semesters
   semesters: [],
+  // School Teachers List - Select Component
   teachers: [],
 
+  // Selected subject
   currentSubject: {
-    assignments: [],
-    documents: [],
+    assignments: [], // Assignments of subject
+    documents: [], // Documents of subject
   },
 
+  // Selected classroom
   currentClsrm: {
-    semesters: [],
-    classroom: [],
+    semesters: [], // Semesters of Selected Classroom
+    classroom: [], // Classroom data like students list
   },
+
+  // This contains the list of other classrooms - teacher can teach
   secondaryClassrooms: [],
 
   notificaions: [],
-};
-
-const loadClassroom = (state, action) => {
-  const loadedClassroom = action.payload;
-
-  if (Object.keys(loadedClassroom).length >= 2) {
-    return {
-      ...state,
-      classroom: { ...loadedClassroom },
-
-      currentClsrm: {
-        classroom: { ...loadedClassroom },
-        ...state.currentClsrm,
-      },
-    };
-  }
-
-  return { ...state, classroom: { ...loadedClassroom } };
-};
-
-const addSemester = (state, action) => {
-  const newSemester = {
-    name: action.payload.name,
-    pk: action.payload.pk,
-    subjects: [],
-  };
-
-  // If semester already exists don't do anything
-  for (let semester of state.semesters) {
-    if (semester.pk === newSemester.pk) {
-      return state;
-    }
-  }
-
-  const newState = produce(state, (draft) => {
-    draft.semesters.push(newSemester);
-  });
-
-  return newState;
-};
-
-const loadSemesters = (state, action) => {
-  const newState = produce(state, (draft) => {
-    draft.semesters = action.payload;
-    draft.currentClsrm = { ...draft.currentClsrm, semesters: action.payload };
-  });
-
-  return newState;
-};
-
-const addSubject = (state, action) => {
-  const newSubject = action.payload;
-
-  const newState = produce(state, (draft) => {
-    for (let semester of draft.semesters) {
-      if (semester.pk === newSubject.semester) {
-        semester.subjects.push(newSubject);
-      }
-    }
-  });
-
-  return newState;
-};
-
-const setSelectedSubject = (state, action) => {
-  const subject_id = action.payload;
-
-  for (let semester of state.currentClsrm.semesters) {
-    for (let subject of semester.subjects) {
-      if (subject.pk === Number(subject_id)) {
-        // Changing currentSubject to subject(obj which teacher have clicked on)
-        const newState = produce(state, (draft) => {
-          draft.currentSubject = { ...draft.currentSubject, ...subject };
-        });
-
-        return newState;
-      }
-    }
-  }
-};
-
-const setSelectedClassroom = (state, action) => {
-  // Changing the semesters to the selected classroom semester
-
-  const classroomId = action.payload;
-
-  const newState = produce(state, (draft) => {
-    // Setting classroom to default main classroom
-    if (state.classroom.id !== undefined) {
-      if (state.classroom.id === classroomId) {
-        const selectedSemesters = state.semesters;
-
-        draft.currentClsrm = {
-          classroom: state.classroom,
-          semesters: selectedSemesters,
-        };
-
-        return draft;
-      }
-    }
-
-    // Checking if secondaryClassroom id matches to selected CLassroom Id
-    for (let secondaryClsrm of draft.secondaryClassrooms) {
-      console.log(secondaryClsrm.id);
-      console.log(classroomId);
-
-      if (secondaryClsrm.classroomInfo.id === classroomId) {
-        // Getting the semesters
-        const selectedSemesters = secondaryClsrm.semesters;
-
-        // Setting currentClassroom data to secondaryClsrm
-        draft.currentClsrm = {
-          classroom: secondaryClsrm.classroomInfo,
-          semesters: selectedSemesters,
-        };
-
-        return draft;
-      }
-    }
-  });
-
-  return newState;
-};
-
-const loadOtherClassroomsData = (state, action) => {
-  const otherClsrmData = action.payload;
-
-  const newState = produce(state, (draft) => {
-    draft.secondaryClassrooms = otherClsrmData;
-  });
-
-  return newState;
-};
-
-const loadTeachers = (state, action) => {
-  const newState = produce(state, (draft) => {
-    draft.teachers = action.payload;
-  });
-
-  return newState;
-};
-
-const loadCrntSbjctNotes = (state, action) => {
-  const notesData = action.payload;
-  // Checking if the currentSubject is not null
-  if (state.currentSubject !== null) {
-    if (state.currentSubject.pk == notesData.subjectId) {
-      const newState = produce(state, (draft) => {
-        draft.currentSubject.notes = notesData.data;
-      });
-
-      return newState;
-    }
-  }
-};
-
-const addNotes = (state, action) => {
-  const notesObj = action.payload;
-
-  const newState = produce(state, (draft) => {
-    if (Number(draft.currentSubject.pk) === Number(notesObj.subject)) {
-      const hasNoteObjToSubject = draft.currentSubject.notes.includes(notesObj);
-      if (!hasNoteObjToSubject) {
-        draft.currentSubject.notes.push(notesObj);
-      }
-    }
-  });
-
-  return newState;
-};
-
-const loadAssignments = (state, action) => {
-  const newState = produce(state, (draft) => {
-    draft.currentSubject.assignments = action.payload;
-  });
-
-  return newState;
-};
-
-const addAssignment = (state, action) => {
-  const newState = produce(state, (draft) => {
-    // Adding assignment
-    draft.currentSubject.assignments.push(action.payload);
-  });
-  console.log("Add assignment");
-
-  console.log(action.payload);
-  return newState;
-};
-
-const loadDocuments = (state, action) => {
-  const newState = produce(state, (draft) => {
-    const documentsList = action.payload;
-    draft.currentSubject.documents = documentsList;
-  });
-
-  return newState;
-};
-
-const addDocument = (state, action) => {
-  const newState = produce(state, (draft) => {
-    const createdDocument = action.payload;
-
-    if (draft.currentSubject.pk == createdDocument.subject) {
-      draft.currentSubject.documents.push(createdDocument);
-    }
-  });
-
-  return newState;
-};
-
-const setWorkDate = (state, action) => {
-  const workdate = action.payload;
-
-  return {
-    ...state,
-
-    currentSubject: {
-      ...state.currentSubject,
-      workdate: workdate,
-    },
-  };
 };
 
 export const classRoomReducer = (state = initialState, action) => {
@@ -362,8 +172,8 @@ export const classRoomReducer = (state = initialState, action) => {
       return loadDocuments(state, action);
     }
 
-    case SET_WORKDATE:{
-      return setWorkDate(state,action);
+    case SET_WORKDATE: {
+      return setWorkDate(state, action);
     }
     case "ADD_DOCUMENT": {
       return addDocument(state, action);
@@ -372,72 +182,4 @@ export const classRoomReducer = (state = initialState, action) => {
     default:
       return state;
   }
-};
-
-const addStudent = (globalStudents, classroomStudents, studentObj) => {
-  // Adding student to students list based on id of studentObj
-
-  // studentObj => {"user_profile":user_obj,"student_profile":studentOBj}
-
-  let isStudentExist = false;
-
-  // Checking if added student present in Classroom Students by comparing id
-  for (let student of classroomStudents) {
-    if (
-      student.id === studentObj.id &&
-      student.user_detail.id === studentObj.user_detail.id
-    ) {
-      isStudentExist = true;
-      break;
-    }
-  }
-
-  // if student does not exist add it to the list
-  if (!isStudentExist) {
-    classroomStudents.push(studentObj);
-  }
-
-  // filtering or Removing student from global students list
-  const newGlobalStudents = globalStudents.filter(
-    (student) => student.id !== studentObj.user_detail.id
-  );
-
-  return {
-    globalStudents: [...newGlobalStudents],
-    classroomStudents: [...classroomStudents],
-  };
-};
-
-const removeStudent = (globalStudents, classroomStudents, studentObj) => {
-  // Removing student from students list based on id of studentObj
-
-  // studentObj => {"user_profile":user_obj,"student_profile":studentOBj}
-
-  let isStudentExist = false;
-
-  for (let student of globalStudents) {
-    if (student.id === studentObj.id) {
-      isStudentExist = true;
-    }
-  }
-  // if not exists push it or add it adding to GLobal List
-  if (!isStudentExist) {
-    globalStudents.push(studentObj);
-  }
-
-  // Filtering so the list will have all items except studentObj
-
-  // removing from clasrooom students list
-  const newClassroomStudents = classroomStudents.filter((student) => {
-    if (student.id === studentObj.id) {
-      return false;
-    }
-
-    return true;
-  });
-
-  return {
-    classroomStudents: [...newClassroomStudents],
-    globalStudents: [...globalStudents],
-  };
 };

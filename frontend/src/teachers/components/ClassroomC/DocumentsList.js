@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     // background: "red",
     padding: "1em 1.5em",
+    margin:"0.75em 0.4em",
     boxShadow: "0px 1px 14px 2px rgba(0, 0, 0, 0.25)",
     "& .document-title": {
       fontSize: "1rem",
@@ -126,7 +127,7 @@ function DocumentsList() {
           if (workdate == documentCreatedAt) {
             return (
               <>
-                <Grid item sm={3}>
+                <Grid item sm={5}>
                   <Document
                     title={document.title}
                     description={document.description}

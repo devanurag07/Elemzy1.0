@@ -1,4 +1,6 @@
 import { useDispatch } from "react";
+import store from "../../store";
+
 import {
   LOAD_CLASSROOM,
   LOAD_TEACHERS,
@@ -13,25 +15,27 @@ import {
 } from "./types";
 
 import axios from "axios";
-import store from "../../store";
+import { getWorkDate } from "./teacherActions";
 
-import {getWorkDate} from "./teacherActions";
-
+// Global variables
 const CLASSROOM_URL = `${API_URL}/api/classroom`;
 const STUDENTLIST_URL = `${API_URL}/api/studentslist`;
-
+// Global disptach function
 const dispatch = store.dispatch;
 
 export const loadDashboardData = () => {
   const config = getTokenConfig();
 
+  // Loading classroom data
   axios
     .get(CLASSROOM_URL, config)
     .then((resp) => {
       if (resp.status == 200) {
+        const mainClassroomData = resp.data;
+
         dispatch({
           type: LOAD_CLASSROOM,
-          payload: resp.data,
+          payload: mainClassroomData,
         });
       }
     })
@@ -59,9 +63,11 @@ export const loadDashboardData = () => {
     .get(`${API_URL}/api/teacherslist`, config)
     .then((resp) => {
       if (resp.status === 200) {
+        const teachersList = resp.data;
+
         dispatch({
           type: LOAD_TEACHERS,
-          payload: resp.data,
+          payload: teachersList,
         });
       }
     })
@@ -74,9 +80,10 @@ export const loadDashboardData = () => {
     .get(STUDENTLIST_URL, config)
     .then((response) => {
       if (response.status === 200) {
+        const globalStudentsList = response.data;
         dispatch({
           type: "LOAD_STUDENTS",
-          payload: response.data,
+          payload: globalStudentsList,
         });
       }
     })
@@ -110,43 +117,18 @@ export const getTokenConfig = () => {
   return config;
 };
 
-export const addRemoveStudent = async (std_obj) => {
-  const config = getTokenConfig();
-
-  if (std_obj.type == "add_student") {
-    const response = await axios.put(CLASSROOM_URL, std_obj, config);
-
-    if (response.status === 200) {
-      dispatch({
-        type: ADD_STUDENT,
-        payload: response.data,
-      });
-    }
-  } else if (std_obj.type == "remove_student") {
-    const response = await axios.put(CLASSROOM_URL, std_obj, config);
-    console.log(response.data);
-
-    if (response.status === 200) {
-      dispatch({
-        type: REMOVE_STUDENT,
-        payload: response.data,
-      });
-    }
-  }
-};
-
-export const setCurrentSubject = async (subjectId) => {
+export const setCurrentSubject = (subjectId) => {
   dispatch({
     type: SET_SUBJECT,
     payload: subjectId,
   });
 };
 
+// Loading current SUbject notes
 export const loadSubjectNotes = (subjectId) => {
   const config = getTokenConfig();
-  
-  const workDateStr=getWorkDate();
 
+  const workDateStr = getWorkDate();
 
   axios
     .get(
@@ -156,9 +138,14 @@ export const loadSubjectNotes = (subjectId) => {
 
     .then((resp) => {
       if (resp.status == 200) {
+        const currentSubjectNotesData = {
+          subjectId: subjectId,
+          data: resp.data,
+        };
+
         dispatch({
           type: "LOAD_CURRENT_SUBJECT_NOTES",
-          payload: { subjectId: subjectId, data: resp.data },
+          payload: currentSubjectNotesData,
         });
       }
     })
@@ -175,9 +162,12 @@ export const getOtherClassroomsData = () => {
 
   axios.get(`${API_URL}/api/otherClassrooms`, config).then((resp) => {
     if (resp.status == 200) {
+
+      const otherClassroomsData= resp.data;
+
       dispatch({
         type: LOAD_OTHERCLASSROOMS_DATA,
-        payload: resp.data,
+        payload:otherClassroomsData,
       });
     }
   });

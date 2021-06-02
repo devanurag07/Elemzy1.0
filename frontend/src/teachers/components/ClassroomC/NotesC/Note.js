@@ -9,21 +9,22 @@ import {Paper} from "@material-ui/core";
 
 const useStyles = makeStyles({
   root:{
-    margin:"0.3em",
     fontFamily:"Ubuntu",
     minHeight:"10vh",
     padding:"1em",
-    marginTop:"1em"
+    boxShadow: '0px 1px 14px 2px rgb(0 0 0 / 25%)'
+
   },
   noteTitle:{
     textTransform:"capitalize",
     // fontWeight:"200",
     fontSize:"1.2rem",
     color:"black",
-    marginBottom:"0.5em"
+    marginBottom:"0.2em"
   },
   description:{
-    fontSize:"0.9em"
+    fontSize:"0.9em",
+    color:"gray"
   }
 });
 
@@ -31,7 +32,6 @@ const useStyles = makeStyles({
 
 export default function Note({title,description}) {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
 
   return (
       

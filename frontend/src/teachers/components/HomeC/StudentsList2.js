@@ -15,10 +15,10 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import { useSelector } from "react-redux";
-import {TableHead} from "@material-ui/core";
+import { TableHead } from "@material-ui/core";
 
 import AddStudentForm from "../HomeC/AddStudentForm";
-
+import StudentListHeader from "./StudentListHeader";
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -97,8 +97,6 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-
-
 const useStyles2 = makeStyles({
   table: {
     minWidth: 500,
@@ -106,13 +104,13 @@ const useStyles2 = makeStyles({
 });
 
 export default function StudentList2() {
-  
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const classroomStudentsList = useSelector((state) => state.classroom.classroom.students);
-
+  const classroomStudentsList = useSelector(
+    (state) => state.classroom.classroom.students
+  );
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -124,80 +122,69 @@ export default function StudentList2() {
   };
 
   return (
-
-    <TableContainer component={Paper}>
-      <AddStudentForm/>
-      <Table className={classes.table} aria-label="custom pagination table">
-
-        <TableHead>
+    <>
+      <StudentListHeader />
+      <TableContainer component={Paper}>
+        <AddStudentForm />
+        <Table className={classes.table} aria-label="custom pagination table">
+          <TableHead>
             <TableRow>
-
-                <TableCell>
-                    Name
-                </TableCell>
-                <TableCell>
-                    First Name
-                </TableCell>
-                <TableCell>
-                    Last Name
-                </TableCell>
-                <TableCell>
-                    Roll No
-                </TableCell>
-                <TableCell>
-                    Student ID
-                </TableCell>
-
+              <TableCell>Name</TableCell>
+              <TableCell>First Name</TableCell>
+              <TableCell>Last Name</TableCell>
+              <TableCell>Roll No</TableCell>
+              <TableCell>Student ID</TableCell>
             </TableRow>
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? classroomStudentsList.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : classroomStudentsList
+            ).map((classroomStudent) => (
+              <TableRow key={classroomStudent.name}>
+                <TableCell component="th" scope="row">
+                  {classroomStudent.name}
+                </TableCell>
 
-        </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0
-            ? classroomStudentsList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : classroomStudentsList
-          ).map((classroomStudent) => (
-            <TableRow key={classroomStudent.name}>
-              <TableCell component="th" scope="row">
-                {classroomStudent.name}
-              </TableCell>
+                <TableCell component="th" scope="row">
+                  {classroomStudent.firstname}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {classroomStudent.lastname}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {classroomStudent.roll_no}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {classroomStudent.student_id}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
 
-              <TableCell component="th" scope="row">
-                {classroomStudent.firstname}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {classroomStudent.lastname}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {classroomStudent.roll_no}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {classroomStudent.student_id}
-              </TableCell>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                colSpan={3}
+                count={classroomStudentsList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: { "aria-label": "rows per page" },
+                  native: true,
+                }}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
             </TableRow>
-          ))}
-
-        </TableBody>
-
-
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              colSpan={3}
-              count={classroomStudentsList.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                inputProps: { "aria-label": "rows per page" },
-                native: true,
-              }}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </>
   );
 }

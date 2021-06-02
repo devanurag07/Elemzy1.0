@@ -8,7 +8,7 @@ import {TeacherDashboard} from "../teachers/pages/TeacherDashboard";
 const theme = createMuiTheme({
   typography: {
     fontFamily: [
-      "Ubuntu"
+      "Poppins"
     ].join(','),
   },
 

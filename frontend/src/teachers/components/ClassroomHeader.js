@@ -21,29 +21,28 @@ const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: "6vh",
     backgroundColor: "white",
-    paddingLeft:"16px",
-    color:"black",
-    paddingTop:"10px",
+    paddingLeft: "16px",
+    color: "black",
+    paddingTop: "10px",
 
-    "& .classteacherLabel":{
-      display:"flex",
-      flexDirection:"row",
-      alignItems:"center",
-      justifyContent:"center",
+    "& .classteacherLabel": {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
 
-      "& .teacherName":{
-        marginLeft:"3px",
-        fontSize:"1.2em"
-      }
-    }
+      "& .teacherName": {
+        marginLeft: "3px",
+        fontSize: "1.2em",
+      },
+    },
   },
 }));
 
 export default function ClassroomHeader() {
   const classes = useStyles();
 
-  const currentClassroom=useSelector(state=>state.classroom.currentClsrm);
-
+  const currentClassroom = useSelector((state) => state.classroom.currentClsrm);
 
   return (
     <div className={classes.root}>
@@ -52,21 +51,19 @@ export default function ClassroomHeader() {
           <Grid container>
             <Grid item>
               <ClassroomSelect />
-              
             </Grid>
 
-            <Grid item sm>
-
-
-
-            </Grid>
+            <Grid item sm></Grid>
             <Grid item className="classteacherLabel">
-
               <div>ClassTeacher - </div>
-              {currentClassroom.classroom.class_teacher ?
-               <div class="teacherName">  {currentClassroom.classroom.class_teacher.user.firstname}
-               </div> :<div>Not Selected</div>}
-
+              {currentClassroom.classroom.class_teacher ? (
+                <div class="teacherName">
+                  {" "}
+                  {currentClassroom.classroom.class_teacher.user.firstname}
+                </div>
+              ) : (
+                <div>Not Selected</div>
+              )}
             </Grid>
           </Grid>
         </Toolbar>
@@ -75,34 +72,26 @@ export default function ClassroomHeader() {
   );
 }
 
-
-
-
-const useStyles2=makeStyles((theme)=>({
-
-  rootGridContainer:{
+const useStyles2 = makeStyles((theme) => ({
+  rootGridContainer: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     justifyContent: "space-between",
 
-    "& .label" : {
-      color:"black",
-      marginRight:"20px"
-    }
-  }
-
-
-}))
-
+    "& .label": {
+      color: "black",
+      marginRight: "20px",
+    },
+  },
+}));
 
 const ClassroomSelect = () => {
-
   const otherClassrooms = useSelector(
     (state) => state.classroom.secondaryClassrooms
   );
 
-  const mainClassroom=useSelector((state)=>state.classroom.classroom)
+  const mainClassroom = useSelector((state) => state.classroom.classroom);
 
   const [classroomId, setClassroomId] = useState();
 
@@ -111,32 +100,24 @@ const ClassroomSelect = () => {
     console.log(e.target.value);
   };
 
-
-  const classes=useStyles2();
+  const classes = useStyles2();
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-
     dispatch({
       type: "SET_SELECTED_CLASSROOM",
       payload: classroomId,
     });
-
-    
   }, [classroomId]);
 
-  useEffect(()=>{
-    
+  useEffect(() => {
     setClassroomId(mainClassroom.id);
-
-  },[mainClassroom.id])
-
+  }, [mainClassroom.id]);
 
   return (
     <>
       <FormControl>
-
         <Grid contianer className={classes.rootGridContainer}>
           <Grid item>
             <div className="label">Classrooom</div>
@@ -147,10 +128,10 @@ const ClassroomSelect = () => {
               value={classroomId}
               onChange={handleChange}
             >
-             <MenuItem value={mainClassroom.id}>
+              <MenuItem value={mainClassroom.id}>
                 {mainClassroom.standard}
-             </MenuItem>
-             
+              </MenuItem>
+
               {otherClassrooms.map((classroom) => {
                 return (
                   <MenuItem value={classroom.classroomInfo.id}>
@@ -158,8 +139,6 @@ const ClassroomSelect = () => {
                   </MenuItem>
                 );
               })}
-
-
             </Select>
           </Grid>
         </Grid>

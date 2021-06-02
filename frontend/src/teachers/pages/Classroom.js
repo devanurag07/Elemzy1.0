@@ -3,7 +3,7 @@ import { Grid } from "@material-ui/core";
 import React, { useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import SubjectDropdown from "./SubjectDropdown";
+import SubjectDropdown from "../components/SubjectDropdown";
 import { CreateNotesForm } from "../components/Form";
 import CreateAssignmentForm from "../components/ClassroomC/CreateAssignmentForm";
 import SubjectHeader from "../components/ClassroomC/SubjectHeader";

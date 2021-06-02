@@ -15,6 +15,7 @@ import { config } from "react-transition-group";
 
 const dispatch = store.dispatch;
 
+// Creating the semester
 export const createSemester = async (data) => {
   const config = getTokenConfig();
   console.log(data);
@@ -33,20 +34,19 @@ export const createSemester = async (data) => {
   }
 };
 
+// Creating subject
 export const createSubject = (data) => {
   const config = getTokenConfig();
-  console.log(data);
 
   axios
     .post(`${API_URL}/api/classroom/subject/`, data, config)
     .then((resp) => {
-      console.log(resp);
+      const subjectData = resp.data;
+
       dispatch({
         type: ADD_SUBJECT,
-        payload: resp.data,
+        payload: subjectData,
       });
-
-      console.log("Dispatched Add Subject");
     })
     .catch((error) => {
       console.log(error);
@@ -60,12 +60,11 @@ export const createNotes = (data) => {
     .post(`${API_URL}/api/classroom/notes/`, data, config)
     .then((resp) => {
       if (resp.status == 201) {
+        const noteData = resp.data;
         dispatch({
           type: ADD_NOTES,
-          payload: resp.data,
+          payload: noteData,
         });
-
-        console.log("Created \n", resp.data);
       }
     })
     .catch((err) => {
@@ -75,16 +74,19 @@ export const createNotes = (data) => {
 
 export const loadAssignments = (subjectId) => {
   const config = getTokenConfig();
-  const workDateStr=getWorkDate();
-
+  const workDateStr = getWorkDate();
 
   axios
-    .get(`${API_URL}/api/classroom/assignments?subject_pk=${subjectId}&workdate=${workDateStr}`, config)
+    .get(
+      `${API_URL}/api/classroom/assignments?subject_pk=${subjectId}&workdate=${workDateStr}`,
+      config
+    )
     .then((resp) => {
       if (resp.status == 200) {
+        const assignmentsList=resp.data;
         dispatch({
           type: LOAD_ASSIGNMENTS,
-          payload: resp.data,
+          payload: assignmentsList,
         });
       }
     })
@@ -112,9 +114,10 @@ export const createAssignment = (
         setFormOpen(false);
         if (resp.data.isCreated) {
           // Addding assignment to state
+          const assignmentData= resp.data.data
           dispatch({
             type: "ADD_ASSIGNMENT",
-            payload: resp.data.data,
+            payload:assignmentData,
           });
 
           // Clearing form and Notification stuff
@@ -122,10 +125,14 @@ export const createAssignment = (
         }
       }
     })
+
     .catch((err) => {
+    
       if (err.response.status == 400) {
         // Setting the errors
-        setFormErrors(err.response.data);
+        const errorsData=err.response.data;
+        setFormErrors(errorsData);
+    
       } else if (err.response.status == 401) {
         const errMsg = err.response.data;
         createNotification(errMsg, {
@@ -142,9 +149,12 @@ export const createStudentObj = (studentFormData, setFormErrors, success) => {
     .post(`${API_URL}/api/classroom/students/`, studentFormData, config)
     .then((resp) => {
       if (resp.status == 201) {
+
+        const addedStudentData=resp.data;
+        
         dispatch({
           type: ADD_STUDENT,
-          payload: resp.data,
+          payload: addedStudentData,
         });
         // Creating Notification
         createNotification("The student added to classroom", {
@@ -215,10 +225,13 @@ export const createDocument = (
 
 export const loadDocuments = (subject_pk) => {
   const config = getTokenConfig();
-  const workDateStr=getWorkDate();
+  const workDateStr = getWorkDate();
 
   axios
-    .get(`${API_URL}/api/classroom/documents?subject_pk=${subject_pk}&workdate=${workDateStr}`, config)
+    .get(
+      `${API_URL}/api/classroom/documents?subject_pk=${subject_pk}&workdate=${workDateStr}`,
+      config
+    )
     .then((resp) => {
       if (resp.status == 200) {
         const documentsLst = resp.data;
@@ -240,14 +253,12 @@ export const setWorkDate = (workdate) => {
   });
 };
 
-
-export const getWorkDate = ()=>{
+export const getWorkDate = () => {
   const workDateStr = store.getState().classroom.currentSubject.workdate;
 
-  if(workDateStr!=undefined){
-
+  if (workDateStr != undefined) {
     return workDateStr;
-  }else{
-    return ''
+  } else {
+    return "";
   }
-}
+};
