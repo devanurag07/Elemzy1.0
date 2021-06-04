@@ -83,7 +83,7 @@ export const loadAssignments = (subjectId) => {
     )
     .then((resp) => {
       if (resp.status == 200) {
-        const assignmentsList=resp.data;
+        const assignmentsList = resp.data;
         dispatch({
           type: LOAD_ASSIGNMENTS,
           payload: assignmentsList,
@@ -114,10 +114,10 @@ export const createAssignment = (
         setFormOpen(false);
         if (resp.data.isCreated) {
           // Addding assignment to state
-          const assignmentData= resp.data.data
+          const assignmentData = resp.data.data;
           dispatch({
             type: "ADD_ASSIGNMENT",
-            payload:assignmentData,
+            payload: assignmentData,
           });
 
           // Clearing form and Notification stuff
@@ -127,12 +127,10 @@ export const createAssignment = (
     })
 
     .catch((err) => {
-    
       if (err.response.status == 400) {
         // Setting the errors
-        const errorsData=err.response.data;
+        const errorsData = err.response.data;
         setFormErrors(errorsData);
-    
       } else if (err.response.status == 401) {
         const errMsg = err.response.data;
         createNotification(errMsg, {
@@ -149,9 +147,8 @@ export const createStudentObj = (studentFormData, setFormErrors, success) => {
     .post(`${API_URL}/api/classroom/students/`, studentFormData, config)
     .then((resp) => {
       if (resp.status == 201) {
+        const addedStudentData = resp.data;
 
-        const addedStudentData=resp.data;
-        
         dispatch({
           type: ADD_STUDENT,
           payload: addedStudentData,
@@ -261,4 +258,42 @@ export const getWorkDate = () => {
   } else {
     return "";
   }
+};
+
+export const teacherProfileUpdate = (teacherProfileFormData,setFormErrors) => {
+  const config = getTokenConfig();
+
+  axios
+    .patch(
+      `${API_URL}/api/teacherProfileUpdate`,
+      teacherProfileFormData,
+      config
+    )
+    .then((resp) => {
+      if (resp.status == 200) {
+        console.log("updated");
+        window.location=window.location;
+        createNotification("Profile Updated Successfully",{
+          variant:"success"
+        })
+      }
+    })
+    .catch((err) => {
+      if (err.response.status == 400) {
+        if (err.response) {
+          const responseData = err.response.data;
+
+          if (responseData) {
+            const errors = responseData.errors;
+            if (errors) {
+              setFormErrors(errors);
+              createNotification("Form Errors",{
+                variant:"error"
+              })
+            }
+          }
+        }
+      }
+      console.log(err.response.data);
+    });
 };

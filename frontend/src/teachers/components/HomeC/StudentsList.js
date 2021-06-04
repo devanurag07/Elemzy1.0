@@ -35,8 +35,8 @@ import { useDispatch } from "react-redux";
 
 // Actions import
 import { addRemoveStudent } from "../../actions/classroom";
-
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+
 
 function StudentsList() {
   const classes = useStyles();

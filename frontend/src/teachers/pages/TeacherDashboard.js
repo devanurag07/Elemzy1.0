@@ -10,6 +10,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import "../css/style.scss";
 import Classroom from "./Classroom";
 import Notifications from "../components/Notifications";
+
+import UpdateTeacherProfilePage from "./UpdateTeacherProfilePage"
 import Home from "./Home";
 
 import { Route } from "react-router-dom";
@@ -48,6 +50,10 @@ export const TeacherDashboard = () => {
           <Classroom />
         </Route>
 
+
+        <Route path="/teacher/profile" exact>
+          <UpdateTeacherProfilePage />
+        </Route>
         
       </div>
     </Fragment>

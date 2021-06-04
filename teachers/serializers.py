@@ -2,6 +2,8 @@ from rest_framework.serializers import ModelSerializer, ValidationError
 from .models import ClassRoom, Student, Semester, Subject, Teacher, ClassroomPage
 from .models import Notes, Assignment, Question, Choice,Document
 from main.serializers import UserProfileSerializer
+from main.models import UserProfile
+from rest_framework import serializers
 
 
 from django.shortcuts import get_object_or_404
@@ -88,9 +90,30 @@ class QuestionSerializer(ModelSerializer):
 
 class AssignmentSerializer(ModelSerializer):
 
+    no_of_questions=serializers.SerializerMethodField()
+    questions=serializers.SerializerMethodField()
+    teacher_name=serializers.SerializerMethodField()
+
+    def get_no_of_questions(self,assignment):
+        return len(assignment.assignmentQuestions.all())
+
+    def get_questions(self,assignment):
+        assingmentQuestions=assignment.assignmentQuestions.all()
+        assingmentQuestionsData=QuestionSerializer(assingmentQuestions,many=True).data
+
+        return assingmentQuestionsData
+
+    def get_teacher_name(self,assignment):
+
+        return assignment.teacher.user.firstname
+        
+
     class Meta:
-        fields = ['title', "subject","created_at"]
+        fields = ['title', "subject","created_at","no_of_questions","questions",'teacher_name']
         model = Assignment
+
+
+
 
     def create(self, validated_data):
 
@@ -202,3 +225,11 @@ class DocumentSerializer(ModelSerializer):
         fields="__all__"
         
         include='teacher_detail'
+
+
+
+class TeacherProfileSerializer(ModelSerializer):
+
+    class Meta:
+        model=UserProfile
+        fields=['firstname','lastname','email','phone_number','profile_pic']

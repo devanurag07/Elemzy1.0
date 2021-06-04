@@ -64,6 +64,18 @@ const Sidebar = () => {
             <ListItemText primary="Classroom"></ListItemText>
           </ListItem>
         </Link>
+
+
+        <Link to="/teacher/profile">
+          <ListItem
+            button
+            selected={selectedIndex === 2}
+            onClick={(event) => handleListItemClick(event, 2)}
+          >
+            <ListItemText primary="Profile"></ListItemText>
+          </ListItem>
+        </Link>
+        
       </List>
     </Paper>
   );

@@ -1,6 +1,6 @@
 from django.urls import path,include
 from . import api
-from .api import SemesterAPI,SubjectAPI,NotesAPI,ClassroomPageView,SecondaryClassroom,AssignmentAPI,GlobalStudentsAPI,ClassroomStudentsAPI,DocumentAPI
+from .api import SemesterAPI,SubjectAPI,NotesAPI,ClassroomPageView,SecondaryClassroom,AssignmentAPI,GlobalStudentsAPI,ClassroomStudentsAPI,DocumentAPI,TeacherProfile
 from rest_framework.routers import DefaultRouter
 
 
@@ -18,6 +18,7 @@ urlpatterns = [
     path("studentslist",api.GlobalStudentsAPI.as_view()),
     path("teacherslist",api.TeachersList.as_view()),
     path("otherClassrooms",SecondaryClassroom.as_view()),
+    path("teacherProfileUpdate",TeacherProfile.as_view()),
 
 ]
 
