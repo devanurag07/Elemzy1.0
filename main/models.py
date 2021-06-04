@@ -41,10 +41,10 @@ def password_reset_token_created(
 
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     firstname = models.CharField(
-        max_length=50, null=True, blank=True, verbose_name="First Name"
+        max_length=50, verbose_name="First Name"
     )
     lastname = models.CharField(
-        max_length=50, null=True, blank=True, verbose_name="Last Name"
+        max_length=50, verbose_name="Last Name"
     )
     email = models.EmailField(_("email address"), unique=True)
     is_student = models.BooleanField(default=False)
@@ -58,6 +58,9 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     )
     created_at = models.DateField(auto_now_add=True, verbose_name="Created at")
     updated_at = models.DateField(auto_now=True, verbose_name="Updated at")
+
+    profile_pic=models.ImageField(upload_to="userprofilepics/",default="./default_profile_pic.jpg")
+
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

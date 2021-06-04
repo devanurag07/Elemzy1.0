@@ -23,6 +23,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "phone_number",
             "created_at",
             "updated_at",
+            "profile_pic"
         ]
 
 
@@ -69,3 +70,14 @@ class LoginSerializer(serializers.Serializer):
             return user
         raise serializers.ValidationError("Incorrect Credentials")
 
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=UserProfile
+        fields=['firstname',"lastname","email","phone_number"]
+
+    # def save(self, **kwargs):
+    #     validated_data=self.validated_data
+        
