@@ -11,7 +11,13 @@ class Teacher(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+
         return f"Teacher- {self.user.firstname}"
+
+
+
+    class Meta:
+        db_table="teachers"
 
 
 # Classroom
@@ -27,6 +33,10 @@ class ClassRoom(models.Model):
 
     def __str__(self):
         return f"Class Teacher- {self.class_teacher.user.firstname}- Class- {self.standard}"
+
+    
+    class Meta:
+        db_table="classrooms"
 
 
 # Student Profile
@@ -48,6 +58,11 @@ class Student(models.Model):
     
     def __str__(self):
         return self.name   
+
+    
+    class Meta:
+        db_table="students"
+
 
 
 
@@ -91,6 +106,11 @@ class Semester(models.Model):
     def __str__(self):
         return f"pk: {self.pk} name: {self.name}"
 
+    
+    class Meta:
+        db_table="semesters"
+
+
 
 # Creating subject related to semester
 class Subject(models.Model):
@@ -105,6 +125,11 @@ class Subject(models.Model):
     def __str__(self):
         return f"pk: {self.pk} name: {self.name}"
 
+    
+    class Meta:
+        db_table="subjects"
+
+
 # # Classroom Page or Assignment connected to Subject
 class ClassroomPage(models.Model):
     title=models.CharField(max_length=400)
@@ -116,12 +141,23 @@ class ClassroomPage(models.Model):
     def __str__(self):
         return f"pk: {self.pk} title: {self.title}"
 
+    
+    class Meta:
+        db_table="classroompages"
+
+
 
 class StudentResponse(models.Model):
     response_text=models.CharField(max_length=200)
 
     student=models.ForeignKey(Student,related_name="responses",on_delete=models.CASCADE)
     classroom_page=models.ForeignKey(ClassroomPage,related_name="responses",on_delete=models.CASCADE)
+
+
+
+    class Meta:
+        db_table="studentresponses"
+
 
 
 
@@ -138,6 +174,11 @@ class Notes(models.Model):
 
     def __str__(self):
         return f"pk: {self.pk} title: {self.name}"
+
+    
+    class Meta:
+        db_table="notes"
+
 
 
 
@@ -159,17 +200,24 @@ class TeacherMembership(models.Model):
 
 
 
+
+
 class Assignment(models.Model):
 
     title=models.CharField(max_length=300)
 
     subject=models.ForeignKey(Subject,on_delete=models.CASCADE,related_name="subjectAssignments")
     teacher=models.ForeignKey(Teacher,on_delete=models.CASCADE,related_name="teacherAssignments")
-
     created_at=models.DateTimeField(auto_now_add=True)
+    deadline=models.DateTimeField()
 
     def __str__(self):
         return self.title
+
+
+    class Meta:
+        db_table="assignments"
+
 
 class Choice(models.Model):
 
@@ -177,6 +225,12 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        db_table="choices"
+        
+
+
 
 class Question(models.Model):
 
@@ -193,8 +247,12 @@ class Question(models.Model):
         return self.question
 
 
+    class Meta:
+        db_table="questions"
+
 
 class Document(models.Model):
+
     title=models.CharField(max_length=100)
     description=models.TextField(max_length=300)
     document_file=models.FileField(upload_to="documents/")
@@ -202,7 +260,22 @@ class Document(models.Model):
     subject=models.ForeignKey(Subject,on_delete=models.CASCADE)
     created_by=models.ForeignKey(Teacher,on_delete=models.CASCADE)
 
-
     created_at=models.DateTimeField(auto_now_add=True)
 
+
+    class Meta:
+        db_table="documents"
+
+
+    
+
+
+class GradedAssignment(models.Model):
+    assignment=models.ForeignKey(Assignment,on_delete=models.DO_NOTHING,related_name="graded_assignments")
+    student=models.ForeignKey(Student,on_delete=models.CASCADE)
+    graded=models.IntegerField()
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table="graded_assignments"
 

@@ -15,11 +15,11 @@ from teachers.permissions import IsTeacher, IsManager
 from rest_framework import permissions
 
 # Models
-from .models import ClassRoom, Student, Teacher, Notes, Assignment
+from .models import ClassRoom, Student, Teacher, Notes, Assignment, GradedAssignment
 from .models import Semester, ClassroomPage, Subject, StudentResponse, Document
 # Serializers
 from .serializers import ClassRoomSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
-from .serializers import NotesSerializer, ClassroomPageSerializer, AssignmentSerializer, QuestionSerializer, DocumentSerializer,TeacherProfileSerializer
+from .serializers import NotesSerializer, ClassroomPageSerializer, AssignmentSerializer, QuestionSerializer, DocumentSerializer, TeacherProfileSerializer
 
 
 from main.serializers import UserProfileSerializer
@@ -519,17 +519,33 @@ class AssignmentAPI(viewsets.ModelViewSet):
                 subject=subject, created_at__date=workDateObj)
             return queryset
 
-    def list(self, request):
+    def list(self, request, *args, **kwargs):
 
-        queryset = self.get_queryset()
+        subject_pk = self.request.query_params.get("subject_pk", None)
+        subject = get_object_or_404(Subject, pk=subject_pk)
 
-        assignmentListData = AssignmentSerializer(queryset, many=True).data
+        currentTeacher = request.user.teacher
+        total_students = len(subject.semester.classroom.students.all())
 
-        if(queryset != None):
-            return Response(assignmentListData)
-        else:
+        if(currentTeacher == subject.subject_teacher):
 
-            return Response("No permission to check notes")
+            assignments = Assignment.objects.filter(subject=subject)
+            assignments_data = []
+
+            for assignment in assignments:
+
+                assignment_data = {"title": assignment.title}
+                assignment_data["total_students"] = total_students
+                assignment_data["no_of_students_submitted"] = len(
+                    assignment.graded_assignments.all())
+
+                assignment_data["created_at"] = assignment.created_at
+                assignment_data["deadline"] = assignment.deadline
+                assignments_data.append(assignment_data)
+
+            return Response(assignments_data)
+
+        return Response([])
 
     def create(self, request, *args, **kwargs):
 
@@ -676,31 +692,27 @@ class DocumentAPI(viewsets.ModelViewSet):
             return Response({"errors": documentForm.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
-
 class TeacherProfile(APIView):
 
-    permission_classes=[permissions.IsAuthenticated,IsTeacher]
-    serializer_class=TeacherProfileSerializer
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+    serializer_class = TeacherProfileSerializer
 
-    def patch(self,request):
+    def patch(self, request):
 
-        data=request.data
+        data = request.data
 
-        teacher=request.user
+        teacher = request.user
 
-        teacherUpdateForm=TeacherProfileSerializer(instance=teacher,data=data,partial=True)
+        teacherUpdateForm = TeacherProfileSerializer(
+            instance=teacher, data=data, partial=True)
 
-        isValidForm=teacherUpdateForm.is_valid()
+        isValidForm = teacherUpdateForm.is_valid()
 
         if(isValidForm):
-            updatedTeacherObj=teacherUpdateForm.save()
+            updatedTeacherObj = teacherUpdateForm.save()
 
             return Response(TeacherProfileSerializer(updatedTeacherObj).data)
 
         else:
-            return Response({"errors":teacherUpdateForm.errors},status=status.HTTP_400_BAD_REQUEST)
-
+            return Response({"errors": teacherUpdateForm.errors}, status=status.HTTP_400_BAD_REQUEST)
 

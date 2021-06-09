@@ -8,8 +8,8 @@ content-type: application/json
 
 
 {
-    "email":"kailash@gmail.com",
-    "password":"kailash@123"
+    "email":"anurag@gmail.com",
+    "password":"anurag@123"
 }
 
 ############
@@ -61,8 +61,8 @@ content-type: application/json
 }
 
 ##############
-GET  http://127.0.0.1:8000/api/classroom/assignments
-Authorization: Token b6163162953d91b2f23baf01a9cf8548879f0c4a371c3b9b6692da7e92e81b80
+GET  http://127.0.0.1:8000/api/classroom/assignments?subject_pk=1
+Authorization: Token f3f39e2922de05a7288d881106fc99fe04202e6a9959aa356c5334a680dd805b
 content-type: application/json
 
 ##############

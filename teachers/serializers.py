@@ -109,9 +109,8 @@ class AssignmentSerializer(ModelSerializer):
         
 
     class Meta:
-        fields = ['title', "subject","created_at","no_of_questions","questions",'teacher_name']
+        fields = ['title', "subject","created_at","no_of_questions","questions",'teacher_name','deadline']
         model = Assignment
-
 
 
 
@@ -166,8 +165,9 @@ class AssignmentSerializer(ModelSerializer):
                         if(choiceForm.is_valid()):
 
                             if(assignmentObj == None):
+
                                 assignmentObj = Assignment.objects.create(
-                                    title=validated_data["title"], subject=validated_data["subject"], teacher=request.user.teacher)
+                                    title=validated_data["title"],deadline=validated_data['deadline'], subject=validated_data["subject"], teacher=request.user.teacher)
 
                             if(questionObj == None):
 
