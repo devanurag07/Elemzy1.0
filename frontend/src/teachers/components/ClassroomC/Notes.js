@@ -34,13 +34,13 @@ function Notes() {
   const workdate = currentSubject.workdate;
   if (notes !== undefined) {
     return (
-      <Grid container className={classes.root} justify="space-around">
+      <Grid container className={classes.root}>
         {notes.map((note) => {
           const noteWorkdate = note.created_at.split("T")[0];
 
           if (workdate == noteWorkdate) {
             return (
-              <Grid item sm={6} md={5} style={{margin:"0.5em 0.5em"}}>
+              <Grid item sm={3} md={3} style={{margin:"0.5em 0.5em"}}>
                 <Note title={note.name} description={note.description} />
               </Grid>
             );

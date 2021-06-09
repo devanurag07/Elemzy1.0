@@ -31,7 +31,7 @@ export const loadUser = () => (dispatch, getState) => {
     config.headers["Authorization"] = `Token ${getState().auth.token}`;
     dispatch({ type: USER_LOADING });
     axios
-      .get("http://127.0.0.1:8000/api/auth/user", config)
+      .get("http://127.0.0.1:8001/api/auth/user", config)
       .then((res) => {
         dispatch({
           type: USER_LOADED,
@@ -48,7 +48,7 @@ export const loadUser = () => (dispatch, getState) => {
     // User Loading
     dispatch({ type: USER_LOADING });
     axios
-      .get("http://127.0.0.1:8000/api/auth/user", tokenConfig(getState))
+      .get("http://127.0.0.1:8001/api/auth/user", tokenConfig(getState))
       .then((res) => {
         dispatch({
           type: USER_LOADED,
@@ -77,7 +77,7 @@ export const login = (email, password) => (dispatch) => {
   const body = JSON.stringify({ email, password });
 
   axios
-    .post("http://127.0.0.1:8000/api/auth/login", body, config)
+    .post("http://127.0.0.1:8001/api/auth/login", body, config)
     .then((res) => {
       dispatch({
         type: LOGIN_SUCCESS,
@@ -122,7 +122,7 @@ export const sendReset = (email) => (dispatch) => {
   const body = JSON.stringify({ email });
 
   axios
-    .post("http://127.0.0.1:8000/api/password_reset/", body, config)
+    .post("http://127.0.0.1:8001/api/password_reset/", body, config)
     .then((res) => {
       dispatch(createMessage({ sendReset: "Email Sent." }));
       dispatch({
@@ -150,7 +150,7 @@ export const passwordReset = (token, password) => (dispatch) => {
   const body = JSON.stringify({ token, password });
 
   axios
-    .post("http://127.0.0.1:8000/api/password_reset/confirm/", body, config)
+    .post("http://127.0.0.1:8001/api/password_reset/confirm/", body, config)
     .then((res) => {
       dispatch(createMessage({ passwordReset: "Password reset successful." }));
       dispatch({
@@ -197,7 +197,7 @@ export const registerStudent = ({
 
   body = JSON.stringify(body);
   axios
-    .post("http://127.0.0.1:8000/api/auth/register", body, config)
+    .post("http://127.0.0.1:8001/api/auth/register", body, config)
     .then((res) => {
       dispatch({
         type: REGISTER_SUCCESS,
@@ -249,7 +249,7 @@ export const registerTeacher = ({
 
   body = JSON.stringify(body);
   axios
-    .post("http://127.0.0.1:8000/api/auth/register", body, config)
+    .post("http://127.0.0.1:8001/api/auth/register", body, config)
     .then((res) => {
       dispatch({
         type: REGISTER_SUCCESS,
@@ -300,7 +300,7 @@ export const registerManager = ({
 
   body = JSON.stringify(body);
   axios
-    .post("http://127.0.0.1:8000/api/auth/register", body, config)
+    .post("http://127.0.0.1:8001/api/auth/register", body, config)
     .then((res) => {
       dispatch({
         type: REGISTER_SUCCESS,
@@ -332,7 +332,7 @@ export const logout = () => (dispatch, getState) => {
     config.headers["Authorization"] = `Token ${getState().auth.token}`;
 
     axios
-      .post("http://127.0.0.1:8000/api/auth/logout", null, config)
+      .post("http://127.0.0.1:8001/api/auth/logout", null, config)
       .then(() => {
         dispatch({ type: LOGOUT_SUCCESS });
       })
@@ -342,7 +342,7 @@ export const logout = () => (dispatch, getState) => {
   } else {
     axios
       .post(
-        "http://127.0.0.1:8000/api/auth/logout",
+        "http://127.0.0.1:8001/api/auth/logout",
         null,
         tokenConfig(getState)
       )

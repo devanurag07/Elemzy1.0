@@ -3,19 +3,25 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-
 import { Grid } from "@material-ui/core";
 
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { useDispatch, useSelector } from "react-redux";
+
+import { setCurrentSubject } from "../actions/classroom";
+
+import "date-fns";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+
+import { setWorkDate } from "../actions/teacherActions";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -25,16 +31,16 @@ const useStyles = makeStyles((theme) => ({
     color: "black",
     paddingTop: "10px",
 
-    "& .classteacherLabel": {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
+    "& .MuiSelect-root": {
+      minWidth: "120px",
+    },
 
-      "& .teacherName": {
-        marginLeft: "3px",
-        fontSize: "1.2em",
-      },
+    "& .MuiSvgIcon-root": {
+      color: "orange",
+    },
+
+    "& .MuiInput-underline:before": {
+      border: "none",
     },
   },
 }));
@@ -48,22 +54,15 @@ export default function ClassroomHeader() {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
-          <Grid container>
-            <Grid item>
+          <Grid container justify="space-around">
+            <Grid item sm={2}>
               <ClassroomSelect />
             </Grid>
 
-            <Grid item sm></Grid>
-            <Grid item className="classteacherLabel">
-              <div>ClassTeacher - </div>
-              {currentClassroom.classroom.class_teacher ? (
-                <div class="teacherName">
-                  {" "}
-                  {currentClassroom.classroom.class_teacher.user.firstname}
-                </div>
-              ) : (
-                <div>Not Selected</div>
-              )}
+            <SemesterSelect />
+
+            <Grid item sm={2}>
+              <SelectWorkDate />
             </Grid>
           </Grid>
         </Toolbar>
@@ -71,20 +70,6 @@ export default function ClassroomHeader() {
     </div>
   );
 }
-
-const useStyles2 = makeStyles((theme) => ({
-  rootGridContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
-
-    "& .label": {
-      color: "black",
-      marginRight: "20px",
-    },
-  },
-}));
 
 const ClassroomSelect = () => {
   const otherClassrooms = useSelector(
@@ -96,12 +81,9 @@ const ClassroomSelect = () => {
   const [classroomId, setClassroomId] = useState();
 
   const handleChange = (e) => {
-    setClassroomId(e.target.value);
-    console.log(e.target.value);
+    const classroomId = e.target.value;
+    setClassroomId(classroomId);
   };
-
-  const classes = useStyles2();
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -118,31 +100,131 @@ const ClassroomSelect = () => {
   return (
     <>
       <FormControl>
-        <Grid contianer className={classes.rootGridContainer}>
-          <Grid item>
-            <div className="label">Classrooom</div>
-          </Grid>
-          <Grid item>
-            <Select
-              id="classroomSelect"
-              value={classroomId}
-              onChange={handleChange}
-            >
-              <MenuItem value={mainClassroom.id}>
-                {mainClassroom.standard}
-              </MenuItem>
+        <InputLabel id="classroomSelect">Classroom</InputLabel>
 
-              {otherClassrooms.map((classroom) => {
-                return (
-                  <MenuItem value={classroom.classroomInfo.id}>
-                    {classroom.classroomInfo.standard}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </Grid>
-        </Grid>
+        <Select
+          id="classroomSelect"
+          labelId="classroomSelect"
+          value={classroomId}
+          onChange={handleChange}
+          placeholder="Classroom"
+        >
+          <MenuItem value={mainClassroom.id}>{mainClassroom.standard}</MenuItem>
+
+          {otherClassrooms.map((classroom) => {
+            return (
+              <MenuItem value={classroom.classroomInfo.id}>
+                {classroom.classroomInfo.standard}
+              </MenuItem>
+            );
+          })}
+        </Select>
       </FormControl>
     </>
   );
 };
+
+const SemesterSelect = () => {
+  // current Selected Classroom Semesters
+  let currentClassroom = useSelector((state) => state.classroom.currentClsrm);
+
+  const semestersList = currentClassroom.semesters
+    ? currentClassroom.semesters
+    : [];
+
+  const [selectedSemesterId, setSelectedSemesterId] = useState(0);
+
+  const handleSemesterChange = (e) => {
+    setSelectedSemesterId(e.target.value);
+  };
+
+  const getSubjectsList = () => {
+    const selectedSemester = semestersList.find(
+      (semester) => semester.pk == selectedSemesterId
+    );
+
+    if (selectedSemester) {
+      const selectedSemesterSubjects = selectedSemester.subjects
+        ? selectedSemester.subjects
+        : [];
+
+      return selectedSemesterSubjects;
+    }
+
+    return [];
+  };
+
+  const [selectedSubjectId, setSelectedSubjectId] = useState([0]);
+
+  const handleSubjectChange = (e) => {
+    const subjectId = e.target.value;
+    setSelectedSubjectId(subjectId);
+  };
+  // Selecting Subject whenever the subject changes
+  useEffect(() => {
+    setCurrentSubject(selectedSubjectId);
+  }, [selectedSubjectId]);
+
+  const subjectsList = getSubjectsList();
+
+  return (
+    <>
+      <Grid item sm={2}>
+        <FormControl>
+          <InputLabel id="semesterSelect">Semester</InputLabel>
+          <Select labelId="semesterSelect" onChange={handleSemesterChange}>
+            {semestersList.map((semester) => {
+              return <MenuItem value={semester.pk}>{semester.name}</MenuItem>;
+            })}
+          </Select>
+        </FormControl>
+      </Grid>
+
+      <Grid item sm={2}>
+        <FormControl>
+          <InputLabel id="subjectSelect">Subject</InputLabel>
+          <Select labelId="subjectSelect" onChange={handleSubjectChange}>
+            {subjectsList.map((subject) => {
+              return <MenuItem value={subject.pk}>{subject.name}</MenuItem>;
+            })}
+          </Select>
+        </FormControl>
+      </Grid>
+    </>
+  );
+};
+
+function SelectWorkDate() {
+  // The first commit of Material-UI
+  const [selectedDate, setSelectedDate] = React.useState(new Date().toJSON());
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+
+    // Getting "dateTtime" - 2014-07-18T23:30:30  = [2014-07-18,23:30:30][0]
+    const timezoneOffset = date.getTimezoneOffset() * 60000;
+    const dateStr = new Date(date - timezoneOffset).toJSON().split("T")[0];
+    setWorkDate(dateStr);
+  };
+
+  useEffect(() => {
+    const date = new Date();
+    handleDateChange(date);
+  }, [""]);
+
+  return (
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <KeyboardDatePicker
+        margin="normal"
+        id="date-picker-dialog"
+        label="Workdate"
+        format="MM-dd-yyyy"
+        value={selectedDate}
+        onChange={handleDateChange}
+        KeyboardButtonProps={{
+          "aria-label": "change date",
+        }}
+      />
+    </MuiPickersUtilsProvider>
+  );
+}

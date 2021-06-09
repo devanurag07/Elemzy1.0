@@ -1,18 +1,32 @@
 import { DialogForm } from "../Form";
-import React, { useState } from "react";
+import React, { useState ,useRef} from "react";
 import { FormControl, TextField, Input } from "@material-ui/core";
 import { createDocument } from "../../actions/teacherActions";
 import { createNotification } from "../../actions/classroom";
 
 import { useSelector } from "react-redux";
+import { Grid, Button, makeStyles } from "@material-ui/core";
 
-function DocumentForm({ open, setOpen }) {
+const useStyles = makeStyles((theme) => ({
+  formTitle: {
+    color: "black",
+    fontSize: "1rem",
+  },
+}));
+
+function DocumentForm() {
   const documentInitData = {
     title: "",
     description: "",
   };
 
   const [formErrors, setFormErrors] = useState({});
+  const classes = useStyles();
+
+  const [documentFormData, setDocumentFormData] = useState(documentInitData);
+  const currentSubject = useSelector((state) => state.classroom.currentSubject);
+
+  const inputFileRef=useRef(null);
 
   const hasFieldError = (fieldname) => {
     const fieldErrorMsg = formErrors[fieldname];
@@ -33,8 +47,6 @@ function DocumentForm({ open, setOpen }) {
     return "";
   };
 
-  const [documentFormData, setDocumentFormData] = useState(documentInitData);
-  const currentSubject = useSelector((state) => state.classroom.currentSubject);
 
   const onTextFieldChange = (e) => {
     setDocumentFormData({
@@ -69,17 +81,16 @@ function DocumentForm({ open, setOpen }) {
   };
 
   const onCreateDocumentSucess = () => {
-    setOpen(false);
     setDocumentFormData(documentInitData);
+    inputFileRef.current.value='';
+    console.log(documentInitData);
   };
 
+
+
   return (
-    <DialogForm
-      open={open}
-      setOpen={setOpen}
-      title="Create Document"
-      onCreateBtnHandler={onCreateBtnHandler}
-    >
+    <form>
+      <div className={classes.formTitle}>Create Document</div>
       <FormControl>
         <TextField
           label="Title"
@@ -87,7 +98,7 @@ function DocumentForm({ open, setOpen }) {
           onChange={onTextFieldChange}
           error={hasFieldError("title")}
           helperText={getFieldErrorMsg("title")}
-       
+          value={documentFormData.title}
         />
       </FormControl>
 
@@ -95,11 +106,12 @@ function DocumentForm({ open, setOpen }) {
         <TextField
           label="Description"
           name="description"
+          multiline
+          rows={6}
           onChange={onTextFieldChange}
-       
           error={hasFieldError("description")}
           helperText={getFieldErrorMsg("description")}
-       
+          value={documentFormData.description}
         />
       </FormControl>
 
@@ -109,13 +121,22 @@ function DocumentForm({ open, setOpen }) {
           color="primary"
           name="document_file"
           onChange={onDocumentFileChange}
-
           error={hasFieldError("document_file")}
           helperText={getFieldErrorMsg("document_file")}
-       
+          ref={inputFileRef}
         />
       </FormControl>
-    </DialogForm>
+      <Grid container style={{ marginTop: "1em" }}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={onCreateBtnHandler}
+          size="small"
+        >
+          Create
+        </Button>
+      </Grid>
+    </form>
   );
 }
 

@@ -12,7 +12,8 @@ const useStyles = makeStyles({
     fontFamily:"Ubuntu",
     minHeight:"10vh",
     padding:"1em",
-    boxShadow: '0px 1px 14px 2px rgb(0 0 0 / 25%)'
+    boxShadow: 'none',
+    background: '#ff990070'
 
   },
   noteTitle:{

@@ -1,84 +1,86 @@
-import React from 'react'
-import {Paper,Grid,Typography,makeStyles} from "@material-ui/core";
+import React from "react";
+import { Paper, Grid, Typography, makeStyles } from "@material-ui/core";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    fontFamily: "Poppins",
+    padding: "1.3em",
+    boxShadow: "none",
 
-const useStyles=makeStyles(theme=>({
+    margin: "1em 0em",
 
-    root:{
-        fontFamily:"Poppins",
-        padding:'1.3em',
-        boxShadow: "0px 1px 14px 2px rgba(0, 0, 0, 0.25)",
-        margin:"1em 0em",
-
-        "& .assignmentTitle":{
-            textTransform: 'uppercase',
-            fontWeight: 405
-        },
-
-        "& .assignmentQuestions":{
-            paddingLeft:"1em",
-            paddingTop:"1px",
-
-            "& .assignmentQuestion":{
-                fontSize: '0.8rem',
-                fontWeight: 405,
-                color: 'gray',
-              
-            }
-        },
-        "& .teacherName":{
-            fontSize:"1em",
-            fontWeight:405
-        }
+    "& .assignmentTitle": {
+      textTransform: "uppercase",
+      fontWeight: 405,
     },
 
-    noOfQuestions:{
-        color:"#2E4ADC",
-        fontSize:"1em",
-        fontWeight:"405",
+    "& .assignmentQuestions": {
+      paddingLeft: "1em",
+      paddingTop: "1px",
 
-    }
-}))
+      "& .assignmentQuestion": {
+        fontSize: "0.8rem",
+        fontWeight: 405,
+        color: "gray",
+      },
+    },
+    "& .teacherName": {
+      fontSize: "1em",
+      fontWeight: 405,
+    },
+  },
 
-function AssignmentDetail({assignment}) {
+  noOfQuestions: {
+    color: "#2E4ADC",
+    fontSize: "1em",
+    fontWeight: "405",
+  },
 
-    const classes=useStyles();
+  subInfo:{
+      fontSize:'0.9rem',
+      color:"gray"
+  }
+}));
 
-    return (
-        <Paper  className={classes.root}>
-            <Typography component="div" className="assignmentTitle">
-                {assignment.title}
-            </Typography>
+function AssignmentDetail({ assignment }) {
+  const classes = useStyles();
 
-            <Typography className={classes.noOfQuestions}>
-                {assignment.no_of_questions} Questions
-            </Typography>
 
-            <div className="assignmentQuestions">
-                {assignment.questions.map((question,index)=>{
+  const assinmentCompletePerc=(Number(assignment.no_of_students_submitted) / Number(assignment.total_students))*100
 
-                    return (
-                        <>
-                            <Typography className="assignmentQuestion">
-                               {index}. {question.question}
-                            </Typography>
-                        </>
-                    )
-                })}
+  return (
+    <Paper className={classes.root}>
+      <Grid container justify="space-between">
+        <Grid item sm={4}>
+          <Typography component="div" className="assignmentTitle">
+            {assignment.title}
+          </Typography>
+        </Grid>
+        <Grid item sm={3}  className={classes.subInfo}>
+          <Typography component="p">
+            {assignment.no_of_students_submitted}/{assignment.total_students} - Submitted
+          </Typography>
+        </Grid>
+
+        <Grid item sm={3}>
+          <Typography component="p" className={classes.subInfo}>
+            {assinmentCompletePerc}%  Completed
+          </Typography>
+        </Grid>
+      </Grid>
+
+
+      <Grid container>
+          <Grid item sm={12}>
+            <div className="barBorder" style={{height:"10px",width:"100%",border:"2px solid",borderRadius:"10px"}}>
+                <div className="bar" style={{height:"6px",width:`${assinmentCompletePerc}%`,background:"green",borderRadius:"10px"}}>
+
+                </div>
             </div>
-
-            <Grid container className="created-by">
-                <Grid item sm></Grid>
-                <Grid item sm={2}>
-                    <Typography variant="p" className="teacherName">
-                        -- {assignment.teacher_name}
-                    </Typography>
-                </Grid>
-
-            </Grid>
-
-        </Paper>
-    )
+          </Grid>
+      </Grid>
+    </Paper>
+  );
 }
 
 export default AssignmentDetail;

@@ -9,8 +9,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     // background: "red",
     padding: "1em 1.5em",
-    margin:"0.75em 0.4em",
-    boxShadow: "0px 1px 14px 2px rgba(0, 0, 0, 0.25)",
+    margin: "0.75em 0.4em",
+    boxShadow: "none",
+    height:"100%",
+    minHeight:"none",
+    background: "#ff990070",
+
     "& .document-title": {
       fontSize: "1rem",
       fontFamily: "Ubuntu",
@@ -35,9 +39,9 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: "505",
     },
 
-    "& .document-filename": {
+    "& .document-filename a": {
       fontSize: "0.9rem",
-      color: "#0065ff",
+      color: "gray",
       textDecoration: "underline",
     },
   },
@@ -67,24 +71,6 @@ const Document = ({ title, description, filepath, created_by }) => {
           </a>
         </div>
       </div>
-
-      <Grid container>
-        <Grid item>
-          <div className="download-btn">
-            <Button variant="contained" color="primary" size="small">
-              Download
-            </Button>
-          </div>
-        </Grid>
-        <Grid item sm></Grid>
-        <Grid item>
-          <div className="created-by">
-            <Typography variant="p">
-              -- {created_by.user.firstname} {created_by.user.lastname}
-            </Typography>
-          </div>
-        </Grid>
-      </Grid>
     </Paper>
   );
 };
@@ -107,7 +93,7 @@ function DocumentsList() {
     if (subject_pk !== undefined) {
       loadDocuments(subject_pk);
     }
-  }, [currentSubject.pk , currentSubject.workdate]);
+  }, [currentSubject.pk, currentSubject.workdate]);
 
   // Work date
   const workdate = currentSubject.workdate;
@@ -118,8 +104,6 @@ function DocumentsList() {
         container
         className={classes.root}
         direction="row"
-        justify="space-around"
-        alignItems="center"
       >
         {subjectDocumentsLst.map((document) => {
           const documentCreatedAt = document.created_at.split("T")[0];
@@ -127,7 +111,7 @@ function DocumentsList() {
           if (workdate == documentCreatedAt) {
             return (
               <>
-                <Grid item sm={5}>
+                <Grid item sm={3}>
                   <Document
                     title={document.title}
                     description={document.description}

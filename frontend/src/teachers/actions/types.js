@@ -12,7 +12,7 @@ export const LOAD_SEMESTERS="LOAD_SEMESTERS";
 export const LOAD_TEACHERS="LOAD_TEACHERS";
 
 
-export const API_URL="http://127.0.0.1:8000"
+export const API_URL="http://127.0.0.1:8001"
 export const ADD_NOTES="ADD_NOTES";
 
 export const SET_SUBJECT="SET_SUBJECT";

@@ -2,13 +2,24 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import QuestionForm from "./QuestionForm";
 import { produce } from "immer";
-import { DialogForm } from "../Form";
 import { createAssignment } from "../../actions/teacherActions";
-
 import { createNotification } from "../../actions/classroom";
 
-import { Button, TextField, FormControl, makeStyles } from "@material-ui/core";
+import {
+  Button,
+  TextField,
+  FormControl,
+  Grid,
+  makeStyles,
+} from "@material-ui/core";
 
+import "date-fns";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,10 +30,19 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiFormControl-root": {
       marginBottom: "0.4em",
     },
+
+    "& .info": {
+      color: "gray",
+    },
+  },
+
+  formTitle: {
+    fontSize: "1.2rem",
+    color: "black",
   },
 }));
 
-const CreateAssignmentForm = ({ open, setOpen }) => {
+const CreateAssignmentForm = () => {
   const currentSubject = useSelector((state) => state.classroom.currentSubject);
   const currentClassroom = useSelector((state) => state.classroom.currentClsrm);
 
@@ -32,6 +52,7 @@ const CreateAssignmentForm = ({ open, setOpen }) => {
   // Form data
   const initialData = {
     title: "" /*Assignment Title*/,
+    deadline: new Date().toJSON(),
 
     // Adding a question empty field this state will be used to render Question component
     questions: [
@@ -86,20 +107,16 @@ const CreateAssignmentForm = ({ open, setOpen }) => {
     });
   };
 
-
   const onCreateBtnHandler = () => {
-
     if (currentSubject.pk !== undefined) {
       // Creating assignment
 
       createAssignment(
         { ...assignmentFormData, subject: currentSubject.pk },
         setFormErrors,
-        setOpen,
         assignmentCreateSucess
       );
     } else {
-
       createNotification("Please select a subject :)", { variant: "warning" });
     }
   };
@@ -111,42 +128,48 @@ const CreateAssignmentForm = ({ open, setOpen }) => {
     });
   };
 
+  const handleDateChange = (date) => {
+    const deadline_date = new Date(date).toJSON();
 
-  const currentSubjectName = currentSubject.name ? currentSubject.name : "No Subject Selected";
-  const currentClassStandard =currentClassroom.classroom.standard  ? currentClassroom.classroom.standard : "No Class Selected"
+    setAssignmentFormData({ ...assignmentFormData, deadline: deadline_date });
+  };
 
-  const hasAssignmentTitleError = assignmentFormData.errors.assignmentErrors ? true : false;
-  const assignmentTitleErrMsg=hasAssignmentTitleError ? assignmentFormData.errors.assignmentErrors.title : "";
+  const currentSubjectName = currentSubject.name
+    ? currentSubject.name
+    : "No Subject Selected";
+  const currentClassStandard = currentClassroom.classroom.standard
+    ? currentClassroom.classroom.standard
+    : "No Class Selected";
+
+  const hasAssignmentTitleError = assignmentFormData.errors.assignmentErrors
+    ? true
+    : false;
+  const assignmentTitleErrMsg = hasAssignmentTitleError
+    ? assignmentFormData.errors.assignmentErrors.title
+    : "";
 
   return (
-    <DialogForm
-      open={open}
-      setOpen={setOpen}
-      className={classes.root}
+    <form
       onCreateBtnHandler={onCreateBtnHandler}
       title={"Create Assignment"}
+      className={classes.root}
     >
+      <div className={classes.formTitle}>Create Assignment</div>
       <div className="info" style={{ paddingTop: "10px" }}>
         Subject : {currentSubjectName}
-
         <div></div>
         Classroom : {currentClassStandard}
-
       </div>
 
       <FormControl>
         <TextField
-
           required
           label="Assignment Name"
           name="title"
-
           value={assignmentFormData.title}
           onChange={handleTitleChange}
-
           error={hasAssignmentTitleError}
           helperText={assignmentTitleErrMsg}
-
         />
       </FormControl>
 
@@ -158,11 +181,39 @@ const CreateAssignmentForm = ({ open, setOpen }) => {
         />
       ))}
 
+      <Grid container>
+        <FormControl>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={addQuestion}
+            size="small"
+          >
+            Add Question
+          </Button>
+        </FormControl>
+      </Grid>
 
-      <Button variant="contained" color="primary" onClick={addQuestion}>
-        Add Question
-      </Button>
-    </DialogForm>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          margin="normal"
+          id="date-picker-dialog"
+          label="Date picker dialog"
+          format="MM/dd/yyyy"
+          value={new Date(assignmentFormData.deadline)}
+          onChange={handleDateChange}
+          KeyboardButtonProps={{
+            "aria-label": "change date",
+          }}
+        />
+      </MuiPickersUtilsProvider>
+
+      <FormControl>
+        <Button variant="outlined" color="primary" onClick={onCreateBtnHandler}>
+          Create
+        </Button>
+      </FormControl>
+    </form>
   );
 };
 

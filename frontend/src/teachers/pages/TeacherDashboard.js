@@ -19,7 +19,7 @@ import { Route } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   // Handling Sidebar and Nav Width
   mainDiv: {
-    marginLeft: "100px",
+    marginLeft: "150px",
     marginTop: "50px",
   },
 }));

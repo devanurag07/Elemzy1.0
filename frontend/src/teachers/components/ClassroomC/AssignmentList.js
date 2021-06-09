@@ -13,12 +13,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     // boxShadow: `0px -1px 8px -2px rgba(0,0,0,0.75);`,
     padding: "0px 30px",
-    paddingTop: "1em",
     minHeight: "90vh",
   },
   assignmentListHeader: {
     letterSpacing: "1px",
     fontWeight: "505",
+    fontSize:"0.8rem"
   },
 }));
 
@@ -49,13 +49,16 @@ function AssignmentList() {
         >
           Assignments List
         </Typography>
+
+
         <Grid container justify="space-around">
           {assignments.map((assignment) => {
-            const assignmentCreatedAtDate = assignment.created_at.split("T")[0];
 
+            const assignmentCreatedAtDate = assignment.created_at.split("T")[0];
+            
             if (workdate == assignmentCreatedAtDate) {
               return (
-                <Grid item sm={10} md={10} lg={5}>
+                <Grid item sm={12} md={12} lg={12}>
                   <AssignmentDetail assignment={assignment} />
                 </Grid>
               );

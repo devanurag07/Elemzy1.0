@@ -97,12 +97,7 @@ export const loadAssignments = (subjectId) => {
     });
 };
 
-export const createAssignment = (
-  assignmentData,
-  setFormErrors,
-  setFormOpen,
-  success
-) => {
+export const createAssignment = (assignmentData, setFormErrors, success) => {
   const config = getTokenConfig();
 
   // Sending request to server with token config and assignment Data
@@ -111,7 +106,7 @@ export const createAssignment = (
     .then((resp) => {
       if (resp.status == 200) {
         // Closing the form dialog
-        setFormOpen(false);
+
         if (resp.data.isCreated) {
           // Addding assignment to state
           const assignmentData = resp.data.data;
@@ -200,6 +195,7 @@ export const createDocument = (
         });
 
         onCreateSucess();
+        setFormErrors({});
       }
     })
     .catch((err) => {
@@ -260,7 +256,7 @@ export const getWorkDate = () => {
   }
 };
 
-export const teacherProfileUpdate = (teacherProfileFormData,setFormErrors) => {
+export const teacherProfileUpdate = (teacherProfileFormData, setFormErrors) => {
   const config = getTokenConfig();
 
   axios
@@ -272,10 +268,10 @@ export const teacherProfileUpdate = (teacherProfileFormData,setFormErrors) => {
     .then((resp) => {
       if (resp.status == 200) {
         console.log("updated");
-        window.location=window.location;
-        createNotification("Profile Updated Successfully",{
-          variant:"success"
-        })
+        window.location = window.location;
+        createNotification("Profile Updated Successfully", {
+          variant: "success",
+        });
       }
     })
     .catch((err) => {
@@ -287,9 +283,9 @@ export const teacherProfileUpdate = (teacherProfileFormData,setFormErrors) => {
             const errors = responseData.errors;
             if (errors) {
               setFormErrors(errors);
-              createNotification("Form Errors",{
-                variant:"error"
-              })
+              createNotification("Form Errors", {
+                variant: "error",
+              });
             }
           }
         }

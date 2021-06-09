@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
-    width: "100px",
+    width: "150px",
     background: "red",
     position: "fixed",
     backgroundColor: "#5992E7",
@@ -45,6 +45,7 @@ const Sidebar = () => {
   return (
     <Paper elevation={0} className={classes.root}>
       <List component="nav" aria-label="main mailbox folders">
+      
         <Link to="/teacher/home">
           <ListItem
             button
