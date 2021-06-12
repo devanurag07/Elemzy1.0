@@ -6,6 +6,9 @@ from main.models import UserProfile
 from rest_framework import serializers
 
 
+from .models import Exam
+
+
 from django.shortcuts import get_object_or_404
 
 
@@ -233,3 +236,11 @@ class TeacherProfileSerializer(ModelSerializer):
     class Meta:
         model=UserProfile
         fields=['firstname','lastname','email','phone_number','profile_pic']
+
+
+class ExamSerializer(ModelSerializer):
+    class Meta:
+        model=Exam
+        # fields="__all__"
+
+        exclude=('teacher',)

@@ -45,7 +45,6 @@ const Sidebar = () => {
   return (
     <Paper elevation={0} className={classes.root}>
       <List component="nav" aria-label="main mailbox folders">
-      
         <Link to="/teacher/home">
           <ListItem
             button
@@ -66,17 +65,37 @@ const Sidebar = () => {
           </ListItem>
         </Link>
 
-
-        <Link to="/teacher/profile">
+        <Link to="/teacher/exams">
           <ListItem
             button
             selected={selectedIndex === 2}
             onClick={(event) => handleListItemClick(event, 2)}
           >
+            <ListItemText primary="Exams"></ListItemText>
+          </ListItem>
+        </Link>
+
+        <Link to="/teacher/profile">
+          <ListItem
+            button
+            selected={selectedIndex === 3}
+            onClick={(event) => handleListItemClick(event, 3)}
+          >
             <ListItemText primary="Profile"></ListItemText>
           </ListItem>
         </Link>
-        
+
+        <Link to="/teacher/timetable">
+          <ListItem
+            button
+            selected={selectedIndex === 4}
+            onClick={(event) => handleListItemClick(event, 4)}
+          >
+            <ListItemText primary="TimeTable"></ListItemText>
+          </ListItem>
+        </Link>
+
+
       </List>
     </Paper>
   );

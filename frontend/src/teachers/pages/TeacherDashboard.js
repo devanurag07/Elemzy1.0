@@ -13,6 +13,8 @@ import Notifications from "../components/Notifications";
 
 import UpdateTeacherProfilePage from "./UpdateTeacherProfilePage"
 import Home from "./Home";
+import Exams from './Exams';
+import TimeTable from "./TimeTable";
 
 import { Route } from "react-router-dom";
 
@@ -25,8 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const TeacherDashboard = () => {
-  const classRoomState = useSelector((state) => state.classroom);
-
+  
   useEffect(() => {
     loadDashboardData();
   }, [""]);
@@ -50,6 +51,13 @@ export const TeacherDashboard = () => {
           <Classroom />
         </Route>
 
+        <Route path="/teacher/exams">
+          <Exams />
+        </Route>
+
+        <Route path="/teacher/timetable">
+          <TimeTable />
+        </Route>
 
         <Route path="/teacher/profile" exact>
           <UpdateTeacherProfilePage />

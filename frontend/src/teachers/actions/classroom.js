@@ -4,14 +4,11 @@ import store from "../../store";
 import {
   LOAD_CLASSROOM,
   LOAD_TEACHERS,
-  ADD_STUDENT,
-  REMOVE_STUDENT,
   LOAD_SEMESTERS,
   API_URL,
   SET_SUBJECT,
-  SET_SELECTED_CLASSROOM,
+  LOAD_EXAMS,
   LOAD_OTHERCLASSROOMS_DATA,
-  LOAD_CURRENT_SUBJECT_NOTES,
 } from "./types";
 
 import axios from "axios";
@@ -162,12 +159,11 @@ export const getOtherClassroomsData = () => {
 
   axios.get(`${API_URL}/api/otherClassrooms`, config).then((resp) => {
     if (resp.status == 200) {
-
-      const otherClassroomsData= resp.data;
+      const otherClassroomsData = resp.data;
 
       dispatch({
         type: LOAD_OTHERCLASSROOMS_DATA,
-        payload:otherClassroomsData,
+        payload: otherClassroomsData,
       });
     }
   });
@@ -182,4 +178,23 @@ export const createNotification = (msg, options) => {
       options: options,
     },
   });
+};
+
+export const loadExams = (subjectId) => {
+  const config = getTokenConfig();
+
+  axios
+    .get(
+      `http://127.0.0.1:8001/api/classroom/exams?subject_pk=${subjectId}`,
+      config
+    )
+    .then((resp) => {
+      const examList = resp.data;
+
+      console.log(examList);
+      dispatch({
+        type: LOAD_EXAMS,
+        payload: examList,
+      });
+    });
 };

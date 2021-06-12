@@ -40,6 +40,8 @@ import {
 import { loadSemesters, addSemester } from "./utils/semester";
 
 import { addSubject, setSelectedSubject } from "./utils/subject";
+import {loadExams,addExam} from "./utils/exam";
+import {LOAD_EXAMS} from "../actions/types";
 
 const initialState = {
   // Main classroom data of teacher
@@ -70,6 +72,9 @@ const initialState = {
   secondaryClassrooms: [],
 
   notificaions: [],
+
+  exams_list:[]
+
 };
 
 export const classRoomReducer = (state = initialState, action) => {
@@ -178,6 +183,12 @@ export const classRoomReducer = (state = initialState, action) => {
     case "ADD_DOCUMENT": {
       return addDocument(state, action);
     }
+
+    case "ADD_EXAM":{
+      return addExam(state,action);
+    }
+    case LOAD_EXAMS:
+      return loadExams(state,action);
 
     default:
       return state;

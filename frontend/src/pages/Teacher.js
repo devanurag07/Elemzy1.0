@@ -35,19 +35,20 @@ theme.typography.subtitle2 = {
     fontSize: '1.2em',
   },
 };
+
 function Teacher() {
 
     // Getting the auth state
     const authState=useSelector((state)=>state.auth);
 
     // if the user is not authenticated
-    if(!(authState.isAuthenticated===true && authState.user.is_teacher===true)){
-        return (
-            <Fragment>
-                <h2>Not Authenticated as Teacher</h2>
-            </Fragment>
-        )
-    }
+    // if(!(authState.isAuthenticated===true && authState.user.is_teacher===true)){
+    //     return (
+    //         <Fragment>
+    //             <h2>Not Authenticated as Teacher</h2>
+    //         </Fragment>
+    //     )
+    // }
 
     return (
       <ThemeProvider theme={theme}>

@@ -26,3 +26,7 @@ export const LOAD_ASSIGNMENTS="LOAD_ASSIGNMENTS";
 
 // Work Date organizing notes,assignments,other etc by date
 export const SET_WORKDATE="SET_WORKDATE";
+
+
+
+export const LOAD_EXAMS = "LOAD_EXAMS";

@@ -3,7 +3,7 @@ GET http://127.0.0.1:8000/api/classroom
 Authorization: Token 358ee3e2210d77c358c53a9184280fe6339e9602cf2916a1d364188a0a5b48b7
 
 #############
-POST http://127.0.0.1:8000/api/auth/login
+POST http://127.0.0.1:8001/api/auth/login
 content-type: application/json
 
 
@@ -85,10 +85,35 @@ content-type: application/json
 
 ####################
 GET   http://127.0.0.1:8000/api/classroom/notes/
-Authorization: Token 2a214de6a2662304ea6fca0c8f9898b7875f4cc6f1b008969f19a261d0bd05f9
+Authorization: Token 120d3523df9d997acf3c10075830c0a14d1f59b8f10b9948e20a954030d5cd4f
 content-type: application/json
  
 {
     "name":"New NOTE",
     "description":"Its a description"
 }
+
+
+
+
+####################
+GET   http://127.0.0.1:8001/api/classroom/exams?subject_pk=3
+Authorization: Token bbfef3f8bdaabeac68eddb1569107a337631c39ba16212c9f64d169500c39598
+content-type: application/json
+ 
+############
+POST    http://127.0.0.1:8001/api/classroom/exams/
+Authorization: Token bbfef3f8bdaabeac68eddb1569107a337631c39ba16212c9f64d169500c39598
+content-type: application/json
+ 
+
+ {
+     "classroom": 1,
+"description": "a",
+"exam_date": "2021-06-19",
+"exam_help_text": "A",
+# "finish_time": "13:53:55.372Z",
+# "start_time": "08:53:55.349Z",
+"subject": 1,
+"title": "a"
+ }

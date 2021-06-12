@@ -293,3 +293,32 @@ export const teacherProfileUpdate = (teacherProfileFormData, setFormErrors) => {
       console.log(err.response.data);
     });
 };
+
+export const createExam = (formData, setFormErrors) => {
+  const config = getTokenConfig();
+
+  axios
+    .post("http://127.0.0.1:8001/api/classroom/exams/", formData, config)
+    .then((resp) => {
+      if (resp.status === 201) {
+        createNotification("Exam successfully created");
+        setFormErrors({})
+
+        const examObj=resp.data;
+        dispatch({type:"ADD_EXAM",payload:examObj});
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.response.status === 400) {
+        if (err.response.data) {
+          const errors = err.response.data.errors;
+
+          if (errors) {
+            console.log(errors);
+            setFormErrors(errors);
+          }
+        }
+      }
+    });
+};

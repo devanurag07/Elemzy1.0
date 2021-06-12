@@ -20,14 +20,15 @@ from .models import Semester, ClassroomPage, Subject, StudentResponse, Document
 # Serializers
 from .serializers import ClassRoomSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
 from .serializers import NotesSerializer, ClassroomPageSerializer, AssignmentSerializer, QuestionSerializer, DocumentSerializer, TeacherProfileSerializer
-
+from .serializers import ExamSerializer
 
 from main.serializers import UserProfileSerializer
 from main.models import UserProfile
 
 from django.shortcuts import get_object_or_404
 import pdb
-# Getting the teacher's classroom
+
+from .models import Exam
 
 
 # Common function
@@ -716,3 +717,72 @@ class TeacherProfile(APIView):
         else:
             return Response({"errors": teacherUpdateForm.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ExamsAPI(viewsets.ModelViewSet):
+
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+    serializer_class = ExamSerializer
+
+    def get_queryset(self):
+
+        currentTeacher = self.request.user.teacher
+        exams_list = Exam.objects.filter(teacher=currentTeacher)
+
+        return exams_list
+
+    def list(self, request):
+
+        subject_pk = self.request.query_params.get("subject_pk", None)
+        currentTeacher = self.request.user.teacher
+
+        if(subject_pk == None):
+
+            classroom = get_classroom(self.request)
+
+            # Getting all exam list created by teacher for his classroom
+            classroom_exams = self.get_queryset().filter(classroom=classroom)
+            classroom_exams_json = ExamSerializer(
+                classroom_exams, many=True).data
+
+            return Response(classroom_exams_json)
+
+        subject = get_object_or_404(Subject, pk=subject_pk)
+        hasSubjectReadPermissions = subject.subject_teacher == currentTeacher
+
+        if(hasSubjectReadPermissions):
+            subject_exams = subject.exams.all()
+            subject_exams_json = ExamSerializer(subject_exams, many=True).data
+
+            return Response(subject_exams_json)
+
+        else:
+
+            return Response("You do not have permission of subject", status=status.HTTP_401_UNAUTHORIZED)
+
+    def create(self, request, *args, **kwargs):
+
+        data = request.data
+        examForm = ExamSerializer(data=data)
+
+        if(examForm.is_valid()):
+
+            logged_in_teacher = request.user.teacher
+            examSubject = examForm.validated_data["subject"].subject_teacher
+
+            if(logged_in_teacher == examSubject):
+                
+                examObj = examForm.save(teacher=logged_in_teacher)
+                # pdb.set_trace(
+                # )
+                examObjJson = ExamSerializer(examObj).data
+                return Response(examObjJson, status=status.HTTP_201_CREATED)
+
+            else:
+
+                return Response("You are not allowed to create exam for this subject :(", status=status.HTTP_401_UNAUTHORIZED)
+
+            return Response('aLL THINGS ALL VALID')
+
+        else:
+
+            return Response({"errors": examForm.errors}, status=status.HTTP_400_BAD_REQUEST)

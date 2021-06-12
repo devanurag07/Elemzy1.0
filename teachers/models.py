@@ -279,3 +279,30 @@ class GradedAssignment(models.Model):
     class Meta:
         db_table="graded_assignments"
 
+
+class Exam(models.Model):
+    classroom=models.ForeignKey(ClassRoom,on_delete=models.CASCADE,related_name="exams")
+    subject=models.ForeignKey(Subject,on_delete=models.CASCADE,related_name="exams")
+    teacher=models.ForeignKey(Teacher,related_name="exams",on_delete=models.CASCADE)
+
+    exam_date=models.DateField()
+    start_time=models.TimeField()
+    finish_time=models.TimeField()
+
+    title=models.CharField(max_length=150)
+    description=models.TextField()
+    exam_help_text=models.TextField()
+
+    class Meta:
+        db_table="exams"
+
+
+class TimeTable(models.Model):
+    classroom=models.OneToOneField(ClassRoom,related_name='timetable',on_delete=models.CASCADE)
+
+class SubjectEntry(models.Model):
+    subject=models.OneToOneField(Subject,related_name="subjct_time",on_delete=models.CASCADE)
+    start_time=models.TimeField()
+    finish_time=models.TimeField()
+    timetable=models.ForeignKey(TimeTable,related_name="subject_entries",on_delete=models.CASCADE)
+

@@ -17,7 +17,6 @@ import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 
@@ -46,9 +45,37 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ClassroomHeader() {
+
   const classes = useStyles();
 
   const currentClassroom = useSelector((state) => state.classroom.currentClsrm);
+  const currentSubject = useSelector((state) => state.classroom.currentSubject);
+
+  // Previously Selected Details
+  const getSelectedDetails = () => {
+    const subjectID = currentSubject.pk;
+
+    const semesters = currentClassroom.semesters;
+
+    for (let semester of semesters) {
+      for (let subject of semester.subjects) {
+        if (subject.pk === subjectID) {
+          console.log({
+            semesterID: semester.pk,
+            subjectID: subject.pk,
+          });
+          return {
+            semesterID: semester.pk,
+            subjectID: subject.pk,
+          };
+        }
+      }
+    }
+
+    return {};
+  };
+
+  const { semesterID, subjectID } = getSelectedDetails();
 
   return (
     <div className={classes.root}>
@@ -59,7 +86,7 @@ export default function ClassroomHeader() {
               <ClassroomSelect />
             </Grid>
 
-            <SemesterSelect />
+            <SemesterSelect semesterID={semesterID} subjectID={subjectID} />
 
             <Grid item sm={2}>
               <SelectWorkDate />
@@ -72,18 +99,23 @@ export default function ClassroomHeader() {
 }
 
 const ClassroomSelect = () => {
+
   const otherClassrooms = useSelector(
     (state) => state.classroom.secondaryClassrooms
   );
-
   const mainClassroom = useSelector((state) => state.classroom.classroom);
+  
+  const currentClsrm = useSelector(
+    (state) => state.classroom.currentClsrm.classroom
+  );
+  
+  const [classroomId, setClassroomId] = useState(-1);
 
-  const [classroomId, setClassroomId] = useState();
-
-  const handleChange = (e) => {
+  const handleClassroomChange = (e) => {
     const classroomId = e.target.value;
     setClassroomId(classroomId);
   };
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -91,11 +123,12 @@ const ClassroomSelect = () => {
       type: "SET_SELECTED_CLASSROOM",
       payload: classroomId,
     });
+
   }, [classroomId]);
 
   useEffect(() => {
-    setClassroomId(mainClassroom.id);
-  }, [mainClassroom.id]);
+    setClassroomId(currentClsrm.id);
+  }, [currentClsrm.id]);
 
   return (
     <>
@@ -106,7 +139,7 @@ const ClassroomSelect = () => {
           id="classroomSelect"
           labelId="classroomSelect"
           value={classroomId}
-          onChange={handleChange}
+          onChange={handleClassroomChange}
           placeholder="Classroom"
         >
           <MenuItem value={mainClassroom.id}>{mainClassroom.standard}</MenuItem>
@@ -124,21 +157,27 @@ const ClassroomSelect = () => {
   );
 };
 
-const SemesterSelect = () => {
-  // current Selected Classroom Semesters
+const SemesterSelect = ({ semesterID, subjectID }) => {
+
+  
   let currentClassroom = useSelector((state) => state.classroom.currentClsrm);
 
+  // current Selected Classroom Semesters
   const semestersList = currentClassroom.semesters
     ? currentClassroom.semesters
     : [];
 
-  const [selectedSemesterId, setSelectedSemesterId] = useState(0);
+  const [selectedSemesterId, setSelectedSemesterId] = useState(
+    semesterID ? semesterID : -1
+  );
 
   const handleSemesterChange = (e) => {
-    setSelectedSemesterId(e.target.value);
+    const semesterID=e.target.value;
+    setSelectedSemesterId(semesterID);
   };
 
   const getSubjectsList = () => {
+    
     const selectedSemester = semestersList.find(
       (semester) => semester.pk == selectedSemesterId
     );
@@ -154,7 +193,9 @@ const SemesterSelect = () => {
     return [];
   };
 
-  const [selectedSubjectId, setSelectedSubjectId] = useState([0]);
+  const [selectedSubjectId, setSelectedSubjectId] = useState(
+    subjectID ? subjectID : -1
+  );
 
   const handleSubjectChange = (e) => {
     const subjectId = e.target.value;
@@ -172,7 +213,11 @@ const SemesterSelect = () => {
       <Grid item sm={2}>
         <FormControl>
           <InputLabel id="semesterSelect">Semester</InputLabel>
-          <Select labelId="semesterSelect" onChange={handleSemesterChange}>
+          <Select
+            labelId="semesterSelect"
+            onChange={handleSemesterChange}
+            value={selectedSemesterId}
+          >
             {semestersList.map((semester) => {
               return <MenuItem value={semester.pk}>{semester.name}</MenuItem>;
             })}
@@ -183,7 +228,11 @@ const SemesterSelect = () => {
       <Grid item sm={2}>
         <FormControl>
           <InputLabel id="subjectSelect">Subject</InputLabel>
-          <Select labelId="subjectSelect" onChange={handleSubjectChange}>
+          <Select
+            labelId="subjectSelect"
+            onChange={handleSubjectChange}
+            value={selectedSubjectId}
+          >
             {subjectsList.map((subject) => {
               return <MenuItem value={subject.pk}>{subject.name}</MenuItem>;
             })}
