@@ -16,11 +16,11 @@ from rest_framework import permissions
 
 # Models
 from .models import ClassRoom, Student, Teacher, Notes, Assignment, GradedAssignment
-from .models import Semester, ClassroomPage, Subject, StudentResponse, Document
+from .models import Semester, ClassroomPage, Subject, StudentResponse, Document, SubjectEntry, TimeTable
 # Serializers
 from .serializers import ClassRoomSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
 from .serializers import NotesSerializer, ClassroomPageSerializer, AssignmentSerializer, QuestionSerializer, DocumentSerializer, TeacherProfileSerializer
-from .serializers import ExamSerializer
+from .serializers import ExamSerializer, SubjectEntrySerializer
 
 from main.serializers import UserProfileSerializer
 from main.models import UserProfile
@@ -264,13 +264,14 @@ class SubjectAPI(viewsets.ModelViewSet):
 
             # Checking if the Subject,semester is of classroom of teacher
             if validated_data["semester"].classroom == classroom:
+
                 # Saving obj
                 subject = subject_form.save()
 
                 # Creating a connection between between teacher and classroom using subject
 
                 # returning data
-                return Response(subject_form.data)
+                return Response(subject_form.data, status=status.HTTP_201_CREATED)
 
             else:
                 # Can't create subject with someone else's semester
@@ -770,7 +771,7 @@ class ExamsAPI(viewsets.ModelViewSet):
             examSubject = examForm.validated_data["subject"].subject_teacher
 
             if(logged_in_teacher == examSubject):
-                
+
                 examObj = examForm.save(teacher=logged_in_teacher)
                 # pdb.set_trace(
                 # )
@@ -786,3 +787,67 @@ class ExamsAPI(viewsets.ModelViewSet):
         else:
 
             return Response({"errors": examForm.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SubjectEntryAPI(viewsets.ModelViewSet):
+
+    serializer_class = SubjectEntrySerializer
+
+    def get_queryset(self):
+
+        classroom = get_classroom(self.request)
+        timetable, created = TimeTable.objects.get_or_create(
+            classroom=classroom)
+        subject_entries = timetable.subject_entries.all()
+
+        return subject_entries
+
+    def create(self, request):
+        data = request.data
+
+        current_classroom = get_classroom(self.request)
+        subject_entry_form = SubjectEntrySerializer(data=data)
+
+        if(subject_entry_form.is_valid()):
+
+            validated_data = subject_entry_form.validated_data
+
+            hasPermission = validated_data['subject'].semester.classroom == current_classroom
+
+            if(hasPermission):
+
+                timetable_obj, created = TimeTable.objects.get_or_create(
+                    classroom=current_classroom)
+                subject_entry = subject_entry_form.save(
+                    timetable=timetable_obj)
+
+                subject_entry_json = SubjectEntrySerializer(subject_entry).data
+
+                return Response(subject_entry_json, status=status.HTTP_201_CREATED)
+
+            else:
+                return Response("You do not have permission ", status=status.HTTP_401_UNAUTHORIZED)
+
+        else:
+
+            return Response({"errors": subject_entry_form.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyTimeTable(APIView):
+
+    serializer_class = SubjectEntrySerializer
+
+    def get_queryset(self):
+
+        classroom = get_classroom(self.request)
+        currentTeacher = self.request.user.teacher
+
+        my_subject_entries = SubjectEntry.objects.filter(
+            subject__subject_teacher=currentTeacher)
+
+        return my_subject_entries
+
+    def get(self, request):
+
+        my_subject_entries = self.get_queryset()
+        return Response(SubjectEntrySerializer(my_subject_entries, many=True).data)

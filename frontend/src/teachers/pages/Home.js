@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Grid, Paper, Typography } from "@material-ui/core";
 
 import StudentList2 from "../components/HomeC/StudentsList2";
+import MyTimeTable from "../components/HomeC/MyTimeTable";
 
 import EducationSvg from "../components/icons/education 1.svg";
 import { makeStyles } from "@material-ui/core/styles";
@@ -41,8 +42,8 @@ function Home() {
   return (
     <>
       <Grid container>
-        <Grid item sm>
-          <StudentList2 />
+        <Grid item sm={4}>
+          <MyTimeTable />
         </Grid>
       </Grid>
     </>

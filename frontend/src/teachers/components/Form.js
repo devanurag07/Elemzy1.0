@@ -77,6 +77,51 @@ export const DialogForm = (props) => {
   );
 };
 
+
+
+export const PopUpForm = (props)=>{
+
+    
+  const classes=useStyles();
+  const {open,setOpen,onCreateBtnHandler,title} = props;
+  
+  return (
+      // Open close if open true dialog will pop up
+      <Dialog open={open} onClose={()=>setOpen(false)}  className={classes.root}>
+
+
+          <DialogContent>
+
+              <Typography variant="h6" color="textSecondary">
+                  {title}
+              </Typography>
+
+              <form>
+                  {props.children}
+              </form>
+              
+
+          </DialogContent>
+
+          <DialogActions>
+
+              {/* SUbmit data btn  */}
+              <Button variant="outlined" color="primary" size="small" onClick={onCreateBtnHandler}>
+                  Create
+              </Button>
+
+              {/* Dialog Close Btn */}
+              <Button variant="text" onClick={()=>setOpen(false)} size="small">
+                  Close
+              </Button>
+
+          </DialogActions>
+      </Dialog>
+  
+  )
+}
+
+
 // Main semester form
 export const SemesterForm = ({ open, setOpen }) => {
   // Name property is reffered to semester name
@@ -147,7 +192,7 @@ export const SubjectForm = ({ open, setOpen }) => {
   };
 
   return (
-    <DialogForm
+    <PopUpForm
       open={open}
       setOpen={setOpen}
       title={"Create Subject"}
@@ -173,7 +218,7 @@ export const SubjectForm = ({ open, setOpen }) => {
           value={data.subject_teacher}
         >
           {classroomState.teachers.map((teacher) => (
-            <MenuItem value={teacher.pk}>{teacher.name}</MenuItem>
+            <MenuItem value={teacher.id}>{teacher.user.firstname}</MenuItem>
           ))}
         </Select>
 
@@ -192,7 +237,7 @@ export const SubjectForm = ({ open, setOpen }) => {
           </Select>
         </FormControl>
       </FormControl>
-    </DialogForm>
+    </PopUpForm>
   );
 };
 

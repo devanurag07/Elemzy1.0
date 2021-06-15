@@ -43,10 +43,12 @@ export const createSubject = (data) => {
     .then((resp) => {
       const subjectData = resp.data;
 
-      dispatch({
-        type: ADD_SUBJECT,
-        payload: subjectData,
-      });
+      if (resp.status == 201) {
+        dispatch({
+          type: ADD_SUBJECT,
+          payload: subjectData,
+        });
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -302,10 +304,10 @@ export const createExam = (formData, setFormErrors) => {
     .then((resp) => {
       if (resp.status === 201) {
         createNotification("Exam successfully created");
-        setFormErrors({})
+        setFormErrors({});
 
-        const examObj=resp.data;
-        dispatch({type:"ADD_EXAM",payload:examObj});
+        const examObj = resp.data;
+        dispatch({ type: "ADD_EXAM", payload: examObj });
       }
     })
     .catch((err) => {
@@ -321,4 +323,64 @@ export const createExam = (formData, setFormErrors) => {
         }
       }
     });
+};
+
+export const createSubjectEntry = (formData, setFormErrors) => {
+  const config = getTokenConfig();
+
+  axios
+    .post("http://127.0.0.1:8001/api/classroom/timetable/", formData, config)
+    .then((resp) => {
+      if (resp.status === 201) {
+        createNotification("SubjectEntry successfully created");
+        setFormErrors({});
+
+        dispatch({
+          type: "ADD_SUBJECT_ENTRY",
+          payload: resp.data,
+        });
+      }
+    })
+    .catch((err) => {
+      if (err.response.status === 400) {
+        if (err.response.data) {
+          const errors = err.response.data.errors;
+          if (errors) {
+            console.log(errors);
+            setFormErrors(errors);
+          }
+        }
+      }
+    });
+};
+
+export const loadSubjectEntries = () => {
+  const config = getTokenConfig();
+
+  axios
+    .get("http://127.0.0.1:8001/api/classroom/timetable/", config)
+    .then((resp) => {
+      const subjectEntries = resp.data;
+      console.log(subjectEntries);
+      dispatch({
+        type: "LOAD_TIMETABLE",
+        payload: subjectEntries,
+      });
+    })
+    .catch((err) => {});
+};
+
+export const loadMyTimeTable = () => {
+  const config = getTokenConfig();
+
+  axios
+    .get("http://127.0.0.1:8001/api/classroom/mytimetable", config)
+    .then((resp) => {
+      const subjectEntries = resp.data;
+      dispatch({
+        type: "LOAD_MYTIMETABLE",
+        payload: subjectEntries,
+      });
+    })
+    .catch((err) => {});
 };

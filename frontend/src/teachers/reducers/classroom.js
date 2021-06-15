@@ -24,7 +24,7 @@ import {
   loadOtherClassroomsData,
   addStudent,
   removeStudent,
-  loadTeachers
+  loadTeachers,
 } from "./utils/classroom";
 
 import {
@@ -40,8 +40,13 @@ import {
 import { loadSemesters, addSemester } from "./utils/semester";
 
 import { addSubject, setSelectedSubject } from "./utils/subject";
-import {loadExams,addExam} from "./utils/exam";
-import {LOAD_EXAMS} from "../actions/types";
+import { loadExams, addExam } from "./utils/exam";
+import { LOAD_EXAMS } from "../actions/types";
+import {
+  loadSubjectEntries,
+  addSubjectEntry,
+  loadMyTimeTable,
+} from "./utils/subjectEntry";
 
 const initialState = {
   // Main classroom data of teacher
@@ -73,8 +78,9 @@ const initialState = {
 
   notificaions: [],
 
-  exams_list:[]
-
+  exams_list: [],
+  subject_entries: [],
+  mytimetable: [],
 };
 
 export const classRoomReducer = (state = initialState, action) => {
@@ -184,12 +190,19 @@ export const classRoomReducer = (state = initialState, action) => {
       return addDocument(state, action);
     }
 
-    case "ADD_EXAM":{
-      return addExam(state,action);
+    case "ADD_EXAM": {
+      return addExam(state, action);
     }
     case LOAD_EXAMS:
-      return loadExams(state,action);
+      return loadExams(state, action);
 
+    case "LOAD_TIMETABLE":
+      return loadSubjectEntries(state, action);
+
+    case "LOAD_MYTIMETABLE":
+      return loadMyTimeTable(state, action);
+    case "ADD_SUBJECT_ENTRY":
+      return addSubjectEntry(state, action);
     default:
       return state;
   }

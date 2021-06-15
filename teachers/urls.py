@@ -8,7 +8,8 @@ from .api import (SemesterAPI,
                   ClassroomStudentsAPI,
                   DocumentAPI,
                   TeacherProfile,
-                  ExamsAPI)
+                  ExamsAPI,
+                  SubjectEntryAPI, MyTimeTable)
 
 
 from rest_framework.routers import DefaultRouter
@@ -21,6 +22,8 @@ router.register("classroom/assignments", AssignmentAPI, basename="assignments")
 router.register("classroom/students", ClassroomStudentsAPI, basename="student")
 router.register("classroom/documents", DocumentAPI, basename="documents")
 router.register("classroom/exams", ExamsAPI, basename="exams")
+router.register("classroom/timetable", SubjectEntryAPI, basename="timetable")
+
 # router.register("classroom/assignments",GradedAssingmentView,basename="assignments")
 
 
@@ -30,6 +33,7 @@ urlpatterns = [
     path("teacherslist", api.TeachersList.as_view()),
     path("otherClassrooms", SecondaryClassroom.as_view()),
     path("teacherProfileUpdate", TeacherProfile.as_view()),
+    path("classroom/mytimetable", MyTimeTable.as_view(), name="mytimetable")
 
 ]
 

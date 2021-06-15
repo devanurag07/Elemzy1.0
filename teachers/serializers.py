@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
 from .models import ClassRoom, Student, Semester, Subject, Teacher, ClassroomPage
-from .models import Notes, Assignment, Question, Choice,Document
+from .models import Notes, Assignment, Question, Choice, Document, SubjectEntry
 from main.serializers import UserProfileSerializer
 from main.models import UserProfile
 from rest_framework import serializers
@@ -14,20 +14,20 @@ from django.shortcuts import get_object_or_404
 
 class StudentSerializer(ModelSerializer):
 
-    user_detail = UserProfileSerializer(source='user',many=False,read_only=True)
-
+    user_detail = UserProfileSerializer(
+        source='user', many=False, read_only=True)
 
     class Meta:
         model = Student
-        fields = ["id","name","firstname","lastname","fathers_name","roll_no","user","user_detail","student_id","classroom"]
-
+        fields = ["id", "name", "firstname", "lastname", "fathers_name",
+                  "roll_no", "user", "user_detail", "student_id", "classroom"]
 
 
 class NotesSerializer(ModelSerializer):
 
     class Meta:
         model = Notes
-        fields = ["pk", "name", "description", "subject","created_at"]
+        fields = ["pk", "name", "description", "subject", "created_at"]
 
 
 class TeacherSerializer(ModelSerializer):
@@ -41,11 +41,13 @@ class TeacherSerializer(ModelSerializer):
 
 class SubjectSerializer(ModelSerializer):
 
-    subject_teacher = TeacherSerializer(read_only=True)
+    subject_teacher_detail = TeacherSerializer(
+        source='subject_teacher', read_only=True)
 
     class Meta:
         model = Subject
-        fields = ["pk", "name", "subject_teacher", "semester"]
+        fields = ["pk", "name", "subject_teacher",
+                  "semester", "subject_teacher_detail"]
 
 
 class SemesterSerializer(ModelSerializer):
@@ -93,29 +95,28 @@ class QuestionSerializer(ModelSerializer):
 
 class AssignmentSerializer(ModelSerializer):
 
-    no_of_questions=serializers.SerializerMethodField()
-    questions=serializers.SerializerMethodField()
-    teacher_name=serializers.SerializerMethodField()
+    no_of_questions = serializers.SerializerMethodField()
+    questions = serializers.SerializerMethodField()
+    teacher_name = serializers.SerializerMethodField()
 
-    def get_no_of_questions(self,assignment):
+    def get_no_of_questions(self, assignment):
         return len(assignment.assignmentQuestions.all())
 
-    def get_questions(self,assignment):
-        assingmentQuestions=assignment.assignmentQuestions.all()
-        assingmentQuestionsData=QuestionSerializer(assingmentQuestions,many=True).data
+    def get_questions(self, assignment):
+        assingmentQuestions = assignment.assignmentQuestions.all()
+        assingmentQuestionsData = QuestionSerializer(
+            assingmentQuestions, many=True).data
 
         return assingmentQuestionsData
 
-    def get_teacher_name(self,assignment):
+    def get_teacher_name(self, assignment):
 
         return assignment.teacher.user.firstname
-        
 
     class Meta:
-        fields = ['title', "subject","created_at","no_of_questions","questions",'teacher_name','deadline']
+        fields = ['title', "subject", "created_at",
+                  "no_of_questions", "questions", 'teacher_name', 'deadline']
         model = Assignment
-
-
 
     def create(self, validated_data):
 
@@ -143,7 +144,7 @@ class AssignmentSerializer(ModelSerializer):
             # Helpful to return errors
             questionKey = str(questionData['key'])
             errors.setdefault(
-                questionKey, {"answer": {"error":False}, "choices": {"error":False}, "question": {"error":False}})
+                questionKey, {"answer": {"error": False}, "choices": {"error": False}, "question": {"error": False}})
 
             questionForm = QuestionSerializer(data=questionData)
 
@@ -170,7 +171,7 @@ class AssignmentSerializer(ModelSerializer):
                             if(assignmentObj == None):
 
                                 assignmentObj = Assignment.objects.create(
-                                    title=validated_data["title"],deadline=validated_data['deadline'], subject=validated_data["subject"], teacher=request.user.teacher)
+                                    title=validated_data["title"], deadline=validated_data['deadline'], subject=validated_data["subject"], teacher=request.user.teacher)
 
                             if(questionObj == None):
 
@@ -189,22 +190,27 @@ class AssignmentSerializer(ModelSerializer):
 
                         else:
 
-                            errorMsg="\n".join(["\n".join(err_list) for err_list in choiceForm.errors.values()])
-                            
-                            errors[questionKey]["choices"][choiceData['key']] = {"error":True,"msg":errorMsg}
+                            errorMsg = "\n".join(
+                                ["\n".join(err_list) for err_list in choiceForm.errors.values()])
+
+                            errors[questionKey]["choices"][choiceData['key']] = {
+                                "error": True, "msg": errorMsg}
 
                 else:
 
                     errors.setdefault(questionKey, {""})
 
-                    errorMsg="\n".join(["\n".join(err_list) for err_list in answerForm.errors.values()])
-                    errors[questionKey]["answer"] =  {"error":True,"msg":errorMsg}
-
+                    errorMsg = "\n".join(["\n".join(err_list)
+                                         for err_list in answerForm.errors.values()])
+                    errors[questionKey]["answer"] = {
+                        "error": True, "msg": errorMsg}
 
             else:
 
-                errorMsg="\n".join(["\n".join(err_list) for err_list in questionForm.errors.values()])
-                errors[questionKey]["question"] =  {"error":True,"msg":errorMsg}
+                errorMsg = "\n".join(["\n".join(err_list)
+                                     for err_list in questionForm.errors.values()])
+                errors[questionKey]["question"] = {
+                    "error": True, "msg": errorMsg}
 
         # If assignmentObj createc return it
         if (isCreated):
@@ -216,31 +222,53 @@ class AssignmentSerializer(ModelSerializer):
             raise ValidationError("Validation error")
 
 
-
-
-
 class DocumentSerializer(ModelSerializer):
 
-    teacher_detail=TeacherSerializer(source="created_by",read_only=True,many=False)
+    teacher_detail = TeacherSerializer(
+        source="created_by", read_only=True, many=False)
 
     class Meta:
-        model=Document
-        fields="__all__"
-        
-        include='teacher_detail'
+        model = Document
+        fields = "__all__"
 
+        include = 'teacher_detail'
 
 
 class TeacherProfileSerializer(ModelSerializer):
 
     class Meta:
-        model=UserProfile
-        fields=['firstname','lastname','email','phone_number','profile_pic']
+        model = UserProfile
+        fields = ['firstname', 'lastname',
+                  'email', 'phone_number', 'profile_pic']
 
 
 class ExamSerializer(ModelSerializer):
     class Meta:
-        model=Exam
+        model = Exam
         # fields="__all__"
 
-        exclude=('teacher',)
+        exclude = ('teacher',)
+
+
+class SubjectEntrySerializer(ModelSerializer):
+
+    subject_name = serializers.SerializerMethodField()
+    teacher_name = serializers.SerializerMethodField()
+    semester_name = serializers.SerializerMethodField()
+
+    def get_subject_name(self, subject_entry):
+        subject = subject_entry.subject
+        return subject.name
+
+    def get_teacher_name(self, subject_entry):
+        subject_teacher = subject_entry.subject.subject_teacher
+        return subject_teacher.user.firstname
+
+    def get_semester_name(self, subject_entry):
+        semester = subject_entry.subject.semester
+        return semester.name
+
+    class Meta:
+        model = SubjectEntry
+        fields = ['subject', 'start_time', 'finish_time',
+                  'subject_name', 'teacher_name', 'semester_name']

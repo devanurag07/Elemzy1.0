@@ -300,9 +300,13 @@ class Exam(models.Model):
 class TimeTable(models.Model):
     classroom=models.OneToOneField(ClassRoom,related_name='timetable',on_delete=models.CASCADE)
 
+    class Meta:
+        db_table="TimeTable"
 class SubjectEntry(models.Model):
     subject=models.OneToOneField(Subject,related_name="subjct_time",on_delete=models.CASCADE)
     start_time=models.TimeField()
     finish_time=models.TimeField()
     timetable=models.ForeignKey(TimeTable,related_name="subject_entries",on_delete=models.CASCADE)
 
+    class Meta:
+        db_table="SubjectEntries"
