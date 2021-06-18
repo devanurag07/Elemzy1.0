@@ -1,7 +1,6 @@
 import { Paper, Typography, Grid, makeStyles } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { loadExams } from "../../actions/classroom";
 
 const examListStyles = makeStyles((theme) => ({
   root: {
@@ -26,17 +25,9 @@ const examListStyles = makeStyles((theme) => ({
 }));
 
 function ExamList() {
-  const currentSubject = useSelector((state) => state.classroom.currentSubject);
   const examsList = useSelector((state) => state.classroom.exams_list);
 
   const classes = examListStyles();
-
-  useEffect(() => {
-    const selectedSubjectId = currentSubject.pk;
-    if (selectedSubjectId) {
-      loadExams(selectedSubjectId);
-    }
-  }, [currentSubject.pk]);
 
   return (
     <div>

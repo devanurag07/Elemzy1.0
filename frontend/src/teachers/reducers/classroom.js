@@ -70,7 +70,7 @@ const initialState = {
   // Selected classroom
   currentClsrm: {
     semesters: [], // Semesters of Selected Classroom
-    classroom: [], // Classroom data like students list
+    classroom: {} // Classroom data like students list
   },
 
   // This contains the list of other classrooms - teacher can teach

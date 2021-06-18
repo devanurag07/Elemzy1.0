@@ -11,12 +11,14 @@ import "../css/style.scss";
 import Classroom from "./Classroom";
 import Notifications from "../components/Notifications";
 
-import UpdateTeacherProfilePage from "./UpdateTeacherProfilePage"
+import UpdateTeacherProfilePage from "./UpdateTeacherProfilePage";
 import Home from "./Home";
-import Exams from './Exams';
+import Exams from "./Exams";
 import TimeTable from "./TimeTable";
+import Results from "./Results";
 
 import { Route } from "react-router-dom";
+import { loadExams } from "../actions/classroom";
 
 const useStyles = makeStyles((theme) => ({
   // Handling Sidebar and Nav Width
@@ -27,10 +29,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const TeacherDashboard = () => {
-  
   useEffect(() => {
     loadDashboardData();
   }, [""]);
+
+  const currentSubject = useSelector((state) => state.classroom.currentSubject);
+
+  useEffect(() => {
+    const selectedSubjectId = currentSubject.pk;
+    if (selectedSubjectId) {
+      loadExams(selectedSubjectId);
+    }
+  }, [currentSubject.pk]);
 
   const classes = useStyles();
 
@@ -59,10 +69,13 @@ export const TeacherDashboard = () => {
           <TimeTable />
         </Route>
 
+        <Route path="/teacher/results">
+          <Results />
+        </Route>
+
         <Route path="/teacher/profile" exact>
           <UpdateTeacherProfilePage />
         </Route>
-        
       </div>
     </Fragment>
   );

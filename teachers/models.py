@@ -279,6 +279,7 @@ class GradedAssignment(models.Model):
     class Meta:
         db_table="graded_assignments"
 
+# //Exams 
 
 class Exam(models.Model):
     classroom=models.ForeignKey(ClassRoom,on_delete=models.CASCADE,related_name="exams")
@@ -297,11 +298,46 @@ class Exam(models.Model):
         db_table="exams"
 
 
+class DocumentResult(models.Model):
+    
+    exam=models.OneToOneField(Exam,on_delete=models.CASCADE,related_name="document_result")
+    document=models.FileField(upload_to="result_documents/")
+
+
+    class Meta:
+        db_table="document_results"
+
+
+class ManualResult(models.Model):
+    exam=models.OneToOneField(Exam,on_delete=models.CASCADE,related_name="manual_result")
+    max_marks=models.IntegerField()
+
+
+    class Meta:
+        db_table="manual_results"
+
+
+class ResultRow(models.Model):
+    result=models.ForeignKey(ManualResult,related_name="result_rows",on_delete=models.CASCADE)
+    marks=models.IntegerField()
+    student=models.ForeignKey(Student,on_delete=models.CASCADE)
+
+
+    class Meta:
+        db_table="result_rows"
+
+
+
+
+# //Exams exit
+
 class TimeTable(models.Model):
     classroom=models.OneToOneField(ClassRoom,related_name='timetable',on_delete=models.CASCADE)
 
     class Meta:
         db_table="TimeTable"
+
+
 class SubjectEntry(models.Model):
     subject=models.OneToOneField(Subject,related_name="subjct_time",on_delete=models.CASCADE)
     start_time=models.TimeField()

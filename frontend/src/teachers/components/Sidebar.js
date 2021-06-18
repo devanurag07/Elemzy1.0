@@ -96,6 +96,17 @@ const Sidebar = () => {
         </Link>
 
 
+
+        <Link to="/teacher/results">
+          <ListItem
+            button
+            selected={selectedIndex === 5}
+            onClick={(event) => handleListItemClick(event, 5)}
+          >
+            <ListItemText primary="Results"></ListItemText>
+          </ListItem>
+        </Link>
+
       </List>
     </Paper>
   );

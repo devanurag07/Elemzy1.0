@@ -98,7 +98,7 @@ export default function ClassroomHeader() {
   );
 }
 
-const ClassroomSelect = () => {
+export const ClassroomSelect = () => {
 
   const otherClassrooms = useSelector(
     (state) => state.classroom.secondaryClassrooms
@@ -157,7 +157,7 @@ const ClassroomSelect = () => {
   );
 };
 
-const SemesterSelect = ({ semesterID, subjectID }) => {
+export const SemesterSelect = ({ semesterID, subjectID }) => {
 
   
   let currentClassroom = useSelector((state) => state.classroom.currentClsrm);
