@@ -37,11 +37,9 @@ const QuestionForm = ({ questionFormData, data, setData }) => {
   };
 
   const addChoice = () => {
-
     const newState = produce(data, (draft) => {
       for (let question of draft.questions) {
         if (question.key == questionFormData.key) {
-
           // Pushing the choice
           question.choices.push({
             key: question.choices.length,
@@ -101,6 +99,8 @@ const QuestionForm = ({ questionFormData, data, setData }) => {
           //Error handling
           error={hasQuestionFieldErr}
           helperText={questionFieldErrMsg}
+          variant="outlined"
+          size="small"
         />
       </FormControl>
 
@@ -113,6 +113,8 @@ const QuestionForm = ({ questionFormData, data, setData }) => {
           //Error handling
           error={hasAnswerFieldErr}
           helperText={answerFieldErrMsg}
+          variant="outlined"
+          size="small"
         />
       </FormControl>
 

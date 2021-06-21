@@ -2,14 +2,14 @@ from django.urls import path, include
 from . import api
 from .api import (SemesterAPI,
                   SubjectAPI, NotesAPI,
-                  ClassroomPageView, SecondaryClassroom,
+                  SecondaryClassroom,
                   AssignmentAPI,
                   GlobalStudentsAPI,
                   ClassroomStudentsAPI,
                   DocumentAPI,
                   TeacherProfile,
                   ExamsAPI,
-                  SubjectEntryAPI, MyTimeTable)
+                  SubjectEntryAPI, MyTimeTable,HolisticRankingAPI)
 
 
 from rest_framework.routers import DefaultRouter
@@ -23,6 +23,7 @@ router.register("classroom/students", ClassroomStudentsAPI, basename="student")
 router.register("classroom/documents", DocumentAPI, basename="documents")
 router.register("classroom/exams", ExamsAPI, basename="exams")
 router.register("classroom/timetable", SubjectEntryAPI, basename="timetable")
+router.register("classroom/holisticranking", HolisticRankingAPI, basename="holistic_ranking")
 
 # router.register("classroom/assignments",GradedAssingmentView,basename="assignments")
 

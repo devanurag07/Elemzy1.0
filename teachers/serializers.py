@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
 from .models import ClassRoom, Student, Semester, Subject, Teacher, ClassroomPage
-from .models import Notes, Assignment, Question, Choice, Document, SubjectEntry
+from .models import Notes, Assignment, Question, Choice, Document, SubjectEntry, RankingDocument
 from main.serializers import UserProfileSerializer
 from main.models import UserProfile
 from rest_framework import serializers
@@ -27,7 +27,7 @@ class NotesSerializer(ModelSerializer):
 
     class Meta:
         model = Notes
-        fields = ["pk", "name", "description", "subject", "created_at"]
+        fields = ["pk", "name", "description", "subject", "created_at","chapter_no"]
 
 
 class TeacherSerializer(ModelSerializer):
@@ -250,6 +250,7 @@ class ExamSerializer(ModelSerializer):
         exclude = ('teacher',)
 
 
+# TimeTable Block Subject start_time-finish_time
 class SubjectEntrySerializer(ModelSerializer):
 
     subject_name = serializers.SerializerMethodField()
@@ -272,3 +273,9 @@ class SubjectEntrySerializer(ModelSerializer):
         model = SubjectEntry
         fields = ['subject', 'start_time', 'finish_time',
                   'subject_name', 'teacher_name', 'semester_name']
+
+
+class RankingDocumentSerializer(ModelSerializer):
+    class Meta:
+        model = RankingDocument
+        fields = "__all__"

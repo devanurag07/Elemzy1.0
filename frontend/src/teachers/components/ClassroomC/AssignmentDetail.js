@@ -36,17 +36,27 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "405",
   },
 
-  subInfo:{
-      fontSize:'0.9rem',
-      color:"gray"
-  }
+  subInfo: {
+    fontSize: "0.9rem",
+    color: "gray",
+  },
+
+  progressBarBg: {
+    height: "10px",
+    width: "100%",
+    borderRadius: "10px",
+    background: "#c5c5c5",
+  },
+  progressBar: {},
 }));
 
 function AssignmentDetail({ assignment }) {
   const classes = useStyles();
 
-
-  const assinmentCompletePerc=(Number(assignment.no_of_students_submitted) / Number(assignment.total_students))*100
+  const assinmentCompletePerc =
+    (Number(assignment.no_of_students_submitted) /
+      Number(assignment.total_students)) *
+    100;
 
   return (
     <Paper className={classes.root}>
@@ -56,28 +66,34 @@ function AssignmentDetail({ assignment }) {
             {assignment.title}
           </Typography>
         </Grid>
-        <Grid item sm={3}  className={classes.subInfo}>
+        <Grid item sm={3} className={classes.subInfo}>
           <Typography component="p">
-            {assignment.no_of_students_submitted}/{assignment.total_students} - Submitted
+            {assignment.no_of_students_submitted}/{assignment.total_students} -
+            Submitted
           </Typography>
         </Grid>
 
         <Grid item sm={3}>
           <Typography component="p" className={classes.subInfo}>
-            {assinmentCompletePerc}%  Completed
+            {assinmentCompletePerc}% Completed
           </Typography>
         </Grid>
       </Grid>
 
-
       <Grid container>
-          <Grid item sm={12}>
-            <div className="barBorder" style={{height:"10px",width:"100%",border:"2px solid",borderRadius:"10px"}}>
-                <div className="bar" style={{height:"6px",width:`${assinmentCompletePerc}%`,background:"green",borderRadius:"10px"}}>
-
-                </div>
-            </div>
-          </Grid>
+        <Grid item sm={12}>
+          <div className={classes.progressBarBg}>
+            <div
+              className="bar"
+              style={{
+                height: "10px",
+                width: `${assinmentCompletePerc}%`,
+                background: "#52cc52",
+                borderRadius: "10px",
+              }}
+            ></div>
+          </div>
+        </Grid>
       </Grid>
     </Paper>
   );

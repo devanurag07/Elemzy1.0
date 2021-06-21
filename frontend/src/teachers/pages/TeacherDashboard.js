@@ -16,6 +16,7 @@ import Home from "./Home";
 import Exams from "./Exams";
 import TimeTable from "./TimeTable";
 import Results from "./Results";
+import Ranking from "./Ranking";
 
 import { Route } from "react-router-dom";
 import { loadExams } from "../actions/classroom";
@@ -71,6 +72,10 @@ export const TeacherDashboard = () => {
 
         <Route path="/teacher/results">
           <Results />
+        </Route>
+
+        <Route path="/teacher/ranking">
+          <Ranking />
         </Route>
 
         <Route path="/teacher/profile" exact>

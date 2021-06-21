@@ -12,6 +12,7 @@ import {
 import { returnErrors, createMessage } from "../../actions/messages";
 import store from "../../store";
 import { config } from "react-transition-group";
+import produce from "immer";
 
 const dispatch = store.dispatch;
 
@@ -55,7 +56,7 @@ export const createSubject = (data) => {
     });
 };
 
-export const createNotes = (data) => {
+export const createNotes = (data, setFormErrors) => {
   const config = getTokenConfig();
 
   axios
@@ -70,6 +71,16 @@ export const createNotes = (data) => {
       }
     })
     .catch((err) => {
+      if (err.response.status == 400) {
+        const respData = err.response.data;
+        if (respData) {
+          const formErrors = respData.errors;
+
+          if (formErrors) {
+            setFormErrors(formErrors);
+          }
+        }
+      }
       // dispatch(createMessage("You can't create the notes for this class",err.response.status))
     });
 };
@@ -321,6 +332,12 @@ export const createExam = (formData, setFormErrors) => {
             setFormErrors(errors);
           }
         }
+      } else {
+        if (err.response.status === 401) {
+          createNotification(err.response.data, { variant: "error" });
+          setFormErrors({});
+
+        }
       }
     });
 };
@@ -383,4 +400,53 @@ export const loadMyTimeTable = () => {
       });
     })
     .catch((err) => {});
+};
+
+export const loadRankingData = (std_pk, setRankingData) => {
+  const config = getTokenConfig();
+
+  axios
+    .get(`${API_URL}/api/classroom/holisticranking/${std_pk}/`, config)
+    .then((resp) => {
+      if (resp.status == 200) {
+        setRankingData(resp.data);
+        console.log(resp.data);
+      }
+    });
+};
+
+export const approveDocument = async (rankingDocPk) => {
+  const config = getTokenConfig();
+
+  const data = {
+    approved: true,
+  };
+  const resp = await axios.put(
+    `${API_URL}/api/classroom/holisticranking/${rankingDocPk}/`,
+    data,
+    config
+  );
+
+  if (resp.status == 200) {
+    return resp.data;
+  }
+  return {};
+};
+
+export const rejectDocument = async (rankingDocPk) => {
+  const config = getTokenConfig();
+
+  const data = {
+    rejected: true,
+  };
+  const resp = await axios.put(
+    `${API_URL}/api/classroom/holisticranking/${rankingDocPk}/`,
+    data,
+    config
+  );
+
+  if (resp.status == 200) {
+    return resp.data;
+  }
+  return {};
 };

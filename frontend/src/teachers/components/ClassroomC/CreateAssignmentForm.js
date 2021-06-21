@@ -40,6 +40,16 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.2rem",
     color: "black",
   },
+
+  createAssignBtn: {
+    background: "#ff6b00",
+
+    "&:hover": {
+      background: "white",
+      border: "2px solid #ff6b00",
+      color: "#ff6b00",
+    },
+  },
 }));
 
 const CreateAssignmentForm = () => {
@@ -150,11 +160,9 @@ const CreateAssignmentForm = () => {
 
   return (
     <form
-      onCreateBtnHandler={onCreateBtnHandler}
-      title={"Create Assignment"}
       className={classes.root}
     >
-      <div className={classes.formTitle}>Create Assignment</div>
+      <div className={classes.formTitle}>Add a new Assignment</div>
       <div className="info" style={{ paddingTop: "10px" }}>
         Subject : {currentSubjectName}
         <div></div>
@@ -170,6 +178,9 @@ const CreateAssignmentForm = () => {
           onChange={handleTitleChange}
           error={hasAssignmentTitleError}
           helperText={assignmentTitleErrMsg}
+          variant="outlined"
+
+          size="medium"
         />
       </FormControl>
 
@@ -185,7 +196,7 @@ const CreateAssignmentForm = () => {
         <FormControl>
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             onClick={addQuestion}
             size="small"
           >
@@ -209,7 +220,12 @@ const CreateAssignmentForm = () => {
       </MuiPickersUtilsProvider>
 
       <FormControl>
-        <Button variant="outlined" color="primary" onClick={onCreateBtnHandler}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={onCreateBtnHandler}
+          className={classes.createAssignBtn}
+        >
           Create
         </Button>
       </FormControl>

@@ -45,6 +45,9 @@ export const loadDashboardData = () => {
     .get(`${API_URL}/api/classroom/semester`, config)
     .then((resp) => {
       if (resp.status === 200) {
+
+        console.log("Semester Data")
+        console.log(resp.data);
         dispatch({
           type: LOAD_SEMESTERS,
           payload: resp.data,

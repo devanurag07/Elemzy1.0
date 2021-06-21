@@ -84,8 +84,8 @@ content-type: application/json
 
 
 ####################
-GET   http://127.0.0.1:8000/api/classroom/notes/
-Authorization: Token 120d3523df9d997acf3c10075830c0a14d1f59b8f10b9948e20a954030d5cd4f
+POST   http://127.0.0.1:8001/api/classroom/notes/
+Authorization: Token fe0515dacce707e768bafc241e7441d3021c51f56e17ccf70138d795140f396b
 content-type: application/json
  
 {
@@ -103,7 +103,7 @@ content-type: application/json
  
 ############
 POST    http://127.0.0.1:8001/api/classroom/exams/
-Authorization: Token bbfef3f8bdaabeac68eddb1569107a337631c39ba16212c9f64d169500c39598
+Authorization: Token 6e9055ea216da918c6000081847498f8285e91d19432d56baa19b3293cdcbf0b
 content-type: application/json
  
 
@@ -117,3 +117,14 @@ content-type: application/json
 "subject": 1,
 "title": "a"
  }
+
+
+####################
+PATCH  http://127.0.0.1:8001/api/classroom/holisticranking/1/
+Authorization: Token 6e9055ea216da918c6000081847498f8285e91d19432d56baa19b3293cdcbf0b
+content-type: application/json
+
+{
+    "approved":true
+    
+}

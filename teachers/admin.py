@@ -6,10 +6,10 @@ from .models import (ClassroomPage, Semester,
                      Question,
                      Assignment,
                      Choice, Document,
-                     Exam,DocumentResult,ResultRow,ManualResult)
+                     Exam,DocumentResult,ResultRow,ManualResult,RankingDocument)
 
 # Register your models here.
 
 admin.site.register([Teacher, ClassRoom, Student, ClassroomPage, Notes, Semester,
                     Subject, StudentResponse, Question, Assignment, Choice, Document, GradedAssignment,Exam,
-                    DocumentResult,ResultRow,ManualResult])
+                    DocumentResult,ResultRow,ManualResult,RankingDocument])

@@ -15,12 +15,12 @@ from teachers.permissions import IsTeacher, IsManager
 from rest_framework import permissions
 
 # Models
-from .models import ClassRoom, Student, Teacher, Notes, Assignment, GradedAssignment
+from .models import ClassRoom, Student, Teacher, Notes, Assignment, GradedAssignment, RankingDocument
 from .models import Semester, ClassroomPage, Subject, StudentResponse, Document, SubjectEntry, TimeTable
 # Serializers
 from .serializers import ClassRoomSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
 from .serializers import NotesSerializer, ClassroomPageSerializer, AssignmentSerializer, QuestionSerializer, DocumentSerializer, TeacherProfileSerializer
-from .serializers import ExamSerializer, SubjectEntrySerializer
+from .serializers import ExamSerializer, SubjectEntrySerializer, RankingDocumentSerializer
 
 from main.serializers import UserProfileSerializer
 from main.models import UserProfile
@@ -64,15 +64,9 @@ class TeacherClassroom(generics.GenericAPIView):
         Teacher Classroom
 
         GET - Getting the classroom {"classroom":"classroom_info","students":"students info"}
-        PUT - adding and removing students from classroom
-        {
-            "type":"add_student",
-            "student_id":10
-        }
 
 
     """
-
     # Checking if the user is teacher
     permission_classes = [
         permissions.IsAuthenticated,
@@ -100,7 +94,6 @@ class TeacherClassroom(generics.GenericAPIView):
             user = request.user
             # users teacher profile
             teacher = user.teacher
-
             # teachers classroom
             classroom = teacher.classroom
 
@@ -163,15 +156,18 @@ class SemesterAPI(viewsets.ModelViewSet):
     serializer_class = SemesterSerializer
 
     def get_queryset(self):
-        queryset = Semester.objects.all().filter(classroom=get_classroom(self.request))
-        return queryset
+
+        classroom = get_classroom(self.request)
+        semesters = Semester.objects.filter(classroom=classroom)
+
+        return semesters
 
     def list(self, request, *args, **kwargs):
 
-        queryset = self.get_queryset()
-        semesters = SemesterSerializer(queryset, many=True)
+        semesters = self.get_queryset()
+        semesters_data = SemesterSerializer(semesters, many=True).data
 
-        return Response(semesters.data)
+        return Response(semesters_data)
     # POst request
     # creating Semester object (teacher and classroom are default set)
 
@@ -181,14 +177,13 @@ class SemesterAPI(viewsets.ModelViewSet):
         semester_form = SemesterSerializer(data=data)
 
         if semester_form.is_valid():
+
             classroom = self.get_classroom(request)
             semester = semester_form.save(teacher=request.user.teacher,
                                           classroom=classroom)
 
             return Response(semester_form.data)
-
         else:
-
             return Response(semester_form.errors)
 
     # Put request
@@ -201,15 +196,20 @@ class SemesterAPI(viewsets.ModelViewSet):
 
         # Update line
         semester_form = SemesterSerializer(instance, data=data)
+
         if semester_form.is_valid():
 
             classroom = self.get_classroom(request)
             # Setting classroom and teacher to current
-            semester = semester_form.save(teacher=request.user.teacher,
-                                          classroom=classroom)
+            if(instance.teacher == request.user.teacher):
 
-            return Response(semester_form.data)
+                semester = semester_form.save(teacher=request.user.teacher,
+                                              classroom=classroom)
 
+                return Response(semester_form.data)
+
+            else:
+                return Response("You do not have any permission to do this", status=status.HTTP_401_UNAUTHORIZED)
         else:
             # Returning form errors
             return Response(semester_form.errors)
@@ -240,15 +240,14 @@ class SubjectAPI(viewsets.ModelViewSet):
     def get_queryset(self, *args, **kwargs):
         # Filtering Subjects by CLASSROOM
         classroom = self.get_classroom(request=self.request)
-        return Subject.objects.all().filter(semester__classroom=classroom)
+        return Subject.objects.filter(semester__classroom=classroom)
 
     def list(self, request):
 
         subjects = self.get_queryset()
+        subjects_data = SubjectSerializer(subjects, many=True).data
 
-        subjects_data = SubjectSerializer(subjects, many=True)
-
-        return Response(subjects_data.data)
+        return Response(subjects_data)
 
     def create(self, request):
 
@@ -267,7 +266,6 @@ class SubjectAPI(viewsets.ModelViewSet):
 
                 # Saving obj
                 subject = subject_form.save()
-
                 # Creating a connection between between teacher and classroom using subject
 
                 # returning data
@@ -279,6 +277,7 @@ class SubjectAPI(viewsets.ModelViewSet):
                     "The semester does not belongs to your classroom")
 
         else:
+
             # Returning form errors
             return Response(subject_form.errors)
 
@@ -300,8 +299,8 @@ class SubjectAPI(viewsets.ModelViewSet):
             if validated_data["semester"].classroom == classroom:
 
                 subject = subject_form.save()
-
                 return Response(subject_form.data)
+
             else:
 
                 raise PermissionDenied(
@@ -363,7 +362,7 @@ class NotesAPI(viewsets.ModelViewSet):
 
         else:
 
-            return Response(notes_form.errors)
+            return Response({"errors": notes_form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request):
         queryset = self.get_queryset()
@@ -402,30 +401,7 @@ class NotesAPI(viewsets.ModelViewSet):
             return teacher_notes
 
 
-class ClassroomPageView(viewsets.ModelViewSet):
-
-    permission_classes = [permissions.IsAuthenticated, IsTeacher]
-
-    serializer_class = ClassroomPageSerializer
-
-    def get_queryset(self):
-
-        current_teacher = self.request.user.teacher
-
-        queryset = (ClassroomPage.objects.filter(subject__subject_teacher=current_teacher) |
-                    ClassroomPage.objects.filter(subject__semester__classroom=get_classroom(self.request)))
-
-        return queryset
-
-    def create(self, request):
-
-        data = request.data
-
-        classroom_page = ClassroomPageSerializer(data=data)
-
-
 # Information about other classrooms teacher is selected to
-
 class SecondaryClassroom(APIView):
 
     permission_classes = [permissions.IsAuthenticated, IsTeacher]
@@ -591,7 +567,6 @@ class AssignmentAPI(viewsets.ModelViewSet):
 
 
 # To add students to class
-
 class ClassroomStudentsAPI(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsTeacher]
     serializer_class = StudentSerializer
@@ -735,10 +710,9 @@ class ExamsAPI(viewsets.ModelViewSet):
 
         subject_pk = self.request.query_params.get("subject_pk", None)
         currentTeacher = self.request.user.teacher
+        classroom = get_classroom(self.request)
 
         if(subject_pk == None):
-
-            classroom = get_classroom(self.request)
 
             # Getting all exam list created by teacher for his classroom
             classroom_exams = self.get_queryset().filter(classroom=classroom)
@@ -748,7 +722,8 @@ class ExamsAPI(viewsets.ModelViewSet):
             return Response(classroom_exams_json)
 
         subject = get_object_or_404(Subject, pk=subject_pk)
-        hasSubjectReadPermissions = subject.subject_teacher == currentTeacher
+        hasSubjectReadPermissions = (subject.subject_teacher == currentTeacher
+                                     or subject.semester.classroom == classroom)
 
         if(hasSubjectReadPermissions):
             subject_exams = subject.exams.all()
@@ -837,6 +812,8 @@ class MyTimeTable(APIView):
 
     serializer_class = SubjectEntrySerializer
 
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+
     def get_queryset(self):
 
         classroom = get_classroom(self.request)
@@ -851,3 +828,67 @@ class MyTimeTable(APIView):
 
         my_subject_entries = self.get_queryset()
         return Response(SubjectEntrySerializer(my_subject_entries, many=True).data)
+
+
+class HolisticRankingAPI(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+    serializer_class = RankingDocumentSerializer
+
+    ordering = ('-pk',)
+
+    def get_queryset(self):
+
+        return RankingDocument.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        return Response("Not Allowed", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def retrieve(self, request, pk=None, *args, **kwargs):
+
+        if(pk == None):
+            return Response("Nothing to show", status=status.HTTP_400_BAD_REQUEST)
+
+        student = get_object_or_404(Student, pk=pk)
+        classroom = get_classroom(request)
+
+        if(student.classroom == classroom):
+
+            ranking_documents = student.ranking_documents.all().order_by('-id')
+            documents_data = RankingDocumentSerializer(
+                ranking_documents, many=True).data
+
+            return Response(documents_data)
+
+        else:
+            return Response("You do not have permission to check ranking of this student", status=status.HTTP_401_UNAUTHORIZED)
+
+    def update(self, request, pk=None, *args, **kwargs):
+
+        if(pk == None):
+            return Response("Nothing to update", status=status.HTTP_400_BAD_REQUEST)
+
+        ranking_document = get_object_or_404(RankingDocument, pk=pk)
+        classroom = get_classroom(request)
+
+        if(ranking_document.student.classroom == classroom):
+            update_info = request.data
+
+            approved = update_info.get("approved", False)
+            rejected = update_info.get("rejected", False)
+
+            if(approved):
+                ranking_document.approved = True
+                ranking_document.pending = False
+                ranking_document.save()
+
+            elif (rejected):
+                ranking_document.approved = False
+                ranking_document.pending = False
+                ranking_document.save()
+
+            ranking_document_data = RankingDocumentSerializer(
+                ranking_document).data
+            return Response(ranking_document_data, status=status.HTTP_200_OK)
+
+        else:
+            return Response("You do not have any permission to approve the document", status=status.HTTP_401_UNAUTHORIZED)

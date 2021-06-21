@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     "& .MuiSvgIcon-root": {
-      color: "orange",
+      color: "#ff6b00",
     },
 
     "& .MuiInput-underline:before": {
@@ -45,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ClassroomHeader() {
-
   const classes = useStyles();
 
   const currentClassroom = useSelector((state) => state.classroom.currentClsrm);
@@ -53,17 +52,12 @@ export default function ClassroomHeader() {
 
   // Previously Selected Details
   const getSelectedDetails = () => {
-    const subjectID = currentSubject.pk;
-
+    const currentSubjectID = currentSubject.pk;
     const semesters = currentClassroom.semesters;
 
     for (let semester of semesters) {
       for (let subject of semester.subjects) {
-        if (subject.pk === subjectID) {
-          console.log({
-            semesterID: semester.pk,
-            subjectID: subject.pk,
-          });
+        if (subject.pk === currentSubjectID) {
           return {
             semesterID: semester.pk,
             subjectID: subject.pk,
@@ -104,11 +98,11 @@ export const ClassroomSelect = () => {
     (state) => state.classroom.secondaryClassrooms
   );
   const mainClassroom = useSelector((state) => state.classroom.classroom);
-  
+
   const currentClsrm = useSelector(
     (state) => state.classroom.currentClsrm.classroom
   );
-  
+
   const [classroomId, setClassroomId] = useState(-1);
 
   const handleClassroomChange = (e) => {
@@ -123,7 +117,6 @@ export const ClassroomSelect = () => {
       type: "SET_SELECTED_CLASSROOM",
       payload: classroomId,
     });
-
   }, [classroomId]);
 
   useEffect(() => {
@@ -142,7 +135,7 @@ export const ClassroomSelect = () => {
           onChange={handleClassroomChange}
           placeholder="Classroom"
         >
-          <MenuItem value={mainClassroom.id}>{mainClassroom.standard}</MenuItem>
+          <MenuItem value={mainClassroom.id} style={{color:"red"}}>My Class - {mainClassroom.standard} </MenuItem>
 
           {otherClassrooms.map((classroom) => {
             return (
@@ -158,8 +151,6 @@ export const ClassroomSelect = () => {
 };
 
 export const SemesterSelect = ({ semesterID, subjectID }) => {
-
-  
   let currentClassroom = useSelector((state) => state.classroom.currentClsrm);
 
   // current Selected Classroom Semesters
@@ -172,12 +163,11 @@ export const SemesterSelect = ({ semesterID, subjectID }) => {
   );
 
   const handleSemesterChange = (e) => {
-    const semesterID=e.target.value;
+    const semesterID = e.target.value;
     setSelectedSemesterId(semesterID);
   };
 
   const getSubjectsList = () => {
-    
     const selectedSemester = semestersList.find(
       (semester) => semester.pk == selectedSemesterId
     );

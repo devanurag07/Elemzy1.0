@@ -1,5 +1,5 @@
 import { DialogForm } from "../Form";
-import React, { useState ,useRef} from "react";
+import React, { useState, useRef } from "react";
 import { FormControl, TextField, Input } from "@material-ui/core";
 import { createDocument } from "../../actions/teacherActions";
 import { createNotification } from "../../actions/classroom";
@@ -8,10 +8,32 @@ import { useSelector } from "react-redux";
 import { Grid, Button, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    "& .MuiFormControl-root": {
+      marginTop: "0.4em",
+      width: "100%",
+    },
+  },
   formTitle: {
     color: "black",
-    fontSize: "1rem",
+    fontSize: "1.2rem",
   },
+  uploadBtn: {
+    background: "#ff6b00",
+
+    "&:hover": {
+      background: "white",
+      border: "2px solid #ff6b00",
+      color: "#ff6b00",
+    },
+  },
+
+  selectDocument:{
+    color: 'white',
+    background: '#3a65ff',
+    fontSize: '1.2rem',
+    padding: '0.3em 0.9rem'
+  }
 }));
 
 function DocumentForm() {
@@ -26,7 +48,7 @@ function DocumentForm() {
   const [documentFormData, setDocumentFormData] = useState(documentInitData);
   const currentSubject = useSelector((state) => state.classroom.currentSubject);
 
-  const inputFileRef=useRef(null);
+  const inputFileRef = useRef(null);
 
   const hasFieldError = (fieldname) => {
     const fieldErrorMsg = formErrors[fieldname];
@@ -46,7 +68,6 @@ function DocumentForm() {
 
     return "";
   };
-
 
   const onTextFieldChange = (e) => {
     setDocumentFormData({
@@ -82,15 +103,30 @@ function DocumentForm() {
 
   const onCreateDocumentSucess = () => {
     setDocumentFormData(documentInitData);
-    inputFileRef.current.value='';
-    console.log(documentInitData);
+    inputFileRef.current.value = "";
   };
 
+  const onSelectDocClick = () => {
+    inputFileRef.current.click();
+  };
 
+  const getDocumentFilename = () => {
+    const document_file = documentFormData.document_file;
+    if (document_file) {
+      const filename = document_file.name;
+      if (filename) {
+        return filename.slice(0,30)+"...";
+      }
+      return null;
+    }
+    return null;
+  };
+
+  const documentFilename = getDocumentFilename();
 
   return (
-    <form>
-      <div className={classes.formTitle}>Create Document</div>
+    <form className={classes.root}>
+      <div className={classes.formTitle}>Add Documents</div>
       <FormControl>
         <TextField
           label="Title"
@@ -99,6 +135,8 @@ function DocumentForm() {
           error={hasFieldError("title")}
           helperText={getFieldErrorMsg("title")}
           value={documentFormData.title}
+          variant="outlined"
+          size="small"
         />
       </FormControl>
 
@@ -112,11 +150,13 @@ function DocumentForm() {
           error={hasFieldError("description")}
           helperText={getFieldErrorMsg("description")}
           value={documentFormData.description}
+          variant="outlined"
+          size="small"
         />
       </FormControl>
 
       <FormControl>
-        <Input
+        {/* <Input
           type="file"
           color="primary"
           name="document_file"
@@ -124,16 +164,23 @@ function DocumentForm() {
           error={hasFieldError("document_file")}
           helperText={getFieldErrorMsg("document_file")}
           ref={inputFileRef}
-        />
+        /> */}
+
+        <input type="file" ref={inputFileRef} onChange={onDocumentFileChange} style={{display:"none"}}/>
+
+        <div className={classes.selectDocument} onClick={onSelectDocClick}>
+          {documentFilename ? documentFilename : "Select Document"}
+        </div>
+
       </FormControl>
       <Grid container style={{ marginTop: "1em" }}>
         <Button
-          variant="outlined"
+          variant="contained"
           color="primary"
           onClick={onCreateBtnHandler}
-          size="small"
+          className={classes.uploadBtn}
         >
-          Create
+          Add Document
         </Button>
       </Grid>
     </form>

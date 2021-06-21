@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme) => ({
       minHeight: "None",
       
     },
+
   },
 }));
 
@@ -37,7 +38,6 @@ function Notes() {
       <Grid container className={classes.root}>
         {notes.map((note) => {
           const noteWorkdate = note.created_at.split("T")[0];
-
           if (workdate == noteWorkdate) {
             return (
               <Grid item sm={3} md={3} style={{margin:"0.5em 0.5em"}}>

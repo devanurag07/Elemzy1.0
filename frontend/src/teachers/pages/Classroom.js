@@ -1,9 +1,9 @@
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 
 import React, { useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import SubjectHeader from "../components/ClassroomC/SubjectHeader";
+import ClassroomNav from "../components/ClassroomC/ClassroomNav";
 
 import ClassroomHeader from "../components/ClassroomHeader";
 import DocumentsList from "../components/ClassroomC/DocumentsList";
@@ -25,12 +25,16 @@ const useStyles = makeStyles((theme) => ({
   subjectDropdown: {
     minHeight: "100vh",
   },
+  classheading: {
+    fontSize: "1.8rem",
+    color: "#ff6b00",
+    padding: "1em 0.3em",
+    fontFamily: "'Roboto Condensed'",
+  },
 }));
 
 function Classroom() {
   const classes = useStyles();
-  const [formOpen, setFormOpen] = useState(false);
-
   return (
     <>
       <Grid container className={classes.root}>
@@ -38,9 +42,13 @@ function Classroom() {
           <SubjectDropdown />
         </Grid> */}
 
+        <Typography variant="h5" className={classes.classheading}>
+          Classes
+        </Typography>
+
         <Grid item sm={12} style={{ padding: "10px" }} justify="center">
           <ClassroomHeader />
-          <SubjectHeader style={{ marginTop: "1.4em" }} />
+          <ClassroomNav style={{ marginTop: "1.4em" }} />
 
           <Switch>
             <Route path="/teacher/classroom/asssignmentList">
