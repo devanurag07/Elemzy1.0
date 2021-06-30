@@ -66,14 +66,9 @@ class App extends Component {
                 <main>
                   <Route exact path="/" component={Home} />
                   <Route path="/login" component={Login} />
-                  <Route path="/registerStudent" component={RegisterStudent} />
-                  <Route path="/registerTeacher" component={RegisterTeacher} />
-                  <Route path="/registerManager" component={RegisterManager} />
                   <Route path="/forgotpassword" component={Forgot} />
                   <Route path="/logout" component={Logout} />
                   <Route path="/student" component={Student} />
-                  <Route path="/teacher" component={Teacher} />
-                  <Route path="/manager" component={Manager} />
                 </main>
               </Router>
             </Fragment>

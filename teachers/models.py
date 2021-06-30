@@ -162,7 +162,7 @@ class StudentResponse(models.Model):
 class Notes(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=500)
-    chapter_no=models.IntegerField()
+    chapter_no = models.IntegerField()
 
     created_by = models.ForeignKey(
         Teacher, on_delete=models.CASCADE, related_name="notes")
@@ -264,7 +264,7 @@ class GradedAssignment(models.Model):
     assignment = models.ForeignKey(
         Assignment, on_delete=models.DO_NOTHING, related_name="graded_assignments")
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    graded = models.IntegerField()
+    points = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -298,6 +298,7 @@ class DocumentResult(models.Model):
     exam = models.OneToOneField(
         Exam, on_delete=models.CASCADE, related_name="document_result")
     document = models.FileField(upload_to="result_documents/")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "document_results"

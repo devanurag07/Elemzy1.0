@@ -16,7 +16,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 
-
 import {
   createSemester,
   createSubject,
@@ -77,50 +76,40 @@ export const DialogForm = (props) => {
   );
 };
 
+export const PopUpForm = (props) => {
+  const classes = useStyles();
+  const { open, setOpen, onCreateBtnHandler, title } = props;
 
-
-export const PopUpForm = (props)=>{
-
-    
-  const classes=useStyles();
-  const {open,setOpen,onCreateBtnHandler,title} = props;
-  
   return (
-      // Open close if open true dialog will pop up
-      <Dialog open={open} onClose={()=>setOpen(false)}  className={classes.root}>
+    // Open close if open true dialog will pop up
+    <Dialog open={open} onClose={() => setOpen(false)} className={classes.root}>
+      <DialogContent>
+        <Typography variant="h6" color="textSecondary">
+          {title}
+        </Typography>
 
+        <form>{props.children}</form>
+      </DialogContent>
 
-          <DialogContent>
+      <DialogActions>
+        {/* SUbmit data btn  */}
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={onCreateBtnHandler}
+        >
+          Create
+        </Button>
 
-              <Typography variant="h6" color="textSecondary">
-                  {title}
-              </Typography>
-
-              <form>
-                  {props.children}
-              </form>
-              
-
-          </DialogContent>
-
-          <DialogActions>
-
-              {/* SUbmit data btn  */}
-              <Button variant="outlined" color="primary" size="small" onClick={onCreateBtnHandler}>
-                  Create
-              </Button>
-
-              {/* Dialog Close Btn */}
-              <Button variant="text" onClick={()=>setOpen(false)} size="small">
-                  Close
-              </Button>
-
-          </DialogActions>
-      </Dialog>
-  
-  )
-}
-
+        {/* Dialog Close Btn */}
+        <Button variant="text" onClick={() => setOpen(false)} size="small">
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 // Main semester form
 export const SemesterForm = ({ open, setOpen }) => {
@@ -240,5 +229,3 @@ export const SubjectForm = ({ open, setOpen }) => {
     </PopUpForm>
   );
 };
-
-

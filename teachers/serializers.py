@@ -27,7 +27,8 @@ class NotesSerializer(ModelSerializer):
 
     class Meta:
         model = Notes
-        fields = ["pk", "name", "description", "subject", "created_at","chapter_no"]
+        fields = ["pk", "name", "description",
+                  "subject", "created_at", "chapter_no"]
 
 
 class TeacherSerializer(ModelSerializer):
@@ -110,7 +111,6 @@ class AssignmentSerializer(ModelSerializer):
         return assingmentQuestionsData
 
     def get_teacher_name(self, assignment):
-
         return assignment.teacher.user.firstname
 
     class Meta:
