@@ -1,6 +1,5 @@
 import { Fragment } from "react";
 import React from "react";
-import Nav from "../components/Nav";
 import { loadDashboardData } from "../actions/classroom";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -24,8 +23,10 @@ import { loadExams } from "../actions/classroom";
 const useStyles = makeStyles((theme) => ({
   // Handling Sidebar and Nav Width
   mainDiv: {
-    marginLeft: "150px",
-    marginTop: "50px",
+    marginLeft: "160px",
+    borderTopLeftRadius: "2em",
+    boxShadow: "0px -1px 1px 0px",
+    padding: "2em 1em",
   },
 }));
 
@@ -48,7 +49,6 @@ export const TeacherDashboard = () => {
   return (
     <Fragment>
       <Notifications />
-      <Nav />
 
       <Sidebar />
 

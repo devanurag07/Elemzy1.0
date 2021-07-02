@@ -1,125 +1,109 @@
+import { makeStyles } from "@material-ui/core";
 import React from "react";
-import { Paper, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Grid, Typography, Paper } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-
+import Divider from "@material-ui/core/Divider";
+import InboxIcon from "@material-ui/icons/Inbox";
+import DraftsIcon from "@material-ui/icons/Drafts";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
-    width: "150px",
-    background: "red",
+    padding: "1em",
     position: "fixed",
-    backgroundColor: "#5992E7",
-    color: "white",
+    top: "0",
 
-    "& .MuiListItemText-primary": {
-      fontFamily: "Ubuntu",
-      fontWeight: "505",
-      fontSize: "1em",
+    "& .MuiListItem-button": {
+      paddingLeft: "0px",
+    },
+    "& .MuiListItemIcon-root": {
+      minWidth: "35px",
+    },
+    "& .MuiList-root": {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-around",
     },
 
     "& a": {
+      color: "gray",
       textDecoration: "none",
-      color: "white",
+
+      "&:hover": {
+        textDecoration: "none",
+      },
     },
   },
-
-  listItemLink: {
-    textDecoration: "none",
+  mainLogo: {
+    color: "#ff6b00",
+    boxShadow: "none",
   },
 }));
 
-const Sidebar = () => {
+// Hello
+function Sidebar() {
   const classes = useStyles();
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
-
-  const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
-  };
-
   return (
-    <Paper elevation={0} className={classes.root}>
-      <List component="nav" aria-label="main mailbox folders">
-        <Link to="/teacher/home">
-          <ListItem
-            button
-            selected={selectedIndex === 0}
-            onClick={(event) => handleListItemClick(event, 0)}
-          >
-            <ListItemText primary="Home" />
-          </ListItem>
-        </Link>
+    <div className={classes.root}>
+      <Grid container>
+        <Grid item sm={10}>
+          <Paper className={classes.mainLogo}>
+            <Typography variant="h5">Elemzy</Typography>
+            <Typography variant="p">Teachers Portal</Typography>
+          </Paper>
+        </Grid>
+      </Grid>
+      <Grid container style={{ minHeight: "70vh" }}>
+        <List component="nav" aria-label="main mailbox folders">
+          <Link to="/teacher/dashboard" path>
+            <SideBarItem itemText="Dasboard" itemIcon={<InboxIcon />} />
+          </Link>
+          <Link to="/teacher/events">
+            <SideBarItem itemText="Events" itemIcon={<InboxIcon />} />
+          </Link>
 
-        <Link to="/teacher/classroom">
-          <ListItem
-            button
-            selected={selectedIndex === 1}
-            onClick={(event) => handleListItemClick(event, 1)}
-          >
-            <ListItemText primary="Classroom"></ListItemText>
-          </ListItem>
-        </Link>
+          <Link to="/teacher/results">
+            <SideBarItem itemText="Results" itemIcon={<InboxIcon />} />
+          </Link>
 
-        <Link to="/teacher/exams">
-          <ListItem
-            button
-            selected={selectedIndex === 2}
-            onClick={(event) => handleListItemClick(event, 2)}
-          >
-            <ListItemText primary="Exams"></ListItemText>
-          </ListItem>
-        </Link>
+          <Link to="/teacher/ranking">
+            <SideBarItem itemText="Ranking" itemIcon={<InboxIcon />} />
+          </Link>
 
-        <Link to="/teacher/profile">
-          <ListItem
-            button
-            selected={selectedIndex === 3}
-            onClick={(event) => handleListItemClick(event, 3)}
-          >
-            <ListItemText primary="Profile"></ListItemText>
-          </ListItem>
-        </Link>
+          <Link to="/teacher/classroom">
+            <SideBarItem itemText="Classes" itemIcon={<InboxIcon />} />
+          </Link>
 
-        <Link to="/teacher/timetable">
-          <ListItem
-            button
-            selected={selectedIndex === 4}
-            onClick={(event) => handleListItemClick(event, 4)}
-          >
-            <ListItemText primary="TimeTable"></ListItemText>
-          </ListItem>
-        </Link>
+          <Link to="/teacher/profile">
+            <SideBarItem itemText="Profile" itemIcon={<InboxIcon />} />
+          </Link>
 
+          <Link to="/teacher/timetable">
+            <SideBarItem itemText="TimeTable" itemIcon={<InboxIcon />} />
+          </Link>
 
-
-        <Link to="/teacher/results">
-          <ListItem
-            button
-            selected={selectedIndex === 5}
-            onClick={(event) => handleListItemClick(event, 5)}
-          >
-            <ListItemText primary="Results"></ListItemText>
-          </ListItem>
-        </Link>
-
-        <Link to="/teacher/ranking">
-          <ListItem
-            button
-            selected={selectedIndex === 6}
-            onClick={(event) => handleListItemClick(event, 6)}
-          >
-            <ListItemText primary="Ranking"></ListItemText>
-          </ListItem>
-        </Link>
-
-      </List>
-    </Paper>
+          <Link to="/student/settings">
+            <SideBarItem itemText="Settings" itemIcon={<InboxIcon />} />
+          </Link>
+        </List>
+      </Grid>
+    </div>
   );
-};
+}
 
 export default Sidebar;
+
+const SideBarItem = ({ itemText, itemIcon }) => {
+  return (
+    <>
+      <ListItem button>
+        <ListItemIcon>{itemIcon}</ListItemIcon>
+        <ListItemText primary={itemText} />
+      </ListItem>
+    </>
+  );
+};

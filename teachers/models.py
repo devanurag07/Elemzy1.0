@@ -364,3 +364,19 @@ class RankingDocument(models.Model):
 
     class Meta:
         db_table = "ranking_documents"
+
+
+# Leave Request
+
+class LeaveRequest(models.Model):
+
+    from_date = models.DateField()
+    to_date = models.DateField()
+
+    reason_title = models.CharField(max_length=355)
+    reason_description = models.TextField()
+
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    document_file = models.FileField(upload_to="leave_request/documents")

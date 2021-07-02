@@ -68,7 +68,7 @@ class App extends Component {
                   <Route path="/login" component={Login} />
                   <Route path="/forgotpassword" component={Forgot} />
                   <Route path="/logout" component={Logout} />
-                  <Route path="/student" component={Student} />
+                  <Route path="/teacher" component={Teacher} />
                 </main>
               </Router>
             </Fragment>

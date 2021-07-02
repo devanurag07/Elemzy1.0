@@ -79,8 +79,6 @@ function Results() {
       </Paper>
 
       <DocumentResultForm exam_id={selectedExamId} />
-      
-      <ManualResultForm exam_id={selectedExamId} />
     </div>
   );
 }
