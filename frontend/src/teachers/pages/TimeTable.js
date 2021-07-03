@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import SubjectCardList from "../components/TimeTableC/SubjectCardList";
 import AddSubjectEntry from "../components/TimeTableC/AddSubjectEntry";
-import { SubectForm, SubjectForm } from "../components/Form";
+import { SubjectForm } from "../components/Form";
 import { loadSubjectEntries } from "../actions/teacherActions";
 import SubjectEntries from "../components/TimeTableC/SujectEntries";
 
@@ -24,12 +24,12 @@ const useStyles = makeStyles((theme) => ({
     },
 
     "& .cardHeading": {
-      fontSize: "22px",
+      fontSize: "18px",
       fontWeight: 505,
     },
 
     "& .cardSecondaryText": {
-      fontSize: "0.9rem",
+      fontSize: "10px",
       fontWeight: "505",
     },
   },
@@ -101,7 +101,6 @@ const TimeTable = () => {
                 >
                   Subjects
                 </Typography>
-              
               </Grid>
 
               <Grid item sm></Grid>

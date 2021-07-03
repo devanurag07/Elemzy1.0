@@ -62,20 +62,25 @@ function Sidebar() {
           <Link to="/teacher/dashboard" path>
             <SideBarItem itemText="Dasboard" itemIcon={<InboxIcon />} />
           </Link>
-          <Link to="/teacher/events">
-            <SideBarItem itemText="Events" itemIcon={<InboxIcon />} />
-          </Link>
 
-          <Link to="/teacher/results">
-            <SideBarItem itemText="Results" itemIcon={<InboxIcon />} />
+          <Link to="/teacher/classroom">
+            <SideBarItem itemText="Classes" itemIcon={<InboxIcon />} />
           </Link>
 
           <Link to="/teacher/ranking">
             <SideBarItem itemText="Ranking" itemIcon={<InboxIcon />} />
           </Link>
 
-          <Link to="/teacher/classroom">
-            <SideBarItem itemText="Classes" itemIcon={<InboxIcon />} />
+          <Link to="/teacher/exams">
+            <SideBarItem itemText="Exams" itemIcon={<InboxIcon />} />
+          </Link>
+
+          <Link to="/teacher/events">
+            <SideBarItem itemText="Events" itemIcon={<InboxIcon />} />
+          </Link>
+
+          <Link to="/teacher/results">
+            <SideBarItem itemText="Results" itemIcon={<InboxIcon />} />
           </Link>
 
           <Link to="/teacher/profile">

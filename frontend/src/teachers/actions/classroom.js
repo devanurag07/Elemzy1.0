@@ -9,6 +9,7 @@ import {
   SET_SUBJECT,
   LOAD_EXAMS,
   LOAD_OTHERCLASSROOMS_DATA,
+  LOAD_DASHBOARD_DATA,
 } from "./types";
 
 import axios from "axios";
@@ -20,7 +21,7 @@ const STUDENTLIST_URL = `${API_URL}/api/studentslist`;
 // Global disptach function
 const dispatch = store.dispatch;
 
-export const loadDashboardData = () => {
+export const loadClassroomData = () => {
   const config = getTokenConfig();
 
   // Loading classroom data
@@ -45,8 +46,7 @@ export const loadDashboardData = () => {
     .get(`${API_URL}/api/classroom/semester`, config)
     .then((resp) => {
       if (resp.status === 200) {
-
-        console.log("Semester Data")
+        console.log("Semester Data");
         console.log(resp.data);
         dispatch({
           type: LOAD_SEMESTERS,
@@ -200,4 +200,19 @@ export const loadExams = (subjectId) => {
         payload: examList,
       });
     });
+};
+
+export const loadDashboardData = () => {
+  const config = getTokenConfig();
+
+  axios.get(`${API_URL}/api/classroom/dashboard_data`, config).then((resp) => {
+    if (resp.status == 200) {
+      const dashboard_data = resp.data;
+      dispatch({
+        type: LOAD_DASHBOARD_DATA,
+        payload: dashboard_data,
+      });
+      console.log(dashboard_data);
+    }
+  });
 };

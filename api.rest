@@ -8,8 +8,8 @@ content-type: application/json
 
 
 {
-    "email":"anurag@gmail.com",
-    "password":"anurag@123"
+    "email":"teacher1@gmail.com",
+    "password":"demo@1234"
 }
 
 ############
@@ -24,7 +24,7 @@ content-type: application/json
 
 ##################
 PUT http://127.0.0.1:8000/api/classroom
-Authorization: Token 718bcf657382d73e70074d246a08aa3069d48876ed77cd83e0f625e54cc7a501
+Authorization: Token 3b1269b3876e9dcec743f4242a407295e9abfbef4ca5fab325ce2f634c7c94df
 content-type: application/json
 
 
@@ -128,3 +128,10 @@ content-type: application/json
     "approved":true
     
 }
+
+
+
+
+##################
+GET http://127.0.0.1:8001/api/classroom/dashboard_data
+Authorization: Token 3b1269b3876e9dcec743f4242a407295e9abfbef4ca5fab325ce2f634c7c94df

@@ -83,7 +83,7 @@ WSGI_APPLICATION = "reon.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(r"/media/devil/C/Users/Devil/Desktop/Project - 1 -Main/Project/Common Database", 'db.sqlite3'),
+        'NAME': os.path.join(r"/media/devil/C/Desktop/Project - 1 -Main/Project/Common Database", 'db.sqlite3'),
     }
 }
 

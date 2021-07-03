@@ -1,24 +1,18 @@
 import React from "react";
 import { Paper, Grid, Typography, makeStyles } from "@material-ui/core";
+import { getRandomColor } from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: "1em",
+    padding: "0.5em 0.8em",
+    borderRadius: "0.2em !important",
   },
 }));
 
 function SubjectEntry({ subjectEntry }) {
   const classes = useStyles();
 
-  const colors = [
-    { foreground: "#e65c00", background: " #ffb380" },
-    { foreground: "#e6005c", background: " #ff80b3" },
-    { foreground: "#0052cc", background: " #80b3ff" },
-    { foreground: "#3b00b3", background: " #aa80ff" },
-  ];
-
-  const randomIdx = Math.floor(Math.random() * colors.length);
-  const color = colors[randomIdx];
+  const color = getRandomColor();
 
   const backgroundStyle = { background: color.background };
   const foregroundStyle = { color: color.foreground };

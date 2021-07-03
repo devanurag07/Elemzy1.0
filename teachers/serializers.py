@@ -175,6 +175,7 @@ class AssignmentSerializer(ModelSerializer):
 
                             if(questionObj == None):
 
+                                # try:
                                 answerObj, created = Choice.objects.get_or_create(
                                     title=answerForm.validated_data["title"])
 
@@ -256,6 +257,11 @@ class SubjectEntrySerializer(ModelSerializer):
     subject_name = serializers.SerializerMethodField()
     teacher_name = serializers.SerializerMethodField()
     semester_name = serializers.SerializerMethodField()
+    class_standard = serializers.SerializerMethodField()
+
+    def get_class_standard(self, subject_entry):
+        class_standard = subject_entry.subject.semester.classroom.standard
+        return class_standard
 
     def get_subject_name(self, subject_entry):
         subject = subject_entry.subject
@@ -272,7 +278,7 @@ class SubjectEntrySerializer(ModelSerializer):
     class Meta:
         model = SubjectEntry
         fields = ['subject', 'start_time', 'finish_time',
-                  'subject_name', 'teacher_name', 'semester_name']
+                  'subject_name', 'teacher_name', 'semester_name', 'class_standard']
 
 
 class RankingDocumentSerializer(ModelSerializer):

@@ -15,7 +15,7 @@ from teachers.permissions import IsTeacher, IsManager
 from rest_framework import permissions
 
 # Models
-from .models import ClassRoom, Student, Teacher, Notes, Assignment, GradedAssignment, RankingDocument
+from .models import ClassRoom, LeaveRequest, Student, Teacher, Notes, Assignment, GradedAssignment, RankingDocument
 from .models import Semester, ClassroomPage, Subject, StudentResponse, Document, SubjectEntry, TimeTable
 # Serializers
 from .serializers import ClassRoomSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
@@ -542,7 +542,7 @@ class AssignmentAPI(viewsets.ModelViewSet):
                     return Response({"data": AssignmentSerializer(assignmentObj).data, "errors": errors, "isCreated": isCreated})
 
                 except Exception as e:
-
+                    print(e)
                     errors = assignmentForm.validation_errors
 
                     return Response({"qFormErrors": errors, "error": True}, status=status.HTTP_400_BAD_REQUEST)
@@ -819,8 +819,9 @@ class MyTimeTable(APIView):
         classroom = get_classroom(self.request)
         currentTeacher = self.request.user.teacher
 
+        # Getting all subject entries which are assigned to Teacher
         my_subject_entries = SubjectEntry.objects.filter(
-            subject__subject_teacher=currentTeacher)
+            subject__subject_teacher=currentTeacher).order_by("start_time")
 
         return my_subject_entries
 
@@ -844,6 +845,7 @@ class HolisticRankingAPI(viewsets.ModelViewSet):
         return Response("Not Allowed", status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def retrieve(self, request, pk=None, *args, **kwargs):
+        # pk is for retrieving the student
 
         if(pk == None):
             return Response("Nothing to show", status=status.HTTP_400_BAD_REQUEST)
@@ -892,3 +894,46 @@ class HolisticRankingAPI(viewsets.ModelViewSet):
 
         else:
             return Response("You do not have any permission to approve the document", status=status.HTTP_401_UNAUTHORIZED)
+
+
+class DashboardDataAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+
+    def get(self, request):
+        classroom = get_classroom(request=request)
+
+        recent_assignments = Assignment.objects.filter(
+            subject__semester__classroom=classroom)
+
+        recent_assignments_data = []
+        total_students = len(classroom.students.all())
+
+        for assignment in recent_assignments:
+            assignment_data = {"total_students": total_students,
+                               "title": assignment.title,
+                               }
+            assignment_data["no_of_students_submitted"] = len(
+                assignment.graded_assignments.all())
+
+            assignment_data["created_at"] = assignment.created_at
+            assignment_data["deadline"] = assignment.deadline
+
+            recent_assignments_data.append(assignment_data)
+
+        # Leave Requests
+        leave_requests_info = {}
+        leave_requests = LeaveRequest.objects.filter(
+            student__classroom=classroom)
+        completed_requests = len(leave_requests.filter(is_pending=False))
+        pending_requests = len(leave_requests.filter(is_pending=True))
+
+        leave_requests_info['completed_requests'] = completed_requests
+        leave_requests_info['pending_requests'] = pending_requests
+
+        # Exams iNFO
+        upcoming_exams = Exam.objects.filter(classroom=classroom).reverse()[:3]
+        upcoming_exams_data = ExamSerializer(upcoming_exams, many=True).data
+
+        return Response({"leave_requests": leave_requests_info,
+                         "recent_assignments": recent_assignments_data,
+                         "upcoming_exams": upcoming_exams_data})

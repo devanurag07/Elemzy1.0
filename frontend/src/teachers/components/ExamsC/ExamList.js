@@ -1,6 +1,7 @@
 import { Paper, Typography, Grid, makeStyles } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { getRandomColor } from "../../useFulFunctions";
 
 const examListStyles = makeStyles((theme) => ({
   root: {
@@ -72,16 +73,7 @@ export default ExamList;
 const ExamCard = ({ examObj }) => {
   // const { title } = examObj;
 
-  const colors = [
-    { foreground: "red", background: "#ff000036" },
-    { foreground: "#e65c00", background: " #ffb380" },
-    { foreground: "#e6005c", background: " #ff80b3" },
-    { foreground: "#0052cc", background: " #80b3ff" },
-    { foreground: "#3b00b3", background: " #aa80ff" },
-  ];
-
-  const randomIdx = Math.floor(Math.random() * colors.length);
-  const color = colors[randomIdx];
+  const color = getRandomColor();
 
   const examStyles = makeStyles((theme) => ({
     root: {

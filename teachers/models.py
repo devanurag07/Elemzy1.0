@@ -380,3 +380,9 @@ class LeaveRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     document_file = models.FileField(upload_to="leave_request/documents")
+
+    is_pending = models.BooleanField(default=True)
+    accepted = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "leave_requests"

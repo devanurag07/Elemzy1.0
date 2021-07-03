@@ -1,6 +1,6 @@
 import { produce } from "immer";
 
-// Loading main classroom 
+// Loading main classroom
 export const loadClassroom = (state, action) => {
   const loadedClassroom = action.payload;
 
@@ -18,7 +18,6 @@ export const loadClassroom = (state, action) => {
 
   return { ...state, classroom: { ...loadedClassroom } };
 };
-
 
 // Change classroom from main to secondary or secondary to main
 export const setSelectedClassroom = (state, action) => {
@@ -72,7 +71,7 @@ export const loadOtherClassroomsData = (state, action) => {
   return newState;
 };
 
-// Loading school teachers list 
+// Loading school teachers list
 export const loadTeachers = (state, action) => {
   const newState = produce(state, (draft) => {
     draft.teachers = action.payload;
@@ -80,7 +79,6 @@ export const loadTeachers = (state, action) => {
 
   return newState;
 };
-
 
 // Adding student to classroom
 export const addStudent = (globalStudents, classroomStudents, studentObj) => {
@@ -116,7 +114,6 @@ export const addStudent = (globalStudents, classroomStudents, studentObj) => {
     classroomStudents: [...classroomStudents],
   };
 };
-
 
 // Removing student
 export const removeStudent = (
@@ -155,4 +152,10 @@ export const removeStudent = (
     classroomStudents: [...newClassroomStudents],
     globalStudents: [...globalStudents],
   };
+};
+
+export const loadDashboardDataRe = (state, action) => {
+  const dashboard_data = action.payload;
+
+  return { ...state, dashboard_data };
 };

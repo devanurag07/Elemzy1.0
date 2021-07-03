@@ -14,6 +14,7 @@ import {
   LOAD_CURRENT_SUBJECT_NOTES,
   LOAD_ASSIGNMENTS,
   SET_WORKDATE,
+  LOAD_DASHBOARD_DATA,
 } from "../actions/types";
 import { produce } from "immer";
 // import { loadAssignments } from "../actions/teacherActions";
@@ -25,6 +26,7 @@ import {
   addStudent,
   removeStudent,
   loadTeachers,
+  loadDashboardDataRe,
 } from "./utils/classroom";
 
 import {
@@ -70,7 +72,7 @@ const initialState = {
   // Selected classroom
   currentClsrm: {
     semesters: [], // Semesters of Selected Classroom
-    classroom: {} // Classroom data like students list
+    classroom: {}, // Classroom data like students list
   },
 
   // This contains the list of other classrooms - teacher can teach
@@ -81,6 +83,11 @@ const initialState = {
   exams_list: [],
   subject_entries: [],
   mytimetable: [],
+  dashboard_data: {
+    leave_requests: {},
+    recent_assignments: [],
+    upcoming_exams: [],
+  },
 };
 
 export const classRoomReducer = (state = initialState, action) => {
@@ -203,6 +210,9 @@ export const classRoomReducer = (state = initialState, action) => {
       return loadMyTimeTable(state, action);
     case "ADD_SUBJECT_ENTRY":
       return addSubjectEntry(state, action);
+
+    case LOAD_DASHBOARD_DATA:
+      return loadDashboardDataRe(state, action);
     default:
       return state;
   }

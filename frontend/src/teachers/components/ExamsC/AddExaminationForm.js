@@ -52,11 +52,20 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
   },
 
-  formHeading:{
-    fontSize: '1.3em',
-    fontFamily: 'Poppins',
-    fontWeight: '505',
-  }
+  formHeading: {
+    fontSize: "1.3em",
+    fontFamily: "Poppins",
+    fontWeight: "505",
+  },
+
+  addExamBtn: {
+    background: "#ff6b00",
+    "&:hover": {
+      background: "white",
+      border: "2px solid #ff6b00",
+      color: "#ff6b00",
+    },
+  },
 }));
 
 function AddExaminationForm() {
@@ -85,13 +94,12 @@ function AddExaminationForm() {
 
   // Date time pickers
 
-
   const [selectedExamDate, setSelectedExamDate] = React.useState(undefined);
 
   const handleExamDateChange = (date) => {
     setSelectedExamDate(date);
     const examDate = date.toJSON().split("T")[0];
-    const localExamDate=moment(date).add("5:30").toJSON().split('T')[0];
+    const localExamDate = moment(date).add("5:30").toJSON().split("T")[0];
 
     setFormData({ ...formData, exam_date: localExamDate });
   };
@@ -101,9 +109,8 @@ function AddExaminationForm() {
   const handleExamStartTimeChange = (date) => {
     setExamStartTime(date);
 
-
     // const startTime = date.toJSON().split("T")[1];
-    const localStartTime=moment(date).add("5:30").toJSON().split('T')[1];
+    const localStartTime = moment(date).add("5:30").toJSON().split("T")[1];
     setFormData({ ...formData, start_time: localStartTime });
   };
 
@@ -112,7 +119,7 @@ function AddExaminationForm() {
   const handleExamEndTimeChange = (date) => {
     setExamEndTime(date);
 
-    const localEndTime=moment(date).add("5:30").toJSON().split('T')[1];
+    const localEndTime = moment(date).add("5:30").toJSON().split("T")[1];
     // const endTime = date.toJSON().split("T")[1];
     setFormData({ ...formData, finish_time: localEndTime });
   };
@@ -205,7 +212,9 @@ function AddExaminationForm() {
 
   return (
     <Paper className={classes.root}>
-      <Typography variant="subtitle2" className={classes.formHeading}>Add Examination</Typography>
+      <Typography variant="subtitle2" className={classes.formHeading}>
+        Add Examination
+      </Typography>
 
       <Grid container justify="space-between" style={{ marginTop: "1em" }}>
         <Grid item sm={4} className={classes.selectContainer}>
@@ -317,7 +326,7 @@ function AddExaminationForm() {
         </Grid>
       </Grid>
 
-      <Grid container justify="space-between" style={{marginBottom:"10px"}}>
+      <Grid container justify="space-between" style={{ marginBottom: "10px" }}>
         <Grid item sm={6}>
           <FormControl>
             <TextField
@@ -345,7 +354,6 @@ function AddExaminationForm() {
               multiline
               rows={4}
               variant="outlined"
-
               label="Exam Description"
               name="description"
               error={hasFieldError("description")}
@@ -371,7 +379,12 @@ function AddExaminationForm() {
       </Grid>
       <Grid container style={{ marginTop: "1em" }}>
         <Grid item>
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            className={classes.addExamBtn}
+          >
             Add Exam
           </Button>
         </Grid>

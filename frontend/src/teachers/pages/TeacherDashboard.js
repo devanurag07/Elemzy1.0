@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import React from "react";
-import { loadDashboardData } from "../actions/classroom";
+import { loadClassroomData } from "../actions/classroom";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
@@ -26,13 +26,13 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "160px",
     borderTopLeftRadius: "2em",
     boxShadow: "0px -1px 1px 0px",
-    padding: "2em 1em",
+    padding: "2em 2em",
   },
 }));
 
 export const TeacherDashboard = () => {
   useEffect(() => {
-    loadDashboardData();
+    loadClassroomData();
   }, [""]);
 
   const currentSubject = useSelector((state) => state.classroom.currentSubject);
@@ -53,7 +53,7 @@ export const TeacherDashboard = () => {
       <Sidebar />
 
       <div className={classes.mainDiv}>
-        <Route path="/teacher/home">
+        <Route path="/teacher/dashboard">
           {/* Home component */}
           <Home />
         </Route>
