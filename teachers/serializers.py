@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
-from .models import ClassRoom, Student, Semester, Subject, Teacher, ClassroomPage
+from .models import ClassRoom, DocumentResult, LeaveRequest, Student, Semester, Subject, Teacher, ClassroomPage
 from .models import Notes, Assignment, Question, Choice, Document, SubjectEntry, RankingDocument
 from main.serializers import UserProfileSerializer
 from main.models import UserProfile
@@ -284,4 +284,18 @@ class SubjectEntrySerializer(ModelSerializer):
 class RankingDocumentSerializer(ModelSerializer):
     class Meta:
         model = RankingDocument
+        fields = "__all__"
+
+
+class DocumentResultSerializer(ModelSerializer):
+
+    class Meta:
+        model = DocumentResult
+        fields = "__all__"
+
+
+class LeaveRequestSerializer(ModelSerializer):
+
+    class Meta:
+        model = LeaveRequest
         fields = "__all__"

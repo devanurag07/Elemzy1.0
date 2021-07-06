@@ -21,6 +21,7 @@
     "node-sass": "^4.14.1",
     "notistack": "^1.0.9",
     "perfect-scrollbar": "^1.5.0",
+    "process-nextick-args": "^2.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.14.0",
     "react-alert": "^7.0.2",
@@ -37,7 +38,8 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "tsutils": "^3.20.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "util-deprecate": "^1.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

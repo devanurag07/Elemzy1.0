@@ -90,10 +90,6 @@ function Sidebar() {
           <Link to="/teacher/timetable">
             <SideBarItem itemText="TimeTable" itemIcon={<InboxIcon />} />
           </Link>
-
-          <Link to="/student/settings">
-            <SideBarItem itemText="Settings" itemIcon={<InboxIcon />} />
-          </Link>
         </List>
       </Grid>
     </div>

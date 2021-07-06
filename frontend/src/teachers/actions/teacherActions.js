@@ -336,7 +336,6 @@ export const createExam = (formData, setFormErrors) => {
         if (err.response.status === 401) {
           createNotification(err.response.data, { variant: "error" });
           setFormErrors({});
-
         }
       }
     });
@@ -449,4 +448,50 @@ export const rejectDocument = async (rankingDocPk) => {
     return resp.data;
   }
   return {};
+};
+
+export const uploadResult = (formData, setFormErrors) => {
+  const config = getTokenConfig();
+
+  // Preparing Form Data
+  const formDataObj = new FormData();
+
+  for (let field in formData) {
+    const fieldValue = formData[field];
+
+    formDataObj.append(field, fieldValue);
+  }
+
+  // Preparing Form Data Exit
+
+  axios
+    .post(`${API_URL}/api/classroom/uploadresult`, formDataObj, config)
+    .then((resp) => {
+      if (resp.status == 201) {
+        createNotification("The Result Successfully Uploaded", {
+          variant: "success",
+        });
+      }
+    })
+    .catch((err) => {
+      const response = err.response;
+      if (response) {
+        if (response.status == 400) {
+          // handling formErrors
+          console.log(response.data);
+          const errors = response.data.errors;
+          if (errors) {
+            setFormErrors(errors);
+          }
+        } else if (response.status == 401) {
+          // Handling unauthorized access
+          createNotification(
+            "You are not allowed to upload the results for exam",
+            {
+              variant: "error",
+            }
+          );
+        }
+      }
+    });
 };

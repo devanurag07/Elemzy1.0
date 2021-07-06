@@ -53,6 +53,7 @@ const CreateNotesForm = () => {
     });
   };
 
+  // Form Error Handling
   const hasFieldError = (fieldname) => {
     const fieldErrorMsg = formErrors[fieldname];
 

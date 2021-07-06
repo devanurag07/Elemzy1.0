@@ -75,7 +75,7 @@ export default function Login() {
       }
       return (
         <Fragment>
-          <Redirect to="/teacher" />
+          <Redirect to="/teacher/dashboard" />
         </Fragment>
       );
     } else if (authstate.auth.user.is_manager) {

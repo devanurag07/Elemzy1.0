@@ -18,7 +18,7 @@ from rest_framework import permissions
 from .models import ClassRoom, LeaveRequest, Student, Teacher, Notes, Assignment, GradedAssignment, RankingDocument
 from .models import Semester, ClassroomPage, Subject, StudentResponse, Document, SubjectEntry, TimeTable
 # Serializers
-from .serializers import ClassRoomSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
+from .serializers import ClassRoomSerializer, DocumentResultSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
 from .serializers import NotesSerializer, ClassroomPageSerializer, AssignmentSerializer, QuestionSerializer, DocumentSerializer, TeacherProfileSerializer
 from .serializers import ExamSerializer, SubjectEntrySerializer, RankingDocumentSerializer
 
@@ -920,10 +920,11 @@ class DashboardDataAPI(APIView):
 
             recent_assignments_data.append(assignment_data)
 
-        # Leave Requests
+        # Leave Requests Info
         leave_requests_info = {}
         leave_requests = LeaveRequest.objects.filter(
             student__classroom=classroom)
+
         completed_requests = len(leave_requests.filter(is_pending=False))
         pending_requests = len(leave_requests.filter(is_pending=True))
 
@@ -937,3 +938,48 @@ class DashboardDataAPI(APIView):
         return Response({"leave_requests": leave_requests_info,
                          "recent_assignments": recent_assignments_data,
                          "upcoming_exams": upcoming_exams_data})
+
+
+class DocumentResultUploadAPI(APIView):
+
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        document_result_form = DocumentResultSerializer(data=data)
+        currentTeacher = request.user.teacher
+
+        if(document_result_form.is_valid()):
+
+            exam = document_result_form.validated_data["exam"]
+            exam_created_by = exam.subject.subject_teacher
+
+            hasAccessToUploadResult = exam_created_by == currentTeacher
+
+            if(hasAccessToUploadResult):
+                created_result = document_result_form.save()
+                return Response("Result successfully uploaded", status=status.HTTP_201_CREATED)
+            else:
+                return Response("You can't upload the results for this exam", status=status.HTTP_401_UNAUTHORIZED)
+
+        else:
+            return Response({"errors": document_result_form.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class LeaveRequestsAPI(viewsets.ModelViewSet):
+
+    permission_classes=[permissions.IsAuthenticated,IsTeacher]
+
+    def get_queryset(self,request):
+        classroom=request.user.teacher.classroom
+
+        pending_leave_requests=LeaveRequest.objects.filter(student__classroom=classroom)
+        
+        return pending_leave_requests
+
+
+
+    def list(self, request, *args, **kwargs):
+
+        return super().list(request, *args, **kwargs)

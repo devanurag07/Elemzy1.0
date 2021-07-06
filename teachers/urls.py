@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import api
-from .api import (SemesterAPI,
+from .api import (DocumentResultUploadAPI, SemesterAPI,
                   SubjectAPI, NotesAPI,
                   SecondaryClassroom,
                   AssignmentAPI,
@@ -36,7 +36,9 @@ urlpatterns = [
     path("otherClassrooms", SecondaryClassroom.as_view()),
     path("teacherProfileUpdate", TeacherProfile.as_view()),
     path("classroom/dashboard_data", DashboardDataAPI.as_view()),
-    path("classroom/mytimetable", MyTimeTable.as_view(), name="mytimetable")
+    path("classroom/mytimetable", MyTimeTable.as_view(), name="mytimetable"),
+    path("classroom/uploadresult",
+         DocumentResultUploadAPI.as_view(), name="uploadresult")
 
 ]
 
