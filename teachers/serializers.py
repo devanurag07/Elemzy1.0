@@ -295,6 +295,11 @@ class DocumentResultSerializer(ModelSerializer):
 
 
 class LeaveRequestSerializer(ModelSerializer):
+    student_name = serializers.SerializerMethodField()
+
+    def get_student_name(self, leave_request):
+        student = leave_request.student
+        return student.name
 
     class Meta:
         model = LeaveRequest

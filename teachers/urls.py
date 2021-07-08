@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import api
-from .api import (DocumentResultUploadAPI, SemesterAPI,
+from .api import (DocumentResultUploadAPI, HolisticRankingGraphAPI, SemesterAPI,
                   SubjectAPI, NotesAPI,
                   SecondaryClassroom,
                   AssignmentAPI,
@@ -11,6 +11,8 @@ from .api import (DocumentResultUploadAPI, SemesterAPI,
                   ExamsAPI,
                   SubjectEntryAPI, MyTimeTable, HolisticRankingAPI, DashboardDataAPI)
 
+
+from .api import LeaveRequestsAPI
 
 from rest_framework.routers import DefaultRouter
 
@@ -26,8 +28,11 @@ router.register("classroom/timetable", SubjectEntryAPI, basename="timetable")
 router.register("classroom/holisticranking",
                 HolisticRankingAPI, basename="holistic_ranking")
 
-# router.register("classroom/assignments",GradedAssingmentView,basename="assignments")
 
+router.register("classroom/holisticrankinggraph",
+                HolisticRankingGraphAPI, basename="holistic_ranking_graph")
+router.register("classroom/leaverequests",
+                LeaveRequestsAPI, basename="leaverequests")
 
 urlpatterns = [
     path("classroom", api.TeacherClassroom.as_view()),

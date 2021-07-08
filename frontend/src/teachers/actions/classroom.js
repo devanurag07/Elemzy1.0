@@ -216,3 +216,23 @@ export const loadDashboardData = () => {
     }
   });
 };
+
+export const loadPendingLeaveRequests = (
+  setPendingLeaveRequests,
+  setLeaveRequestsInfo
+) => {
+  const config = getTokenConfig();
+
+  axios.get(`${API_URL}/api/classroom/leaverequests`, config).then((resp) => {
+    if (resp.status == 200) {
+      const resp_data = resp.data;
+      const pending_requests = resp_data.pending_requests_list;
+      const leave_requests_info = resp_data.leave_requests_info;
+
+      setPendingLeaveRequests(pending_requests);
+      setLeaveRequestsInfo(leave_requests_info);
+      console.log(leave_requests_info);
+      console.log(resp.data);
+    }
+  });
+};

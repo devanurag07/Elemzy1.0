@@ -354,6 +354,7 @@ class RankingDocument(models.Model):
 
     student = models.ForeignKey(
         Student, related_name="ranking_documents", on_delete=models.CASCADE)
+
     approved = models.BooleanField(default=False)
     pending = models.BooleanField(default=True)
 

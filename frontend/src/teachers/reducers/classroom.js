@@ -88,6 +88,8 @@ const initialState = {
     recent_assignments: [],
     upcoming_exams: [],
   },
+
+  pending_leave_requests: [],
 };
 
 export const classRoomReducer = (state = initialState, action) => {

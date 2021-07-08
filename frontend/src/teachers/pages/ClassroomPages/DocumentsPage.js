@@ -22,8 +22,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function DocumentsPage() {
+function DocumentsPage({ setClassroomHeader }) {
   const classes = useStyles();
+  setClassroomHeader(true);
+
   return (
     <Grid container className={classes.root} spacing={3}>
       <Grid item sm={3} style={{ display: "flex" }}>
@@ -32,7 +34,9 @@ function DocumentsPage() {
         </Grid>
       </Grid>
       <Grid item sm={9} className={classes.docsContainer}>
-        <Typography className={classes.uploadDocHeading}>Uploaded Documents</Typography>
+        <Typography className={classes.uploadDocHeading}>
+          Uploaded Documents
+        </Typography>
         <DocumentsList />
       </Grid>
     </Grid>

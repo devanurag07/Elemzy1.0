@@ -495,3 +495,47 @@ export const uploadResult = (formData, setFormErrors) => {
       }
     });
 };
+
+export const rejectLeaveRequest = (leaveRequestId, removeLeaveRequest) => {
+  const config = getTokenConfig();
+  const data = {
+    rejected: true,
+  };
+
+  axios
+    .patch(
+      `${API_URL}/api/classroom/leaverequests/${leaveRequestId}/`,
+      data,
+      config
+    )
+    .then((resp) => {
+      if (resp.status == 200) {
+        removeLeaveRequest(leaveRequestId);
+        createNotification("Rejected", {
+          variant: "success",
+        });
+      }
+    });
+};
+
+export const acceptedLeaveRequest = (leaveRequestId, removeLeaveRequest) => {
+  const config = getTokenConfig();
+  const data = {
+    accepted: true,
+  };
+
+  axios
+    .patch(
+      `${API_URL}/api/classroom/leaverequests/${leaveRequestId}/`,
+      data,
+      config
+    )
+    .then((resp) => {
+      if (resp.status == 200) {
+        removeLeaveRequest(leaveRequestId);
+        createNotification("Accepted", {
+          variant: "success",
+        });
+      }
+    });
+};

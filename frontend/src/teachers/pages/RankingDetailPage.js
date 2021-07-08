@@ -9,6 +9,9 @@ import {
 } from "../actions/teacherActions";
 import produce from "immer";
 
+import Chart from "react-google-charts";
+import { getTokenConfig } from "../actions/classroom";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "1em",
@@ -81,6 +84,13 @@ function RankingDetailPage({ stdPk }) {
     }
   };
 
+  const rejectDocumentHandle = async () => {
+    if (rankingDoc.id) {
+      const newRankingRow = await rejectDocument(rankingDoc.id);
+      updateRow(newRankingRow);
+    }
+  };
+
   const updateRow = (newRankingRow) => {
     const newRankingData = produce(rankingDocs, (draft) => {
       for (let rankingRow of draft) {
@@ -96,12 +106,37 @@ function RankingDetailPage({ stdPk }) {
     setRankingDoc(newRankingRow);
   };
 
-  const rejectDocumentHandle = async () => {
-    if (rankingDoc.id) {
-      const newRankingRow = await rejectDocument(rankingDoc.id);
-      updateRow(newRankingRow);
-    }
+  // Graph Data
+  const [graphData, setGraphData] = useState([]);
+
+  const loadGraphData = (setGraphData) => {
+    const config = getTokenConfig();
+
+    axios
+      .get(
+        `http://127.0.0.1:8001/api/classroom/holisticrankinggraph/${stdPk}`,
+        config
+      )
+      .then((resp) => {
+        if (resp.status == 200) {
+          const dictToArray = [];
+          const graphJson = resp.data;
+
+          for (let month in graphJson) {
+            const ranking = graphJson[month];
+            dictToArray.push([month, ranking]);
+          }
+
+          setGraphData(dictToArray);
+          console.log(dictToArray);
+        }
+      });
   };
+
+  useEffect(() => {
+    loadGraphData(setGraphData);
+  }, [""]);
+  // loadGraphData(setGraphData);
 
   return (
     <div className={classes.root}>
@@ -167,7 +202,22 @@ function RankingDetailPage({ stdPk }) {
             </div>
           </Grid>
           <Grid item sm={6}>
-            Graph
+            <Chart
+              width={"400px"}
+              height={"300px"}
+              chartType="LineChart"
+              loader={<div>Loading Chart</div>}
+              data={[["x", "documents"], ...graphData]}
+              options={{
+                hAxis: {
+                  title: "Month",
+                },
+                vAxis: {
+                  title: "Documents",
+                },
+              }}
+              rootProps={{ "data-testid": "1" }}
+            />
           </Grid>
         </Grid>
 
@@ -243,6 +293,7 @@ const RankingDocumentRow = ({ rankingDoc, onClick }) => {
 
   const classes = useStyles2();
 
+  // Getting document badge [Rejected,Acceoted,Pending]
   const getDocumentStatus = () => {
     if (approved) {
       return (

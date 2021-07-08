@@ -18,7 +18,7 @@ from rest_framework import permissions
 from .models import ClassRoom, LeaveRequest, Student, Teacher, Notes, Assignment, GradedAssignment, RankingDocument
 from .models import Semester, ClassroomPage, Subject, StudentResponse, Document, SubjectEntry, TimeTable
 # Serializers
-from .serializers import ClassRoomSerializer, DocumentResultSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
+from .serializers import ClassRoomSerializer, DocumentResultSerializer, LeaveRequestSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
 from .serializers import NotesSerializer, ClassroomPageSerializer, AssignmentSerializer, QuestionSerializer, DocumentSerializer, TeacherProfileSerializer
 from .serializers import ExamSerializer, SubjectEntrySerializer, RankingDocumentSerializer
 
@@ -966,20 +966,107 @@ class DocumentResultUploadAPI(APIView):
             return Response({"errors": document_result_form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class LeaveRequestsAPI(viewsets.ModelViewSet):
 
-    permission_classes=[permissions.IsAuthenticated,IsTeacher]
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+    serializer_class = LeaveRequestSerializer
 
-    def get_queryset(self,request):
-        classroom=request.user.teacher.classroom
+    def get_queryset(self, request):
+        classroom = request.user.teacher.classroom
+        classroom_leave_requests = LeaveRequest.objects.filter(
+            student__classroom=classroom)
 
-        pending_leave_requests=LeaveRequest.objects.filter(student__classroom=classroom)
-        
-        return pending_leave_requests
-
-
+        return classroom_leave_requests
 
     def list(self, request, *args, **kwargs):
 
-        return super().list(request, *args, **kwargs)
+        leave_requests_list = self.get_queryset(request)
+
+        pending_leave_requests = leave_requests_list.filter(is_pending=True)
+
+        pending_requests_data = LeaveRequestSerializer(
+            pending_leave_requests, many=True).data
+
+        no_completed_requests = len(
+            LeaveRequest.objects.filter(is_pending=False))
+        no_pending_requests = len(
+            LeaveRequest.objects.filter(is_pending=True))
+
+        return Response({"pending_requests_list": pending_requests_data, "leave_requests_info": {
+            'no_of_completed_requests': no_completed_requests,
+            'no_of_pending_requests': no_pending_requests
+        }})
+
+    def partial_update(self, request, pk, *args, **kwargs):
+        data = request.data
+        leave_request = get_object_or_404(LeaveRequest, pk=pk)
+
+        currentClassroom = get_classroom(request)
+        is_request_of_my_class = leave_request.student.classroom == currentClassroom
+
+        if(is_request_of_my_class):
+
+            accepted = data.get("accepted", False)
+            rejected = data.get("rejected", False)
+
+            if(accepted):
+
+                leave_request.is_pending = False
+                leave_request.accepted = True
+                leave_request.save()
+
+                return Response("Accepted ", status=status.HTTP_200_OK)
+            elif rejected:
+
+                leave_request.is_pending = False
+                leave_request.accepted = False
+                leave_request.save()
+
+                return Response("Rejected ", status=status.HTTP_200_OK)
+
+        else:
+
+            return Response("Not allowed to approve or reject the leave request", status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response("Nothing to done", status=status.HTTP_200_OK)
+
+
+# returning student graph x,y points  like - [month,no_of_documents]
+class HolisticRankingGraphAPI(viewsets.ModelViewSet):
+
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        if(pk == None):
+            return Response("Nothing to show", status=status.HTTP_404_NOT_FOUND)
+
+        student = get_object_or_404(Student, pk=pk)
+        currentClassroom = get_classroom(request)
+
+        isStudentOfMyClass = student.classroom == currentClassroom
+
+        if(isStudentOfMyClass):
+            graphData = {}
+            ranking_documents = student.ranking_documents.filter(
+                approved=True).order_by("created_date")
+
+            document_counter = 0
+            for ranking_document in ranking_documents:
+                document_counter += 1
+                ranking_document_month = ranking_document.created_at.strftime(
+                    "%B")
+                graphData[ranking_document_month] = document_counter
+
+            return Response(graphData)
+
+    def create(self, request, *args, **kwargs):
+        return Response("Not allowed", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def list(self, request, *args, **kwargs):
+        return Response("Not allowed", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def update(self, request, *args, **kwargs):
+        return Response("Not allowed", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def partial_update(self, request, *args, **kwargs):
+        return Response("Not allowed", status=status.HTTP_405_METHOD_NOT_ALLOWED)

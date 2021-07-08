@@ -134,4 +134,28 @@ content-type: application/json
 
 ##################
 GET http://127.0.0.1:8001/api/classroom/dashboard_data
-Authorization: Token 3b1269b3876e9dcec743f4242a407295e9abfbef4ca5fab325ce2f634c7c94df
+Authorization: Token 9d015c581fe38da74d5e9ec6a89de23fa03dc33b8c7c8494a920a74c6f43059d
+
+
+
+
+##################
+GET http://127.0.0.1:8001/api/classroom/leaverequests
+Authorization: Token 7d95c0fa49ace967a2177958a30a72f6aaeef818b6d2022aad5fcbe86e3dc68b
+
+
+
+##################
+PATCH  http://127.0.0.1:8001/api/classroom/leaverequests/1/
+Authorization: Token 9d015c581fe38da74d5e9ec6a89de23fa03dc33b8c7c8494a920a74c6f43059d
+Content-Type: application/json
+
+{
+    "rejectd":"true"
+}
+
+
+
+##################
+GET http://127.0.0.1:8001/api/classroom/holisticrankinggraph/2
+Authorization: Token d73a2f035042f86a15cfee663e8756a5cedac74068b7c221a5e1018ef8d13c24

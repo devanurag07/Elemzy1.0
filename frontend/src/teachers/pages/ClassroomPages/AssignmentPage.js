@@ -16,8 +16,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AssignmentPage() {
+function AssignmentPage({ setClassroomHeader }) {
   const classes = useStyles();
+
+  setClassroomHeader(true);
   return (
     <Grid container className={classes.root} spacing={3}>
       <Grid item sm={9} className={classes.assignmentsContainer}>
