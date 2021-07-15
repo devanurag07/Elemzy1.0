@@ -14,6 +14,7 @@ import AssignmentPage from "./ClassroomPages/AssignmentPage";
 import NotesPage from "./ClassroomPages/NotesPage";
 import DocumentPage from "./ClassroomPages/DocumentsPage";
 import LeaveRequestsPage from "./ClassroomPages/LeaveRequestsPage";
+import { SECONDARY_COLOR } from "../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,9 +29,10 @@ const useStyles = makeStyles((theme) => ({
   },
   classheading: {
     fontSize: "1.8rem",
-    color: "#ff6b00",
+    color: "#1a29dc",
     padding: "1em 0.3em",
     fontFamily: "'Roboto Condensed'",
+    color: SECONDARY_COLOR,
   },
 }));
 

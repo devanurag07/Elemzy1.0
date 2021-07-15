@@ -4,6 +4,7 @@ import { loadDocuments } from "../../actions/teacherActions";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import path from "path";
+import { MAIN_COLOR, SECONDARY_COLOR } from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,9 +12,9 @@ const useStyles = makeStyles((theme) => ({
     padding: "1em 1.5em",
     margin: "0.75em 0.4em",
     boxShadow: "none",
-    height:"100%",
-    minHeight:"none",
-    background: "#ff990070",
+    height: "100%",
+    minHeight: "none",
+    background: MAIN_COLOR,
 
     "& .document-title": {
       fontSize: "1rem",
@@ -23,10 +24,11 @@ const useStyles = makeStyles((theme) => ({
 
     "& .document-title,.document-info": {
       marginBottom: "0.7rem",
+      color: "white",
     },
 
     "& .document-desc": {
-      color: "gray",
+      color: "white",
       fontSize: "0.8rem",
     },
 
@@ -41,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
     "& .document-filename a": {
       fontSize: "0.9rem",
-      color: "gray",
+      color: SECONDARY_COLOR,
       textDecoration: "underline",
     },
   },
@@ -100,11 +102,7 @@ function DocumentsList() {
 
   return (
     <div>
-      <Grid
-        container
-        className={classes.root}
-        direction="row"
-      >
+      <Grid container className={classes.root} direction="row">
         {subjectDocumentsLst.map((document) => {
           const documentCreatedAt = document.created_at.split("T")[0];
 

@@ -493,6 +493,7 @@ class AssignmentAPI(viewsets.ModelViewSet):
         hasPermissionToGetAssignments = subject.subject_teacher == currentTeacher or subject.semester.classroom == currentClassroom
 
         if(hasPermissionToGetAssignments):
+            # pdb.set_trace()
             queryset = Assignment.objects.filter(
                 subject=subject, created_at__date=workDateObj)
             return queryset
@@ -507,7 +508,9 @@ class AssignmentAPI(viewsets.ModelViewSet):
 
         if(currentTeacher == subject.subject_teacher):
 
-            assignments = Assignment.objects.filter(subject=subject)
+            # assignments = Assignment.objects.filter(subject=subject)
+            assignments = self.get_queryset()
+            print(assignments)
             assignments_data = []
 
             for assignment in assignments:

@@ -23,3 +23,7 @@ export const getRandomColor = () => {
 
   return color;
 };
+
+export const MAIN_COLOR = "#3283C9";
+export const SECONDARY_COLOR = "#151D5B";
+export const MAIN_COLOR_LIGHT = "#E7F4FF";

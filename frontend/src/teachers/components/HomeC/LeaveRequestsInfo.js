@@ -1,10 +1,15 @@
 import React from "react";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
 import { useSelector } from "react-redux";
+import { SECONDARY_COLOR } from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "1em",
+  },
+  heading: {
+    color: SECONDARY_COLOR,
+    fontWeight: "505",
   },
   leaveRequestsPending: {
     width: "40px",
@@ -45,7 +50,9 @@ const LeaveRequestsInfo = () => {
 
   return (
     <div className={classes.root}>
-      <Typography variant="h6">Leave Requests</Typography>
+      <Typography variant="h6" className={classes.heading}>
+        Leave Requests
+      </Typography>
       <Grid container spacing={1}>
         <Grid item>
           <div className={classes.leaveRequestsPending}>

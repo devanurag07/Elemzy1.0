@@ -23,6 +23,7 @@ import {
 
 import { createExam } from "../../actions/teacherActions";
 import moment from "moment";
+import { MAIN_COLOR, SECONDARY_COLOR } from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     "& .MuiSvgIcon-root": {
-      color: "orange",
+      color: SECONDARY_COLOR,
     },
 
     "& .MuiInput-underline:before": {
@@ -59,11 +60,11 @@ const useStyles = makeStyles((theme) => ({
   },
 
   addExamBtn: {
-    background: "#ff6b00",
+    background: MAIN_COLOR,
     "&:hover": {
       background: "white",
-      border: "2px solid #ff6b00",
-      color: "#ff6b00",
+      border: `2px solid ${MAIN_COLOR}`,
+      color: MAIN_COLOR,
     },
   },
 }));

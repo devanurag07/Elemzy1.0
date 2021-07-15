@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 
 import { createNotes } from "../../actions/teacherActions";
 import { makeStyles } from "@material-ui/core";
+import { MAIN_COLOR } from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,12 +22,12 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "505",
   },
   createNoteBtn: {
-    background: "#ff6b00",
+    background: MAIN_COLOR,
 
     "&:hover": {
       background: "white",
-      border: "2px solid #ff6b00",
-      color: "#ff6b00",
+      border: `2px solid ${MAIN_COLOR}`,
+      color: MAIN_COLOR,
     },
   },
 }));

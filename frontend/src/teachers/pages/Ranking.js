@@ -3,9 +3,10 @@ import ClassroomLabel from "../components/RankingC/ClassroomLabel";
 import ClassroomStudentsList from "../components/RankingC/ClassroomStudentsList";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core";
-import { BrowserRouter as Router, Route, Link,Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
 import RankingDetailPage from "./RankingDetailPage";
+import UserInfoBar from "../components/UserInfoBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,9 +18,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 const Ranking = () => {
   return (
     <div className="ranking-page">
+      <UserInfoBar />
       <Router>
         <Switch>
           <Route path="/teacher/ranking" exact component={RankingListPage} />

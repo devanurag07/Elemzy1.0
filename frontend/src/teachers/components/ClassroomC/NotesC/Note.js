@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { Paper } from "@material-ui/core";
+import { MAIN_COLOR } from "../../../useFulFunctions";
 
 const useStyles = makeStyles({
   root: {
@@ -9,18 +10,19 @@ const useStyles = makeStyles({
     minHeight: "10vh",
     padding: "1em",
     boxShadow: "none",
-    background: "#ff990070",
+    background: MAIN_COLOR,
+    color: "white",
   },
   noteTitle: {
     textTransform: "capitalize",
     // fontWeight:"200",
     fontSize: "1.2rem",
-    color: "black",
+    color: "white",
     marginBottom: "0.2em",
   },
   description: {
     fontSize: "0.9em",
-    color: "gray",
+    color: "white",
   },
 });
 

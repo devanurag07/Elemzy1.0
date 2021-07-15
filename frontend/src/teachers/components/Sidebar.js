@@ -9,6 +9,7 @@ import Divider from "@material-ui/core/Divider";
 import InboxIcon from "@material-ui/icons/Inbox";
 import DraftsIcon from "@material-ui/icons/Drafts";
 import { Link } from "react-router-dom";
+import { MAIN_COLOR, SECONDARY_COLOR } from "../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,8 +40,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   mainLogo: {
-    color: "#ff6b00",
+    color: MAIN_COLOR,
     boxShadow: "none",
+    fontWeight: "bold",
+    textTransform: "uppercase",
+  },
+  mainLogoSubheading: {
+    color: SECONDARY_COLOR,
   },
 }));
 
@@ -53,7 +59,9 @@ function Sidebar() {
         <Grid item sm={10}>
           <Paper className={classes.mainLogo}>
             <Typography variant="h5">Elemzy</Typography>
-            <Typography variant="p">Teachers Portal</Typography>
+            <Typography variant="p" className={classes.mainLogoSubheading}>
+              Teacher
+            </Typography>
           </Paper>
         </Grid>
       </Grid>

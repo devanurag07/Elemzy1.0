@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
 import { useSelector } from "react-redux";
-import { getRandomColor } from "../../useFulFunctions";
+import { getRandomColor, SECONDARY_COLOR } from "../../useFulFunctions";
 
 const UpcomingExams = () => {
   const upcoming_exams = useSelector(
@@ -10,7 +10,9 @@ const UpcomingExams = () => {
 
   return (
     <div>
-      <Typography variant="h6">Upcoming Exams</Typography>
+      <Typography variant="h6" style={{ color: SECONDARY_COLOR }}>
+        Upcoming Exams
+      </Typography>
       {upcoming_exams.map((exam) => {
         return <UpcomingExamDetail exam={exam} />;
       })}

@@ -20,6 +20,11 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import {
+  MAIN_COLOR,
+  MAIN_COLOR_LIGHT,
+  SECONDARY_COLOR,
+} from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,12 +47,20 @@ const useStyles = makeStyles((theme) => ({
   },
 
   createAssignBtn: {
-    background: "#ff6b00",
+    background: MAIN_COLOR,
 
     "&:hover": {
       background: "white",
-      border: "2px solid #ff6b00",
-      color: "#ff6b00",
+      border: `2px solid ${MAIN_COLOR}`,
+      color: MAIN_COLOR,
+    },
+  },
+  addQuestionBtn: {
+    background: SECONDARY_COLOR,
+    "&:hover": {
+      background: "white",
+      border: `2px solid ${SECONDARY_COLOR}`,
+      color: SECONDARY_COLOR,
     },
   },
 }));
@@ -159,9 +172,7 @@ const CreateAssignmentForm = () => {
     : "";
 
   return (
-    <form
-      className={classes.root}
-    >
+    <form className={classes.root}>
       <div className={classes.formTitle}>Add a new Assignment</div>
       <div className="info" style={{ paddingTop: "10px" }}>
         Subject : {currentSubjectName}
@@ -179,7 +190,6 @@ const CreateAssignmentForm = () => {
           error={hasAssignmentTitleError}
           helperText={assignmentTitleErrMsg}
           variant="outlined"
-
           size="medium"
         />
       </FormControl>
@@ -199,6 +209,7 @@ const CreateAssignmentForm = () => {
             color="secondary"
             onClick={addQuestion}
             size="small"
+            className={classes.addQuestionBtn}
           >
             Add Question
           </Button>

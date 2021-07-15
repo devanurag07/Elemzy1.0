@@ -21,6 +21,7 @@ import {
 } from "@material-ui/pickers";
 
 import { setWorkDate } from "../actions/teacherActions";
+import { SECONDARY_COLOR } from "../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     "& .MuiSvgIcon-root": {
-      color: "#ff6b00",
+      color: SECONDARY_COLOR,
     },
 
     "& .MuiInput-underline:before": {
@@ -93,7 +94,6 @@ export default function ClassroomHeader() {
 }
 
 export const ClassroomSelect = () => {
-
   const otherClassrooms = useSelector(
     (state) => state.classroom.secondaryClassrooms
   );
@@ -135,7 +135,9 @@ export const ClassroomSelect = () => {
           onChange={handleClassroomChange}
           placeholder="Classroom"
         >
-          <MenuItem value={mainClassroom.id} style={{color:"red"}}>My Class - {mainClassroom.standard} </MenuItem>
+          <MenuItem value={mainClassroom.id} style={{ color: "red" }}>
+            My Class - {mainClassroom.standard}{" "}
+          </MenuItem>
 
           {otherClassrooms.map((classroom) => {
             return (

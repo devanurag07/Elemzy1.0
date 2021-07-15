@@ -1,5 +1,6 @@
 import React from "react";
 import { Grid, Typography, Paper, makeStyles } from "@material-ui/core";
+import { MAIN_COLOR, SECONDARY_COLOR } from "../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
     fontWeight: "505",
     fontFamily: "Poppins",
+    color:SECONDARY_COLOR
   },
 }));
 

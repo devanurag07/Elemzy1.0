@@ -2,11 +2,18 @@ import React from "react";
 import { useSelector } from "react-redux";
 import AssignmentDetail from "../ClassroomC/AssignmentDetail";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
-import { getAssingmentColor, getRandomColor } from "../../useFulFunctions";
+import {
+  getAssingmentColor,
+  getRandomColor,
+  SECONDARY_COLOR,
+} from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "1em",
+  },
+  heading: {
+    color: SECONDARY_COLOR,
   },
   assignmentContainer: {
     marginTop: "1em",
@@ -21,7 +28,9 @@ const RecentAssignments = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Typography variant="h6">Submission Status</Typography>
+      <Typography variant="h6" className={classes.heading}>
+        Submission Status
+      </Typography>
       {recent_assignments.map((assignment) => {
         return (
           <div className={classes.assignmentContainer}>

@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
+import { MAIN_COLOR, MAIN_COLOR_LIGHT } from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,9 +21,8 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: "none",
       color: "white",
       fontSize: "1rem",
-      backgroundColor: "#ff6b00",
+      backgroundColor: MAIN_COLOR,
       borderRadius: "10px",
-
       padding: "0.1rem 3rem",
       fontFamily: "'Poppins'",
       fontSize: "1.2rem",
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: "none",
       color: "black",
       fontSize: "1rem",
-      backgroundColor: "#ff6b0094",
+      backgroundColor: MAIN_COLOR_LIGHT,
       borderRadius: "10px",
 
       padding: "0.1rem 3rem",

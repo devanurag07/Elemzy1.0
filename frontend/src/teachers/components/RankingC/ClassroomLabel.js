@@ -1,12 +1,12 @@
 import React from "react";
 import { makeStyles, Typography } from "@material-ui/core";
+import { MAIN_COLOR, SECONDARY_COLOR } from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-  },
+  root: {},
 
   pageHeading: {
-    color: "#ff6b00",
+    color: SECONDARY_COLOR,
   },
   classroomLabel: {
     borderRadius: "10px",
@@ -20,10 +20,10 @@ const useStyles = makeStyles((theme) => ({
   standardLabel: {
     display: "inline-block",
     padding: "0.0em 1em",
-    background: "#ff6b00",
-    color:"white",
-    marginTop:"0.5em",
-    borderRadius:'10px'
+    background: MAIN_COLOR,
+    color: "white",
+    marginTop: "0.5em",
+    borderRadius: "10px",
   },
 }));
 
@@ -42,7 +42,7 @@ function ClassroomLabel({ standard }) {
       >
         Classroom
       </Typography>
-      <br/>
+      <br />
       <Typography className={classes.standardLabel} variant="h6">
         {standard}
       </Typography>

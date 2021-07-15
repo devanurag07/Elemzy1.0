@@ -34,6 +34,7 @@ function AssignmentList() {
   useEffect(() => {
     if (currentSubject.pk !== undefined) {
       loadAssignments(currentSubject.pk);
+      console.log("lOADING ASSIGNMENTS");
     }
   }, [currentSubject.pk, currentSubject.workdate]);
 

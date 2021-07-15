@@ -1,14 +1,19 @@
 import React from "react";
 import { makeStyles, Grid, Typography, Button } from "@material-ui/core";
 
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import {
+  MAIN_COLOR,
+  MAIN_COLOR_LIGHT,
+  SECONDARY_COLOR,
+} from "../../useFulFunctions";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "1em",
     boxShadow: "0px 0px 1px 0px",
   },
   stdListHeading: {
-    color: "#d86d10",
+    color: SECONDARY_COLOR,
     marginBottom: "1em",
   },
 
@@ -16,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0px 0px 2px 0px",
     padding: "0.8em",
     borderRadius: "10px",
+    marginTop: "1em",
 
     "& .MuiGrid-item": {
       justifyContent: "center",
@@ -31,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
     "& .student-standard": {
       padding: "0.2em 1.2em",
-      background: "#ff6b00",
+      background: MAIN_COLOR,
       color: "white",
       borderRadius: "20px",
     },

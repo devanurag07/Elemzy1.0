@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { loadMyTimeTable } from "../../actions/teacherActions";
 import { Paper, Grid, Typography, makeStyles } from "@material-ui/core";
 import MyTimeTableCard from "./MyTimeTableCard";
+import { SECONDARY_COLOR } from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,6 +14,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.2rem",
     fontFamily: "Poppins",
     fontWeight: "505",
+    color: SECONDARY_COLOR,
+    fontFamily: "Poppins",
   },
   tableContainer: {
     marginTop: "2em",

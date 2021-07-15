@@ -6,6 +6,7 @@ import { createNotification } from "../../actions/classroom";
 
 import { useSelector } from "react-redux";
 import { Grid, Button, makeStyles } from "@material-ui/core";
+import { MAIN_COLOR } from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,21 +20,21 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.2rem",
   },
   uploadBtn: {
-    background: "#ff6b00",
+    background: MAIN_COLOR,
 
     "&:hover": {
       background: "white",
-      border: "2px solid #ff6b00",
-      color: "#ff6b00",
+      border: `2px solid ${MAIN_COLOR}`,
+      color: MAIN_COLOR,
     },
   },
 
-  selectDocument:{
-    color: 'white',
-    background: '#3a65ff',
-    fontSize: '1.2rem',
-    padding: '0.3em 0.9rem'
-  }
+  selectDocument: {
+    color: "white",
+    background: MAIN_COLOR,
+    fontSize: "1.2rem",
+    padding: "0.3em 0.9rem",
+  },
 }));
 
 function DocumentForm() {
@@ -115,7 +116,7 @@ function DocumentForm() {
     if (document_file) {
       const filename = document_file.name;
       if (filename) {
-        return filename.slice(0,30)+"...";
+        return filename.slice(0, 30) + "...";
       }
       return null;
     }
@@ -166,12 +167,16 @@ function DocumentForm() {
           ref={inputFileRef}
         /> */}
 
-        <input type="file" ref={inputFileRef} onChange={onDocumentFileChange} style={{display:"none"}}/>
+        <input
+          type="file"
+          ref={inputFileRef}
+          onChange={onDocumentFileChange}
+          style={{ display: "none" }}
+        />
 
         <div className={classes.selectDocument} onClick={onSelectDocClick}>
           {documentFilename ? documentFilename : "Select Document"}
         </div>
-
       </FormControl>
       <Grid container style={{ marginTop: "1em" }}>
         <Button

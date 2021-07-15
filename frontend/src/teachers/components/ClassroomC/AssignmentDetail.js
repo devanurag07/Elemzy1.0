@@ -1,5 +1,6 @@
 import React from "react";
 import { Paper, Grid, Typography, makeStyles } from "@material-ui/core";
+import { MAIN_COLOR } from "../../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,7 +48,10 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
     background: "#c5c5c5",
   },
-  progressBar: {},
+  progressBar: {
+    background: MAIN_COLOR,
+    borderRadius: "10px",
+  },
 }));
 
 function AssignmentDetail({ assignment }) {
@@ -84,12 +88,10 @@ function AssignmentDetail({ assignment }) {
         <Grid item sm={12}>
           <div className={classes.progressBarBg}>
             <div
-              className="bar"
+              className={classes.progressBar}
               style={{
                 height: "10px",
                 width: `${assinmentCompletePerc}%`,
-                background: "#52cc52",
-                borderRadius: "10px",
               }}
             ></div>
           </div>

@@ -11,13 +11,18 @@ import produce from "immer";
 
 import Chart from "react-google-charts";
 import { getTokenConfig } from "../actions/classroom";
+import {
+  MAIN_COLOR,
+  MAIN_COLOR_LIGHT,
+  SECONDARY_COLOR,
+} from "../useFulFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "1em",
   },
   holisticHeading: {
-    color: "#ff6b00",
+    color: MAIN_COLOR,
   },
   rankingDetailContainer: {
     padding: "2em",
@@ -34,9 +39,9 @@ const useStyles = makeStyles((theme) => ({
   },
 
   viewDocBtn: {
-    background: "#fb8710",
+    background: MAIN_COLOR,
     "&:hover": {
-      background: "#e4790b",
+      background: SECONDARY_COLOR,
     },
   },
 
@@ -245,7 +250,7 @@ const useStyles2 = makeStyles((theme) => ({
     boxShadow: "0px 0px 1px 0px",
     borderRadius: "10px",
     marginTop: "1em",
-    background: "#f5ebef",
+    background: MAIN_COLOR_LIGHT,
 
     "& .MuiGrid-item": {
       display: "flex",
