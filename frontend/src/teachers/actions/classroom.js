@@ -132,7 +132,7 @@ export const loadSubjectNotes = (subjectId) => {
 
   axios
     .get(
-      `http://127.0.0.1:8001/api/classroom/notes?subject_pk=${subjectId}&workdate=${workDateStr}`,
+      `${API_URL}/api/classroom/notes?subject_pk=${subjectId}&workdate=${workDateStr}`,
       config
     )
 
@@ -188,7 +188,7 @@ export const loadExams = (subjectId) => {
 
   axios
     .get(
-      `http://127.0.0.1:8001/api/classroom/exams?subject_pk=${subjectId}`,
+      `${API_URL}/api/classroom/exams?subject_pk=${subjectId}`,
       config
     )
     .then((resp) => {

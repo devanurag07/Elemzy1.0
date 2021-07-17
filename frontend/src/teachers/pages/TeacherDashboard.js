@@ -19,6 +19,7 @@ import Ranking from "./Ranking";
 
 import { Route } from "react-router-dom";
 import { loadExams } from "../actions/classroom";
+import ManageStudents from "./ManageStudents";
 
 const useStyles = makeStyles((theme) => ({
   // Handling Sidebar and Nav Width
@@ -80,6 +81,10 @@ export const TeacherDashboard = () => {
 
         <Route path="/teacher/profile" exact>
           <UpdateTeacherProfilePage />
+        </Route>
+
+        <Route path="/teacher/manageStudents" exact>
+          <ManageStudents />
         </Route>
       </div>
     </Fragment>

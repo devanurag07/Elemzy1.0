@@ -9,10 +9,7 @@ import {
   ADD_STUDENT,
   SET_WORKDATE,
 } from "./types";
-import { returnErrors, createMessage } from "../../actions/messages";
 import store from "../../store";
-import { config } from "react-transition-group";
-import produce from "immer";
 
 const dispatch = store.dispatch;
 
@@ -311,7 +308,7 @@ export const createExam = (formData, setFormErrors) => {
   const config = getTokenConfig();
 
   axios
-    .post("http://127.0.0.1:8001/api/classroom/exams/", formData, config)
+    .post(`${API_URL}/api/classroom/exams/`, formData, config)
     .then((resp) => {
       if (resp.status === 201) {
         createNotification("Exam successfully created");
@@ -345,7 +342,7 @@ export const createSubjectEntry = (formData, setFormErrors) => {
   const config = getTokenConfig();
 
   axios
-    .post("http://127.0.0.1:8001/api/classroom/timetable/", formData, config)
+    .post(`${API_URL}/api/classroom/timetable/`, formData, config)
     .then((resp) => {
       if (resp.status === 201) {
         createNotification("SubjectEntry successfully created");
@@ -374,7 +371,7 @@ export const loadSubjectEntries = () => {
   const config = getTokenConfig();
 
   axios
-    .get("http://127.0.0.1:8001/api/classroom/timetable/", config)
+    .get(`${API_URL}/api/classroom/timetable/`, config)
     .then((resp) => {
       const subjectEntries = resp.data;
       console.log(subjectEntries);
@@ -390,7 +387,7 @@ export const loadMyTimeTable = () => {
   const config = getTokenConfig();
 
   axios
-    .get("http://127.0.0.1:8001/api/classroom/mytimetable", config)
+    .get(`${API_URL}/api/classroom/mytimetable`, config)
     .then((resp) => {
       const subjectEntries = resp.data;
       dispatch({

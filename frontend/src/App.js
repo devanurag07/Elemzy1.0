@@ -19,6 +19,7 @@ import RegisterStudent from "./pages/RegisterStudent";
 import RegisterTeacher from "./pages/RegisterTeacher";
 import RegisterManager from "./pages/RegisterManager";
 import { SnackbarProvider } from "notistack";
+import ManageStudents from "./teachers/pages/ManageStudents";
 
 // import "./teachers/css/style.scss";
 
@@ -69,6 +70,7 @@ class App extends Component {
                   <Route path="/forgotpassword" component={Forgot} />
                   <Route path="/logout" component={Logout} />
                   <Route path="/teacher" component={Teacher} />
+                  <Route path="/registerTeacher" component={RegisterTeacher} />
                 </main>
               </Router>
             </Fragment>

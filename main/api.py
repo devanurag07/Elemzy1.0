@@ -16,7 +16,6 @@ class RegisterAPI(generics.GenericAPIView):
         
         user = serializer.save()
 
-
         return Response(
             {
                 "user": UserProfileSerializer(

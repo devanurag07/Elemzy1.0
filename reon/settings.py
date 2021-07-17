@@ -83,7 +83,7 @@ WSGI_APPLICATION = "reon.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(r"E:\ProjectBackup\Common Database", 'db.sqlite3'),
+        'NAME': os.path.join(r"/home/anurag/Documents/Common Database", 'db.sqlite3'),
     }
 }
 

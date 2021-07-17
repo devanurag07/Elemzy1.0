@@ -39,8 +39,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         
         print(validated_data)
+        # pdb.set_trace()
         user = UserProfile.objects.create_user(
-            validated_data["email"], validated_data["password"],
+            validated_data["email"], validated_data["password"],is_teacher=validated_data["is_teacher"]
         )
         instance, created = UserProfile.objects.update_or_create(
             email=validated_data["email"],
