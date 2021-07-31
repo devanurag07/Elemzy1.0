@@ -35,14 +35,14 @@ router.register("classroom/leaverequests",
                 LeaveRequestsAPI, basename="leaverequests")
 
 urlpatterns = [
-    path("classroom", api.TeacherClassroom.as_view()),
-    path("studentslist", api.GlobalStudentsAPI.as_view()),
-    path("teacherslist", api.TeachersList.as_view()),
-    path("otherClassrooms", SecondaryClassroom.as_view()),
-    path("teacherProfileUpdate", TeacherProfile.as_view()),
-    path("classroom/dashboard_data", DashboardDataAPI.as_view()),
-    path("classroom/mytimetable", MyTimeTable.as_view(), name="mytimetable"),
-    path("classroom/uploadresult",
+    path("classroom/", api.TeacherClassroom.as_view()),
+    path("studentslist/", api.GlobalStudentsAPI.as_view()),
+    path("teacherslist/", api.TeachersList.as_view()),
+    path("otherClassrooms/", SecondaryClassroom.as_view()),
+    path("teacherProfileUpdate/", TeacherProfile.as_view()),
+    path("classroom/dashboard_data/", DashboardDataAPI.as_view()),
+    path("classroom/mytimetable/", MyTimeTable.as_view(), name="mytimetable"),
+    path("classroom/uploadresult/",
          DocumentResultUploadAPI.as_view(), name="uploadresult")
 
 ]

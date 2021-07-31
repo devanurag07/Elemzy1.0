@@ -88,7 +88,7 @@ export const loadAssignments = (subjectId) => {
 
   axios
     .get(
-      `${API_URL}/api/classroom/assignments?subject_pk=${subjectId}&workdate=${workDateStr}`,
+      `${API_URL}/api/classroom/assignments/?subject_pk=${subjectId}&workdate=${workDateStr}`,
       config
     )
     .then((resp) => {
@@ -232,7 +232,7 @@ export const loadDocuments = (subject_pk) => {
 
   axios
     .get(
-      `${API_URL}/api/classroom/documents?subject_pk=${subject_pk}&workdate=${workDateStr}`,
+      `${API_URL}/api/classroom/documents/?subject_pk=${subject_pk}&workdate=${workDateStr}`,
       config
     )
     .then((resp) => {
@@ -387,7 +387,7 @@ export const loadMyTimeTable = () => {
   const config = getTokenConfig();
 
   axios
-    .get(`${API_URL}/api/classroom/mytimetable`, config)
+    .get(`${API_URL}/api/classroom/mytimetable/`, config)
     .then((resp) => {
       const subjectEntries = resp.data;
       dispatch({
@@ -462,7 +462,7 @@ export const uploadResult = (formData, setFormErrors) => {
   // Preparing Form Data Exit
 
   axios
-    .post(`${API_URL}/api/classroom/uploadresult`, formDataObj, config)
+    .post(`${API_URL}/api/classroom/uploadresult/`, formDataObj, config)
     .then((resp) => {
       if (resp.status == 201) {
         createNotification("The Result Successfully Uploaded", {

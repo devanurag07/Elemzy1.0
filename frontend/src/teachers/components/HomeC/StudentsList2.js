@@ -123,7 +123,7 @@ export default function StudentList2() {
 
   return (
     <>
-      <StudentListHeader />
+      {/* <StudentListHeader /> */}
       <TableContainer component={Paper}>
         <AddStudentForm />
         <Table className={classes.table} aria-label="custom pagination table">

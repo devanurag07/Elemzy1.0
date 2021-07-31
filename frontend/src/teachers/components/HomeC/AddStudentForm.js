@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DialogForm } from "../Form";
+import { DialogForm, PopUpForm } from "../Form";
 import {
   Button,
   FormControl,
@@ -39,8 +39,8 @@ function AddStudentForm() {
     const userFirstName = userObj.firstname;
     const userLastName = userObj.lastname;
 
-    const firstname=userFirstName?userFirstName:"";
-    const lastname=userLastName?userLastName:"";
+    const firstname = userFirstName ? userFirstName : "";
+    const lastname = userLastName ? userLastName : "";
 
     setStudentFormData({
       ...studentFormData,
@@ -93,7 +93,7 @@ function AddStudentForm() {
         Add Student
       </Button>
 
-      <DialogForm
+      <PopUpForm
         open={open}
         setOpen={setOpen}
         onCreateBtnHandler={onCreateBtnHandler}
@@ -189,7 +189,7 @@ function AddStudentForm() {
             </FormControl>
           </Grid>
         </Grid>
-      </DialogForm>
+      </PopUpForm>
     </>
   );
 }

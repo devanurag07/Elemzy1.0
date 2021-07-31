@@ -164,6 +164,7 @@ class SemesterAPI(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
 
+        # pdb.set_trace()
         semesters = self.get_queryset()
         semesters_data = SemesterSerializer(semesters, many=True).data
 
@@ -608,6 +609,7 @@ class ClassroomStudentsAPI(viewsets.ModelViewSet):
                     return Response({"errors": {'roll_no': "Roll No already exists"}}, status=status.HTTP_400_BAD_REQUEST)
 
                 createdStdObj = studentForm.save()
+
                 return Response(StudentSerializer(createdStdObj).data, status=status.HTTP_201_CREATED)
 
         else:

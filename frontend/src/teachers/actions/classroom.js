@@ -1,4 +1,3 @@
-import { useDispatch } from "react";
 import store from "../../store";
 
 import {
@@ -16,8 +15,8 @@ import axios from "axios";
 import { getWorkDate } from "./teacherActions";
 
 // Global variables
-const CLASSROOM_URL = `${API_URL}/api/classroom`;
-const STUDENTLIST_URL = `${API_URL}/api/studentslist`;
+const CLASSROOM_URL = `${API_URL}/api/classroom/`;
+const STUDENTLIST_URL = `${API_URL}/api/studentslist/`;
 // Global disptach function
 const dispatch = store.dispatch;
 
@@ -43,7 +42,7 @@ export const loadClassroomData = () => {
 
   // Loading semesters
   axios
-    .get(`${API_URL}/api/classroom/semester`, config)
+    .get(`${API_URL}/api/classroom/semester/`, config)
     .then((resp) => {
       if (resp.status === 200) {
         console.log("Semester Data");
@@ -60,7 +59,7 @@ export const loadClassroomData = () => {
 
   // Loading teachers
   axios
-    .get(`${API_URL}/api/teacherslist`, config)
+    .get(`${API_URL}/api/teacherslist/`, config)
     .then((resp) => {
       if (resp.status === 200) {
         const teachersList = resp.data;
@@ -132,7 +131,7 @@ export const loadSubjectNotes = (subjectId) => {
 
   axios
     .get(
-      `${API_URL}/api/classroom/notes?subject_pk=${subjectId}&workdate=${workDateStr}`,
+      `${API_URL}/api/classroom/notes/?subject_pk=${subjectId}&workdate=${workDateStr}`,
       config
     )
 
@@ -160,7 +159,7 @@ export const loadSubjectNotes = (subjectId) => {
 export const getOtherClassroomsData = () => {
   const config = getTokenConfig();
 
-  axios.get(`${API_URL}/api/otherClassrooms`, config).then((resp) => {
+  axios.get(`${API_URL}/api/otherClassrooms/`, config).then((resp) => {
     if (resp.status == 200) {
       const otherClassroomsData = resp.data;
 
@@ -187,10 +186,7 @@ export const loadExams = (subjectId) => {
   const config = getTokenConfig();
 
   axios
-    .get(
-      `${API_URL}/api/classroom/exams?subject_pk=${subjectId}`,
-      config
-    )
+    .get(`${API_URL}/api/classroom/exams?subject_pk=${subjectId}`, config)
     .then((resp) => {
       const examList = resp.data;
 
@@ -205,7 +201,7 @@ export const loadExams = (subjectId) => {
 export const loadDashboardData = () => {
   const config = getTokenConfig();
 
-  axios.get(`${API_URL}/api/classroom/dashboard_data`, config).then((resp) => {
+  axios.get(`${API_URL}/api/classroom/dashboard_data/`, config).then((resp) => {
     if (resp.status == 200) {
       const dashboard_data = resp.data;
       dispatch({
@@ -223,7 +219,7 @@ export const loadPendingLeaveRequests = (
 ) => {
   const config = getTokenConfig();
 
-  axios.get(`${API_URL}/api/classroom/leaverequests`, config).then((resp) => {
+  axios.get(`${API_URL}/api/classroom/leaverequests/`, config).then((resp) => {
     if (resp.status == 200) {
       const resp_data = resp.data;
       const pending_requests = resp_data.pending_requests_list;

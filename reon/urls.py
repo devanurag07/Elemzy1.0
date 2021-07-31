@@ -36,12 +36,13 @@ router.register(r"profiles", views.UserProfileViewSet)
 
 
 urlpatterns = [
+
     path("admin/", admin.site.urls),
     path("/", TemplateView.as_view(template_name="index.html")),
-
     path("restauth/", include("rest_framework.urls", namespace="restauth")),
     path("api/", include(router.urls)),
     path("api/", include("teachers.urls")),
+
     path("api/auth", include("knox.urls")),
     path("api/auth/register", RegisterAPI.as_view()),
     path("api/auth/login", LoginAPI.as_view()),
@@ -51,7 +52,7 @@ urlpatterns = [
         "api/password_reset/",
         include("django_rest_passwordreset.urls", namespace="password_reset"),
     ),
-    # url(r"^(?:.*)/?$", TemplateView.as_view(template_name="index.html")),
+    url(r"^(?:.*)/?$", TemplateView.as_view(template_name="index.html")),
 
     # path(
     #     "passwordreset/verifytoken/",
@@ -59,4 +60,4 @@ urlpatterns = [
     #     name="password_reset_verify_token",
     # ),
 
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

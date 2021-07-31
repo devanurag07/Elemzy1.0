@@ -149,7 +149,7 @@ AUTH_USER_MODEL = "main.UserProfile"
 
 CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ORIGIN_WHITELIST = ("http://127.0.0.1:8000",
+CORS_ORIGIN_WHITELIST = ("http://127.0.0.1:8000", "http://127.0.0.1:8001",
                          "http://localhost:3000", "http://localhost:3001")
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
