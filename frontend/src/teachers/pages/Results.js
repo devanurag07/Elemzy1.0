@@ -18,6 +18,8 @@ import { useSelector } from "react-redux";
 import produce from "immer";
 import DocumentResultForm from "../components/ResultsC/DocumentResultForm";
 import ManualResultForm from "../components/ResultsC/ManualResultForm";
+import { MAIN_COLOR, MAIN_COLOR_LIGHT } from "../useFulFunctions";
+import ManualResult from "./ManualResult";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     "& .MuiSvgIcon-root": {
-      color: "orange",
+      color: MAIN_COLOR,
     },
 
     "& .MuiInput-underline:before": {
@@ -79,6 +81,8 @@ function Results() {
       </Paper>
 
       <DocumentResultForm exam_id={selectedExamId} />
+
+      <ManualResult exam_id={selectedExamId} />
     </div>
   );
 }

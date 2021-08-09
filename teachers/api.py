@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import requires_csrf_token
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -15,10 +16,10 @@ from teachers.permissions import IsTeacher, IsManager
 from rest_framework import permissions
 
 # Models
-from .models import ClassRoom, LeaveRequest, Student, Teacher, Notes, Assignment, GradedAssignment, RankingDocument
+from .models import ClassRoom, LeaveRequest, ManualResult, ResultRow, Student, Teacher, Notes, Assignment, GradedAssignment, RankingDocument
 from .models import Semester, ClassroomPage, Subject, StudentResponse, Document, SubjectEntry, TimeTable
 # Serializers
-from .serializers import ClassRoomSerializer, DocumentResultSerializer, LeaveRequestSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
+from .serializers import ClassRoomSerializer, DocumentResultSerializer, LeaveRequestSerializer, ResultRowSerializer, StudentSerializer, SemesterSerializer, SubjectSerializer, TeacherSerializer
 from .serializers import NotesSerializer, ClassroomPageSerializer, AssignmentSerializer, QuestionSerializer, DocumentSerializer, TeacherProfileSerializer
 from .serializers import ExamSerializer, SubjectEntrySerializer, RankingDocumentSerializer
 
@@ -1075,3 +1076,82 @@ class HolisticRankingGraphAPI(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         return Response("Not allowed", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+# Manual Result API
+class ManualResultsAPI(APIView):
+
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        exam_id = data.get('exam', None)
+        max_marks = data.get("max_marks", 100)
+
+        if exam_id != None:
+            exam = get_object_or_404(Exam, pk=exam_id)
+            currentTeacher = request.user.teacher
+            currentClassroom = currentTeacher.classroom
+            hasAccess = exam.teacher == currentTeacher
+
+            if(hasAccess):
+
+                manual_result, created = ManualResult.objects.get_or_create(exam=exam, defaults={
+                    'max_marks': max_marks
+                })
+
+                result_rows = data.get("result_rows", [])
+
+                messages = {
+
+                }
+
+                for idx, row in enumerate(result_rows):
+                    index = row.get("idx", None)
+                    if(index == None):
+                        index = idx
+
+                    result_row_form = ResultRowSerializer(data=row)
+                    is_valid_data = result_row_form.is_valid()
+
+                    if(is_valid_data):
+
+                        student = result_row_form.validated_data["student"]
+                        student_classroom = student.classroom
+
+                        # IF aLready have entered the results of the student
+                        result_row_exists = ResultRow.objects.filter(
+                            student=student).exists()
+
+                        if(result_row_exists):
+
+                            messages[str(index)] = {'status': "error",
+                                                    "msg": 'Result row exists already of this student'
+                                                    }
+                        else:
+
+                            if(student_classroom == currentClassroom):
+                                created_row = result_row_form.save(
+                                    result=manual_result)
+                                messages[str(index)] = {
+                                    'status': "success",
+                                    'msg': "Successfully Created"
+                                }
+                            else:
+                                messages[str(index)] = {
+                                    'status': "error",
+                                    "msg": 'Student is of another classroom'
+                                }
+
+                    else:
+                        messages[str(index)] = {
+                            'status': "errors",
+                            "errors": result_row_form.errors
+                        }
+
+                return Response({"messages": messages})
+
+            else:
+                return Response("No Access to this exam", status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response("Please select exam", status=status.HTTP_400_BAD_REQUEST)

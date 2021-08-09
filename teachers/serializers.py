@@ -1,5 +1,6 @@
+from django.db.models import fields
 from rest_framework.serializers import ModelSerializer, ValidationError
-from .models import ClassRoom, DocumentResult, LeaveRequest, Student, Semester, Subject, Teacher, ClassroomPage
+from .models import ClassRoom, DocumentResult, LeaveRequest, ResultRow, Student, Semester, Subject, Teacher, ClassroomPage
 from .models import Notes, Assignment, Question, Choice, Document, SubjectEntry, RankingDocument
 from main.serializers import UserProfileSerializer
 from main.models import UserProfile
@@ -304,3 +305,10 @@ class LeaveRequestSerializer(ModelSerializer):
     class Meta:
         model = LeaveRequest
         fields = "__all__"
+
+
+class ResultRowSerializer(ModelSerializer):
+
+    class Meta:
+        model=ResultRow
+        fields=["marks","student"]

@@ -8,8 +8,8 @@ content-type: application/json
 
 
 {
-    "email":"teacher1@gmail.com",
-    "password":"demo@1234"
+    "email":"maths@gmail.com",
+    "password":"demo@123"
 }
 
 ############
@@ -24,7 +24,7 @@ content-type: application/json
 
 ##################
 PUT http://127.0.0.1:8000/api/classroom
-Authorization: Token 3b1269b3876e9dcec743f4242a407295e9abfbef4ca5fab325ce2f634c7c94df
+Authorization: Token 572cfb361209c987b2650d16354405cfdea8c149591fc587398c24a46672b52c
 content-type: application/json
 
 
@@ -159,3 +159,21 @@ Content-Type: application/json
 ##################
 GET http://127.0.0.1:8001/api/classroom/holisticrankinggraph/2
 Authorization: Token d73a2f035042f86a15cfee663e8756a5cedac74068b7c221a5e1018ef8d13c24
+
+
+
+
+##################
+POST http://127.0.0.1:8001/api/classroom/manualresult_rows/
+Authorization: Token 572cfb361209c987b2650d16354405cfdea8c149591fc587398c24a46672b52c
+content-type: application/json
+
+{
+    "exam":"1",
+
+    "result_rows":[
+        {
+            "marks":10
+        }
+    ]
+}
