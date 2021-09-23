@@ -544,11 +544,7 @@ export const submitManualResult = (result_data, setMessages) => {
   const config = getTokenConfig();
 
   axios
-    .post(
-      "http://127.0.0.1:8001/api/classroom/manualresult/",
-      result_data,
-      config
-    )
+    .post(`${API_URL}/api/classroom/manualresult/`, result_data, config)
     .then((resp) => {
       console.log(resp.data);
       if (resp.data) {
